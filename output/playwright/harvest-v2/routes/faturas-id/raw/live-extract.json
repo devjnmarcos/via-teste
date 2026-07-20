@@ -1,0 +1,415 @@
+{
+  "url": "http://127.0.0.1:52368/faturas/9001",
+  "title": "Fatura #9001 · Faturas · Via Reversa",
+  "htmlClass": "",
+  "bodyClass": "",
+  "scroll": {
+    "width": 1366,
+    "height": 768
+  },
+  "landmarks": [
+    {
+      "selector": "aside",
+      "tag": "aside",
+      "classes": "flex min-h-0 w-full min-w-0 flex-col overflow-hidden bg-via-sidebar px-3 pt-[22px] pb-3.5 text-[oklch(90%_0.02_253)]",
+      "text": "Via ReversaOperação logísticaOperaçãoHomeOperação ao vivo146PedidosLotesExpediçãoRoteirizaçãoRotasCheck InTratativasOcorrências NGDisparo ChatbotAuditoria geográficaDashboard ReversaCalendárioGestãoDa",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 228,
+        "height": 768
+      },
+      "styles": {
+        "display": "flex",
+        "color": "oklch(0.9 0.02 253)",
+        "backgroundColor": "oklch(0.25 0.04 253)",
+        "fontFamily": "\"Segoe UI\", Roboto, Arial, sans-serif",
+        "fontSize": "13px",
+        "lineHeight": "17.94px",
+        "borderRadius": "0px",
+        "boxShadow": "none"
+      }
+    },
+    {
+      "selector": "header",
+      "tag": "header",
+      "classes": "flex h-(--app-topbar-height) items-center justify-between border-b border-via-line bg-via-surface px-5",
+      "text": "HomeFaturas#9001AD",
+      "box": {
+        "x": 228,
+        "y": 0,
+        "width": 1138,
+        "height": 58
+      },
+      "styles": {
+        "display": "flex",
+        "color": "oklch(0.25 0.025 253)",
+        "backgroundColor": "oklch(0.99 0.004 253)",
+        "fontFamily": "\"Segoe UI\", Roboto, Arial, sans-serif",
+        "fontSize": "13px",
+        "lineHeight": "17.94px",
+        "borderRadius": "0px",
+        "boxShadow": "none"
+      }
+    },
+    {
+      "selector": "main",
+      "tag": "main",
+      "classes": "h-[calc(100%-var(--app-topbar-height))] overflow-auto bg-via-surface bg-[#fbfdff]",
+      "text": "Fatura #9001A receber · Casas Bahia · Nacional · Jul/2026 · venc. 31/07/2026Aberta Editar observação  Excluir R$ 42.850,40ValorJul/20262Pedidosvinculados à fatura1Documentos fiscaisemitidosDadosPedido",
+      "box": {
+        "x": 228,
+        "y": 58,
+        "width": 1138,
+        "height": 710
+      },
+      "styles": {
+        "display": "block",
+        "color": "oklch(0.25 0.025 253)",
+        "backgroundColor": "oklch(0.99 0.004 253)",
+        "fontFamily": "\"Segoe UI\", Roboto, Arial, sans-serif",
+        "fontSize": "13px",
+        "lineHeight": "17.94px",
+        "borderRadius": "0px",
+        "boxShadow": "none"
+      }
+    },
+    {
+      "selector": "nav",
+      "tag": "nav",
+      "classes": "min-h-0 overflow-auto [scrollbar-width:none]",
+      "text": "OperaçãoHomeOperação ao vivo146PedidosLotesExpediçãoRoteirizaçãoRotasCheck InTratativasOcorrências NGDisparo ChatbotAuditoria geográficaDashboard ReversaCalendárioGestãoDashboardsSLAResumosFaturasA re",
+      "box": {
+        "x": 12,
+        "y": 77.109375,
+        "width": 204,
+        "height": 624.890625
+      },
+      "styles": {
+        "display": "block",
+        "color": "oklch(0.9 0.02 253)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontFamily": "\"Segoe UI\", Roboto, Arial, sans-serif",
+        "fontSize": "13px",
+        "lineHeight": "17.94px",
+        "borderRadius": "0px",
+        "boxShadow": "none"
+      }
+    }
+  ],
+  "variables": {
+    "--via-ink": "oklch(25% 0.025 253)",
+    "--via-blue-strong": "oklch(53% 0.2 254)",
+    "--via-blue-soft": "oklch(95% 0.035 254)",
+    "--via-blue": "oklch(62% 0.19 254)",
+    "--via-cyan": "oklch(69% 0.13 219)",
+    "--via-sidebar": "oklch(25% 0.04 253)",
+    "--via-violet": "oklch(58% 0.14 292)",
+    "--via-line-strong": "oklch(82% 0.018 253)",
+    "--via-surface-2": "oklch(97.5% 0.008 253)",
+    "--via-muted": "oklch(51% 0.022 253)",
+    "--via-line": "oklch(88% 0.012 253)",
+    "--via-page": "oklch(91.5% 0.014 253)",
+    "--via-amber": "oklch(68% 0.14 73)",
+    "--via-red": "oklch(59% 0.19 27)",
+    "--via-sidebar-line": "oklch(34% 0.04 253)",
+    "--via-green": "oklch(59% 0.13 146)",
+    "--via-surface-3": "oklch(94.5% 0.014 253)",
+    "--via-surface": "oklch(99% 0.004 253)",
+    "--via-subtle": "oklch(66% 0.018 253)"
+  },
+  "links": [
+    {
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "text": "Operação ao vivo146",
+      "href": "/operacao/ao-vivo"
+    },
+    {
+      "text": "Pedidos",
+      "href": "/pedidos"
+    },
+    {
+      "text": "Lotes",
+      "href": "/operacao/lotes"
+    },
+    {
+      "text": "Expedição",
+      "href": "/operacao/expedicao"
+    },
+    {
+      "text": "Roteirização",
+      "href": "/operacao/roteirizacao"
+    },
+    {
+      "text": "Rotas",
+      "href": "/operacao/rotas"
+    },
+    {
+      "text": "Check In",
+      "href": "/loja/check-in"
+    },
+    {
+      "text": "Tratativas",
+      "href": "/operacao/tratativas"
+    },
+    {
+      "text": "Ocorrências NG",
+      "href": "/operacao/ocorrencias-ng"
+    },
+    {
+      "text": "Disparo Chatbot",
+      "href": "/operacao/disparo-chatbot"
+    },
+    {
+      "text": "Auditoria geográfica",
+      "href": "/operacao/geo-audit"
+    },
+    {
+      "text": "Dashboard Reversa",
+      "href": "/operacao/dashboard-reversa"
+    },
+    {
+      "text": "Calendário",
+      "href": "/calendario"
+    },
+    {
+      "text": "A receber",
+      "href": "/faturas/a-receber"
+    },
+    {
+      "text": "A pagar",
+      "href": "/faturas/a-pagar"
+    },
+    {
+      "text": "Pontos de apoio",
+      "href": "/pontos-de-apoio"
+    },
+    {
+      "text": "Transportadores",
+      "href": "/transportadores"
+    },
+    {
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "text": "Faturas",
+      "href": "/faturas"
+    },
+    {
+      "text": "",
+      "href": "/faturas/a-receber"
+    }
+  ],
+  "buttons": [
+    {
+      "text": "Dashboards",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "SLA",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Resumos",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Faturas",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Devoluções",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Cadastros",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Configurações",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Central de ajuda",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "",
+      "disabled": false,
+      "aria": "Notificações"
+    },
+    {
+      "text": "Editar observação",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Excluir",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Dados",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Pedidos",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Documentos fiscais",
+      "disabled": false,
+      "aria": null
+    }
+  ],
+  "components": [
+    "bg-via-page",
+    "border-0",
+    "bg-via-surface",
+    "bg-via-sidebar",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "i-lucide:chart-column-increasing",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "i-lucide:chart-no-axes-combined",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-t",
+    "border-via-sidebar-line",
+    "border-0",
+    "bg-via-surface",
+    "h-(--app-topbar-height)",
+    "border-b",
+    "border-via-line",
+    "bg-via-surface",
+    "text-via-muted",
+    "hover:text-via-blue-strong",
+    "hover:decoration-[color-mix(in_srgb,var(--via-blue-strong)_45%,transparent)]",
+    "text-via-muted",
+    "hover:text-via-blue-strong",
+    "hover:decoration-[color-mix(in_srgb,var(--via-blue-strong)_45%,transparent)]",
+    "text-via-muted",
+    "text-via-ink",
+    "[&_input]:border-via-line-strong",
+    "[&_input]:bg-via-surface-2",
+    "border-0",
+    "bg-via-blue-soft",
+    "text-via-blue-strong",
+    "h-[calc(100%-var(--app-topbar-height))]",
+    "bg-via-surface",
+    "border-b",
+    "border-via-line",
+    "bg-via-surface",
+    "px-app-gutter",
+    "[&_.app-button]:min-h-[30px]",
+    "[&_.app-button]:px-2",
+    "app-button",
+    "rounded-via-control",
+    "transition-[background-color,border-color,color,transform]",
+    "app-button--ghost",
+    "via-page-title",
+    "text-via-muted",
+    "text-via-ink",
+    "app-button",
+    "rounded-via-control",
+    "transition-[background-color,border-color,color,transform]",
+    "app-button--secondary",
+    "app-button",
+    "rounded-via-control",
+    "transition-[background-color,border-color,color,transform]",
+    "app-button--secondary",
+    "metrics-strip",
+    "border-b",
+    "border-via-line",
+    "bg-via-surface",
+    "border-r",
+    "border-via-line",
+    "text-via-subtle",
+    "text-via-ink",
+    "text-via-muted",
+    "border-r",
+    "border-via-line",
+    "text-via-subtle",
+    "text-via-ink",
+    "text-via-muted",
+    "border-r-0",
+    "border-r",
+    "border-via-line",
+    "text-via-subtle",
+    "text-via-green",
+    "text-via-ink",
+    "text-via-muted",
+    "border-b",
+    "border-via-line",
+    "border-via-blue",
+    "text-via-ink",
+    "border-0",
+    "border-b-2",
+    "border-transparent",
+    "text-via-muted",
+    "transition-[color,border-color]",
+    "border-0",
+    "border-b-2",
+    "border-transparent",
+    "text-via-muted",
+    "transition-[color,border-color]",
+    "border-0",
+    "border-b-2",
+    "border-transparent",
+    "text-via-muted",
+    "transition-[color,border-color]",
+    "border-b",
+    "border-via-line",
+    "bg-via-surface",
+    "text-via-muted",
+    "text-via-ink",
+    "text-via-muted",
+    "text-via-ink",
+    "text-via-muted",
+    "text-via-ink",
+    "text-via-muted",
+    "text-via-ink",
+    "text-via-muted",
+    "text-via-ink",
+    "text-via-muted",
+    "text-via-ink",
+    "top-[calc(var(--app-topbar-height)+16px)]"
+  ],
+  "requestLog": [],
+  "consoleLog": [],
+  "pageErrors": []
+}

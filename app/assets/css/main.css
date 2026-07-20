@@ -1,0 +1,377 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: "Segoe UI", Roboto, Arial, sans-serif;
+
+  --color-via-blue-50: oklch(97% 0.018 254);
+  --color-via-blue-100: oklch(95% 0.035 254);
+  --color-via-blue-200: oklch(89% 0.07 254);
+  --color-via-blue-300: oklch(80% 0.12 254);
+  --color-via-blue-400: oklch(70% 0.16 254);
+  --color-via-blue-500: oklch(62% 0.19 254);
+  --color-via-blue-600: oklch(53% 0.2 254);
+  --color-via-blue-700: oklch(45% 0.18 254);
+  --color-via-blue-800: oklch(37% 0.14 254);
+  --color-via-blue-900: oklch(30% 0.09 254);
+  --color-via-blue-950: oklch(23% 0.06 254);
+
+  --color-via-neutral-50: oklch(99% 0.004 253);
+  --color-via-neutral-100: oklch(97.5% 0.008 253);
+  --color-via-neutral-200: oklch(94.5% 0.014 253);
+  --color-via-neutral-300: oklch(88% 0.012 253);
+  --color-via-neutral-400: oklch(82% 0.018 253);
+  --color-via-neutral-500: oklch(66% 0.018 253);
+  --color-via-neutral-600: oklch(51% 0.022 253);
+  --color-via-neutral-700: oklch(39% 0.024 253);
+  --color-via-neutral-800: oklch(30% 0.025 253);
+  --color-via-neutral-900: oklch(25% 0.025 253);
+  --color-via-neutral-950: oklch(20% 0.024 253);
+
+  --color-via-green-50: oklch(97% 0.025 146);
+  --color-via-green-100: oklch(93% 0.05 146);
+  --color-via-green-200: oklch(86% 0.09 146);
+  --color-via-green-300: oklch(77% 0.12 146);
+  --color-via-green-400: oklch(67% 0.14 146);
+  --color-via-green-500: oklch(59% 0.13 146);
+  --color-via-green-600: oklch(50% 0.12 146);
+  --color-via-green-700: oklch(42% 0.1 146);
+  --color-via-green-800: oklch(34% 0.08 146);
+  --color-via-green-900: oklch(28% 0.06 146);
+  --color-via-green-950: oklch(21% 0.045 146);
+
+  --color-via-amber-50: oklch(98% 0.025 73);
+  --color-via-amber-100: oklch(95% 0.055 73);
+  --color-via-amber-200: oklch(89% 0.1 73);
+  --color-via-amber-300: oklch(81% 0.14 73);
+  --color-via-amber-400: oklch(74% 0.15 73);
+  --color-via-amber-500: oklch(68% 0.14 73);
+  --color-via-amber-600: oklch(58% 0.13 73);
+  --color-via-amber-700: oklch(48% 0.11 73);
+  --color-via-amber-800: oklch(39% 0.09 73);
+  --color-via-amber-900: oklch(32% 0.07 73);
+  --color-via-amber-950: oklch(23% 0.05 73);
+
+  --color-via-red-50: oklch(97% 0.02 27);
+  --color-via-red-100: oklch(93% 0.045 27);
+  --color-via-red-200: oklch(86% 0.085 27);
+  --color-via-red-300: oklch(77% 0.13 27);
+  --color-via-red-400: oklch(68% 0.17 27);
+  --color-via-red-500: oklch(59% 0.19 27);
+  --color-via-red-600: oklch(51% 0.18 27);
+  --color-via-red-700: oklch(43% 0.16 27);
+  --color-via-red-800: oklch(35% 0.13 27);
+  --color-via-red-900: oklch(29% 0.1 27);
+  --color-via-red-950: oklch(21% 0.07 27);
+
+  --color-via-violet-50: oklch(97% 0.018 292);
+  --color-via-violet-100: oklch(93% 0.04 292);
+  --color-via-violet-200: oklch(86% 0.075 292);
+  --color-via-violet-300: oklch(77% 0.105 292);
+  --color-via-violet-400: oklch(67% 0.13 292);
+  --color-via-violet-500: oklch(58% 0.14 292);
+  --color-via-violet-600: oklch(50% 0.135 292);
+  --color-via-violet-700: oklch(42% 0.12 292);
+  --color-via-violet-800: oklch(35% 0.1 292);
+  --color-via-violet-900: oklch(29% 0.08 292);
+  --color-via-violet-950: oklch(21% 0.055 292);
+
+  --color-via-cyan-50: oklch(97% 0.018 219);
+  --color-via-cyan-100: oklch(94% 0.04 219);
+  --color-via-cyan-200: oklch(88% 0.07 219);
+  --color-via-cyan-300: oklch(81% 0.1 219);
+  --color-via-cyan-400: oklch(75% 0.12 219);
+  --color-via-cyan-500: oklch(69% 0.13 219);
+  --color-via-cyan-600: oklch(58% 0.12 219);
+  --color-via-cyan-700: oklch(48% 0.1 219);
+  --color-via-cyan-800: oklch(39% 0.08 219);
+  --color-via-cyan-900: oklch(32% 0.06 219);
+  --color-via-cyan-950: oklch(23% 0.045 219);
+
+  --text-via-page: 1.25rem;
+  --text-via-page--line-height: 1.2;
+  --text-via-metric: 1.4375rem;
+  --text-via-metric--line-height: 1.1;
+  --text-via-section: 0.9375rem;
+  --text-via-section--line-height: 1.3;
+  --text-via-body: 0.8125rem;
+  --text-via-body--line-height: 1.38;
+  --text-via-label: 0.75rem;
+  --text-via-label--line-height: 1.35;
+  --text-via-helper: 0.6875rem;
+  --text-via-helper--line-height: 1.4;
+  --text-via-table-head: 0.625rem;
+  --text-via-table-head--line-height: 1.3;
+
+  /* Semânticos Via — utilitários Tailwind (text-via-ink, bg-via-surface, border-via-line…) */
+  --color-via-ink: oklch(25% 0.025 253);
+  --color-via-muted: oklch(51% 0.022 253);
+  --color-via-subtle: oklch(66% 0.018 253);
+  --color-via-line: oklch(88% 0.012 253);
+  --color-via-line-strong: oklch(82% 0.018 253);
+  --color-via-surface: oklch(99% 0.004 253);
+  --color-via-surface-2: oklch(97.5% 0.008 253);
+  --color-via-surface-3: oklch(94.5% 0.014 253);
+  --color-via-page: oklch(91.5% 0.014 253);
+  --color-via-sidebar: oklch(25% 0.04 253);
+  --color-via-sidebar-line: oklch(34% 0.04 253);
+  --color-via-blue: oklch(62% 0.19 254);
+  --color-via-blue-strong: oklch(53% 0.2 254);
+  --color-via-blue-soft: oklch(95% 0.035 254);
+  --color-via-green: oklch(59% 0.13 146);
+  --color-via-amber: oklch(68% 0.14 73);
+  --color-via-red: oklch(59% 0.19 27);
+  --color-via-violet: oklch(58% 0.14 292);
+  --color-via-cyan: oklch(69% 0.13 219);
+
+  --spacing-app-gutter: 20px;
+  --spacing-app-sidebar: 228px;
+  --spacing-app-topbar: 58px;
+  --radius-via-data: 0px;
+  --radius-via-track: 2px;
+  --radius-via-compact: 5px;
+  --radius-via-control: 6px;
+  --radius-via-switcher: 7px;
+  --radius-via-shell: 9px;
+  --shadow-via-shell: 0 1px 2px oklch(20% 0.02 253 / 0.08), 0 10px 32px oklch(20% 0.02 253 / 0.08);
+  --shadow-via-overlay: 0 18px 50px oklch(20% 0.02 253 / 0.18);
+}
+
+:root {
+  color-scheme: light;
+  --ui-radius: 0.375rem;
+  --ui-bg: var(--color-via-neutral-50);
+  --ui-bg-muted: var(--color-via-neutral-100);
+  --ui-bg-elevated: var(--color-via-neutral-50);
+  --ui-bg-accented: var(--color-via-neutral-200);
+  --ui-bg-inverted: var(--color-via-neutral-900);
+  --ui-text: var(--color-via-neutral-900);
+  --ui-text-dimmed: var(--color-via-neutral-500);
+  --ui-text-muted: var(--color-via-neutral-600);
+  --ui-text-toned: var(--color-via-neutral-700);
+  --ui-text-highlighted: var(--color-via-neutral-950);
+  --ui-text-inverted: var(--color-via-neutral-50);
+  --ui-border: var(--color-via-neutral-300);
+  --ui-border-muted: var(--color-via-neutral-300);
+  --ui-border-accented: var(--color-via-neutral-400);
+  --ui-primary: var(--color-via-blue-500);
+  --ui-success: var(--color-via-green-500);
+  --ui-info: var(--color-via-cyan-500);
+  --ui-warning: var(--color-via-amber-500);
+  --ui-error: var(--color-via-red-500);
+
+  --via-ink: var(--color-via-ink);
+  --via-muted: var(--color-via-muted);
+  --via-subtle: var(--color-via-subtle);
+  --via-line: var(--color-via-line);
+  --via-line-strong: var(--color-via-line-strong);
+  --via-surface: var(--color-via-surface);
+  --via-surface-2: var(--color-via-surface-2);
+  --via-surface-3: var(--color-via-surface-3);
+  --via-page: var(--color-via-page);
+  --via-sidebar: var(--color-via-sidebar);
+  --via-sidebar-line: var(--color-via-sidebar-line);
+  --via-blue: var(--color-via-blue);
+  --via-blue-strong: var(--color-via-blue-strong);
+  --via-blue-soft: var(--color-via-blue-soft);
+  --via-green: var(--color-via-green);
+  --via-amber: var(--color-via-amber);
+  --via-red: var(--color-via-red);
+  --via-violet: var(--color-via-violet);
+  --via-cyan: var(--color-via-cyan);
+
+  --radius-data: 0px;
+  --radius-track: 2px;
+  --radius-compact: 5px;
+  --radius-control: 6px;
+  --radius-switcher: 7px;
+  --radius-shell: 9px;
+  --shadow-shell: 0 1px 2px oklch(20% 0.02 253 / 0.08), 0 10px 32px oklch(20% 0.02 253 / 0.08);
+  --shadow-overlay: 0 18px 50px oklch(20% 0.02 253 / 0.18);
+  --app-sidebar-width: 228px;
+  --app-topbar-height: 58px;
+  --app-page-gutter: 20px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#__nuxt {
+  min-width: 1180px;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--via-page);
+  background-color: #e6ecf3;
+  color: var(--via-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-via-body);
+  line-height: 1.38;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a,
+input,
+select,
+textarea,
+[tabindex]:not([tabindex="-1"]) {
+  outline: none;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  box-shadow: 0 0 0 2px var(--via-surface), 0 0 0 4px var(--via-blue);
+}
+
+::selection {
+  background: var(--via-blue-soft);
+  color: var(--via-ink);
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tipografia via — classes utilitárias reutilizadas no markup */
+.via-page-title {
+  margin: 0;
+  font-size: var(--text-via-page);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: var(--text-via-page--line-height);
+}
+
+.via-section-title {
+  margin: 0;
+  font-size: var(--text-via-section);
+  font-weight: 700;
+  line-height: var(--text-via-section--line-height);
+}
+
+.via-helper {
+  color: var(--via-muted);
+  font-size: var(--text-via-helper);
+  line-height: var(--text-via-helper--line-height);
+}
+
+/* Transições de rota (Vue transition name) */
+.via-page-enter-active,
+.via-page-leave-active {
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.via-page-enter-from {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.via-page-leave-to {
+  opacity: 0;
+  transform: translateY(-2px);
+}
+
+/* Transições de toast (TransitionGroup) */
+.via-toast-enter-active,
+.via-toast-leave-active,
+.via-toast-move {
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.via-toast-enter-from {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.via-toast-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+/* Transições de step do wizard de pedido */
+.via-step-forward-enter-active,
+.via-step-forward-leave-active,
+.via-step-back-enter-active,
+.via-step-back-leave-active {
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.via-step-forward-enter-from {
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.via-step-forward-leave-to {
+  opacity: 0;
+  transform: translateX(-8px);
+}
+
+.via-step-back-enter-from {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.via-step-back-leave-to {
+  opacity: 0;
+  transform: translateX(8px);
+}
+
+/* Hover suave compartilhado para linhas de tabela */
+table tbody tr {
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+table tbody tr:hover,
+table tbody tr:focus-visible {
+  background-color: color-mix(in oklch, var(--via-blue-soft) 55%, var(--via-surface));
+  box-shadow: inset 2px 0 0 color-mix(in oklch, var(--via-blue) 40%, transparent);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 1380px) {
+  :root {
+    --app-page-gutter: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

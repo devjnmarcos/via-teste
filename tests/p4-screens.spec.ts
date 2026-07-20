@@ -1,0 +1,132 @@
+import { describe, expect, it } from 'vitest'
+import { navigationItems, secondaryNavigation } from '../app/components/app/navigation'
+import {
+  approveCadastroSolicitacao,
+  buildCadastroOnda3Metrics,
+  getCadastroOnda3Rows,
+  isCadastroOnda3Kind,
+  rejectCadastroSolicitacao
+} from '../app/data/demo/cadastros-onda3'
+import { cadastroNavItems } from '../app/data/demo/cadastros'
+import {
+  buildGeoAuditMetrics,
+  enqueueFixInvalidAddresses,
+  geoAuditState
+} from '../app/data/demo/geo-audit'
+import {
+  buildPontosApoioMetrics,
+  buildTransportadoresMetrics,
+  pontosApoioRows,
+  transportadoresRows
+} from '../app/data/demo/gestao-rede'
+import { resolveBreadcrumbs } from '../app/utils/breadcrumbs'
+import { existsSync, readFileSync } from 'node:fs'
+
+describe('navegação P4 / gap fechado', () => {
+  it('inclui Auditoria geográfica na operação', () => {
+    expect(navigationItems.some((item) => item.to === '/operacao/geo-audit')).toBe(true)
+  })
+
+  it('materializa Pontos de apoio e Transportadores com rotas', () => {
+    expect(secondaryNavigation.map((item) => item.to)).toEqual([
+      '/pontos-de-apoio',
+      '/transportadores'
+    ])
+  })
+
+  it('marca todos os 12 cadastros como ready', () => {
+    expect(cadastroNavItems.every((item) => item.ready)).toBe(true)
+  })
+})
+
+describe('cadastros onda 3', () => {
+  it('expõe fixtures e métricas para os 10 kinds', () => {
+    const kinds = cadastroNavItems
+      .map((item) => item.kind)
+      .filter(isCadastroOnda3Kind)
+
+    expect(kinds).toHaveLength(10)
+    for (const kind of kinds) {
+      const rows = getCadastroOnda3Rows(kind)
+      expect(rows.length).toBeGreaterThan(0)
+      expect(buildCadastroOnda3Metrics(rows, kind).length).toBeGreaterThanOrEqual(3)
+    }
+  })
+
+  it('aprova e recusa solicitações PA', () => {
+    const pending = getCadastroOnda3Rows('aprovacoes-pas').find((row) => row.queueStatus === 'pendente')
+    expect(pending).toBeTruthy()
+    expect(approveCadastroSolicitacao('aprovacoes-pas', pending!.id)).toBe(true)
+    const another = getCadastroOnda3Rows('aprovacoes-pas').find((row) => row.queueStatus === 'pendente')
+    expect(another).toBeTruthy()
+    expect(rejectCadastroSolicitacao('aprovacoes-pas', another!.id)).toBe(true)
+  })
+})
+
+describe('geo-audit e gestão de rede', () => {
+  it('calcula métricas e corrige inválidos', () => {
+    expect(buildGeoAuditMetrics(geoAuditState.rows)).toHaveLength(3)
+    const before = geoAuditState.rows.filter((row) => row.status !== 'corrigido').length
+    const result = enqueueFixInvalidAddresses()
+    expect(result.queued).toBe(before)
+    expect(geoAuditState.rows.every((row) => row.status === 'corrigido')).toBe(true)
+  })
+
+  it('calcula métricas de PA e transportadores', () => {
+    expect(buildPontosApoioMetrics(pontosApoioRows)[0]?.label).toBe('Pontos')
+    expect(buildTransportadoresMetrics(transportadoresRows)[0]?.label).toBe('Transportadores')
+  })
+})
+
+describe('breadcrumbs P4', () => {
+  it('resolve geo-audit, gestão e complementos de pedido', () => {
+    expect(resolveBreadcrumbs('/operacao/geo-audit')).toEqual([
+      { label: 'Home', to: '/' },
+      { label: 'Auditoria geográfica' }
+    ])
+    expect(resolveBreadcrumbs('/pontos-de-apoio')).toEqual([
+      { label: 'Home', to: '/' },
+      { label: 'Pontos de apoio' }
+    ])
+    expect(resolveBreadcrumbs('/transportadores')).toEqual([
+      { label: 'Home', to: '/' },
+      { label: 'Transportadores' }
+    ])
+    expect(resolveBreadcrumbs('/pedidos/novo-proprio')).toEqual([
+      { label: 'Home', to: '/' },
+      { label: 'Pedidos', to: '/pedidos' },
+      { label: 'Pedido próprio' }
+    ])
+    expect(resolveBreadcrumbs('/pedidos/48224/editar', { id: '48224' })).toEqual([
+      { label: 'Home', to: '/' },
+      { label: 'Pedidos', to: '/pedidos' },
+      { label: '#48224', to: '/pedidos/48224' },
+      { label: 'Editar' }
+    ])
+    expect(resolveBreadcrumbs('/pedidos/48224/checkout', { id: '48224' })).toEqual([
+      { label: 'Home', to: '/' },
+      { label: 'Pedidos', to: '/pedidos' },
+      { label: '#48224', to: '/pedidos/48224' },
+      { label: 'Checkout' }
+    ])
+  })
+})
+
+describe('rotas P4 materializadas', () => {
+  const files = [
+    ['app/pages/operacao/geo-audit.vue', 'MetricsStrip'],
+    ['app/pages/operacao/geo-audit.vue', 'VolumeTrendChart'],
+    ['app/pages/pontos-de-apoio/index.vue', 'DataTable'],
+    ['app/pages/transportadores/index.vue', 'AppModal'],
+    ['app/pages/pedidos/[id]/editar.vue', 'OrderEditForm'],
+    ['app/pages/pedidos/[id]/checkout.vue', 'AppFormField'],
+    ['app/pages/pedidos/novo-proprio.vue', 'OrderCreateWizard'],
+    ['app/pages/cadastros/[kind]/index.vue', 'CadastroOnda3Page'],
+    ['app/components/cadastros/CadastroOnda3Page.vue', 'Pagination']
+  ] as const
+
+  it.each(files)('materializa %s com %s', (path, token) => {
+    expect(existsSync(path)).toBe(true)
+    expect(readFileSync(path, 'utf8')).toContain(token)
+  })
+})

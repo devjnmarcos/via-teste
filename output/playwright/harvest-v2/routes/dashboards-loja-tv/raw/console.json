@@ -1,0 +1,6 @@
+[
+  {
+    "type": "warning",
+    "text": "%cssr:warn%c [nuxt] `setPageLayout` should not be called to change the layout on the server within a component as this will cause hydration errors. \n      background: #f39c12;\n      border-radius: 0.5em;\n      color: white;\n      font-weight: bold;\n      padding: 2px 0.5em;\n      \n  at setPageLayout (D:\\DEVJUANMARCOS\\PROJETOS\\KEENER\\VIA REVERSA\\V2\\ViaReversaV2_Front\\node_modules\\nuxt\\dist\\app\\composables\\router.js)\n  at D:\\DEVJUANMARCOS\\PROJETOS\\KEENER\\VIA REVERSA\\V2\\ViaReversaV2_Front\\app\\pages\\dashboards\\loja-tv.vue\n  at callWithErrorHandling (D:\\DEVJUANMARCOS\\PROJETOS\\KEENER\\VIA REVERSA\\V2\\ViaReversaV2_Front\\node_modules\\@vue\\runtime-core\\dist\\runtime-core.cjs.js)\n"
+  }
+]

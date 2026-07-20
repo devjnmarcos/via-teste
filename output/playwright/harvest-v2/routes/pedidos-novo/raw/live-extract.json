@@ -1,0 +1,404 @@
+{
+  "url": "http://127.0.0.1:52368/pedidos/novo",
+  "title": "Novo pedido · Via Reversa",
+  "htmlClass": "",
+  "bodyClass": "",
+  "scroll": {
+    "width": 1366,
+    "height": 768
+  },
+  "landmarks": [
+    {
+      "selector": "aside",
+      "tag": "aside",
+      "classes": "flex min-h-0 w-full min-w-0 flex-col overflow-hidden bg-via-sidebar px-3 pt-[22px] pb-3.5 text-[oklch(90%_0.02_253)]",
+      "text": "Via ReversaOperação logísticaOperaçãoHomeOperação ao vivo146PedidosLotesExpediçãoRoteirizaçãoRotasCheck InTratativasOcorrências NGDisparo ChatbotAuditoria geográficaDashboard ReversaCalendárioGestãoDa",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 228,
+        "height": 768
+      },
+      "styles": {
+        "display": "flex",
+        "color": "oklch(0.9 0.02 253)",
+        "backgroundColor": "oklch(0.25 0.04 253)",
+        "fontFamily": "\"Segoe UI\", Roboto, Arial, sans-serif",
+        "fontSize": "13px",
+        "lineHeight": "17.94px",
+        "borderRadius": "0px",
+        "boxShadow": "none"
+      }
+    },
+    {
+      "selector": "header",
+      "tag": "header",
+      "classes": "flex h-(--app-topbar-height) items-center justify-between border-b border-via-line bg-via-surface px-5",
+      "text": "HomePedidosNovo pedidoAD",
+      "box": {
+        "x": 228,
+        "y": 0,
+        "width": 1138,
+        "height": 58
+      },
+      "styles": {
+        "display": "flex",
+        "color": "oklch(0.25 0.025 253)",
+        "backgroundColor": "oklch(0.99 0.004 253)",
+        "fontFamily": "\"Segoe UI\", Roboto, Arial, sans-serif",
+        "fontSize": "13px",
+        "lineHeight": "17.94px",
+        "borderRadius": "0px",
+        "boxShadow": "none"
+      }
+    },
+    {
+      "selector": "main",
+      "tag": "main",
+      "classes": "h-[calc(100%-var(--app-topbar-height))] overflow-auto bg-via-surface bg-[#fbfdff]",
+      "text": "Criação de pedidoOrigem, destino e itens em etapas — espelhando o fluxo legadoCancelar1OperaçãoTipo de pedido e cliente2OrigemContato e endereço de coleta/saída3DestinoContato e endereço de entrega4It",
+      "box": {
+        "x": 228,
+        "y": 58,
+        "width": 1138,
+        "height": 710
+      },
+      "styles": {
+        "display": "block",
+        "color": "oklch(0.25 0.025 253)",
+        "backgroundColor": "oklch(0.99 0.004 253)",
+        "fontFamily": "\"Segoe UI\", Roboto, Arial, sans-serif",
+        "fontSize": "13px",
+        "lineHeight": "17.94px",
+        "borderRadius": "0px",
+        "boxShadow": "none"
+      }
+    },
+    {
+      "selector": "nav",
+      "tag": "nav",
+      "classes": "min-h-0 overflow-auto [scrollbar-width:none]",
+      "text": "OperaçãoHomeOperação ao vivo146PedidosLotesExpediçãoRoteirizaçãoRotasCheck InTratativasOcorrências NGDisparo ChatbotAuditoria geográficaDashboard ReversaCalendárioGestãoDashboardsSLAResumosFaturasDevo",
+      "box": {
+        "x": 12,
+        "y": 77.109375,
+        "width": 204,
+        "height": 624.890625
+      },
+      "styles": {
+        "display": "block",
+        "color": "oklch(0.9 0.02 253)",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "fontFamily": "\"Segoe UI\", Roboto, Arial, sans-serif",
+        "fontSize": "13px",
+        "lineHeight": "17.94px",
+        "borderRadius": "0px",
+        "boxShadow": "none"
+      }
+    }
+  ],
+  "variables": {
+    "--via-ink": "oklch(25% 0.025 253)",
+    "--via-blue-strong": "oklch(53% 0.2 254)",
+    "--via-blue-soft": "oklch(95% 0.035 254)",
+    "--via-blue": "oklch(62% 0.19 254)",
+    "--via-cyan": "oklch(69% 0.13 219)",
+    "--via-sidebar": "oklch(25% 0.04 253)",
+    "--via-violet": "oklch(58% 0.14 292)",
+    "--via-line-strong": "oklch(82% 0.018 253)",
+    "--via-surface-2": "oklch(97.5% 0.008 253)",
+    "--via-muted": "oklch(51% 0.022 253)",
+    "--via-line": "oklch(88% 0.012 253)",
+    "--via-page": "oklch(91.5% 0.014 253)",
+    "--via-amber": "oklch(68% 0.14 73)",
+    "--via-red": "oklch(59% 0.19 27)",
+    "--via-sidebar-line": "oklch(34% 0.04 253)",
+    "--via-green": "oklch(59% 0.13 146)",
+    "--via-surface-3": "oklch(94.5% 0.014 253)",
+    "--via-surface": "oklch(99% 0.004 253)",
+    "--via-subtle": "oklch(66% 0.018 253)"
+  },
+  "links": [
+    {
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "text": "Operação ao vivo146",
+      "href": "/operacao/ao-vivo"
+    },
+    {
+      "text": "Pedidos",
+      "href": "/pedidos"
+    },
+    {
+      "text": "Lotes",
+      "href": "/operacao/lotes"
+    },
+    {
+      "text": "Expedição",
+      "href": "/operacao/expedicao"
+    },
+    {
+      "text": "Roteirização",
+      "href": "/operacao/roteirizacao"
+    },
+    {
+      "text": "Rotas",
+      "href": "/operacao/rotas"
+    },
+    {
+      "text": "Check In",
+      "href": "/loja/check-in"
+    },
+    {
+      "text": "Tratativas",
+      "href": "/operacao/tratativas"
+    },
+    {
+      "text": "Ocorrências NG",
+      "href": "/operacao/ocorrencias-ng"
+    },
+    {
+      "text": "Disparo Chatbot",
+      "href": "/operacao/disparo-chatbot"
+    },
+    {
+      "text": "Auditoria geográfica",
+      "href": "/operacao/geo-audit"
+    },
+    {
+      "text": "Dashboard Reversa",
+      "href": "/operacao/dashboard-reversa"
+    },
+    {
+      "text": "Calendário",
+      "href": "/calendario"
+    },
+    {
+      "text": "Pontos de apoio",
+      "href": "/pontos-de-apoio"
+    },
+    {
+      "text": "Transportadores",
+      "href": "/transportadores"
+    },
+    {
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "text": "Pedidos",
+      "href": "/pedidos"
+    },
+    {
+      "text": "",
+      "href": "/pedidos"
+    },
+    {
+      "text": "Cancelar",
+      "href": "/pedidos"
+    }
+  ],
+  "buttons": [
+    {
+      "text": "Dashboards",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "SLA",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Resumos",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Faturas",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Devoluções",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Cadastros",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Configurações",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "Central de ajuda",
+      "disabled": false,
+      "aria": null
+    },
+    {
+      "text": "",
+      "disabled": false,
+      "aria": "Notificações"
+    },
+    {
+      "text": "Entrega",
+      "disabled": false,
+      "aria": "Show popup"
+    },
+    {
+      "text": "Selecione o cliente...",
+      "disabled": false,
+      "aria": "Show popup"
+    },
+    {
+      "text": "Próximo",
+      "disabled": false,
+      "aria": null
+    }
+  ],
+  "components": [
+    "bg-via-page",
+    "border-0",
+    "bg-via-surface",
+    "bg-via-sidebar",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "i-lucide:chart-column-increasing",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "i-lucide:chart-no-axes-combined",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-0",
+    "border-t",
+    "border-via-sidebar-line",
+    "border-0",
+    "bg-via-surface",
+    "h-(--app-topbar-height)",
+    "border-b",
+    "border-via-line",
+    "bg-via-surface",
+    "text-via-muted",
+    "hover:text-via-blue-strong",
+    "hover:decoration-[color-mix(in_srgb,var(--via-blue-strong)_45%,transparent)]",
+    "text-via-muted",
+    "hover:text-via-blue-strong",
+    "hover:decoration-[color-mix(in_srgb,var(--via-blue-strong)_45%,transparent)]",
+    "text-via-muted",
+    "text-via-ink",
+    "[&_input]:border-via-line-strong",
+    "[&_input]:bg-via-surface-2",
+    "border-0",
+    "bg-via-blue-soft",
+    "text-via-blue-strong",
+    "h-[calc(100%-var(--app-topbar-height))]",
+    "bg-via-surface",
+    "order-create-page",
+    "border-b",
+    "border-via-line",
+    "bg-via-surface",
+    "px-app-gutter",
+    "[&_.app-button]:min-h-[30px]",
+    "[&_.app-button]:px-2",
+    "app-button",
+    "rounded-via-control",
+    "transition-[background-color,border-color,color,transform]",
+    "app-button--ghost",
+    "via-page-title",
+    "text-via-muted",
+    "app-button",
+    "rounded-via-control",
+    "transition-[background-color,border-color,color,transform]",
+    "app-button--ghost",
+    "border-b",
+    "border-via-line",
+    "bg-via-surface",
+    "bg-[color-mix(in_oklab,var(--via-blue-soft)_55%,var(--via-surface))]",
+    "text-via-ink",
+    "shadow-[inset_0_-2px_0_var(--via-blue)]",
+    "border-r",
+    "border-via-line",
+    "text-via-muted",
+    "last:border-r-0",
+    "border-via-blue",
+    "bg-via-blue",
+    "text-via-surface",
+    "border",
+    "border-via-line-strong",
+    "bg-via-surface",
+    "text-via-subtle",
+    "border-r",
+    "border-via-line",
+    "text-via-muted",
+    "last:border-r-0",
+    "border",
+    "border-via-line-strong",
+    "bg-via-surface",
+    "text-via-subtle",
+    "border-r",
+    "border-via-line",
+    "text-via-muted",
+    "last:border-r-0",
+    "border",
+    "border-via-line-strong",
+    "bg-via-surface",
+    "text-via-subtle",
+    "border-r",
+    "border-via-line",
+    "text-via-muted",
+    "last:border-r-0",
+    "border",
+    "border-via-line-strong",
+    "bg-via-surface",
+    "text-via-subtle",
+    "border-r",
+    "border-via-line",
+    "text-via-muted",
+    "last:border-r-0",
+    "border",
+    "border-via-line-strong",
+    "bg-via-surface",
+    "text-via-subtle",
+    "px-app-gutter",
+    "order-wizard__panel",
+    "[&>span]:text-via-muted",
+    "[&_abbr]:text-via-red",
+    "[&>span]:text-via-muted",
+    "[&_abbr]:text-via-red",
+    "border-t",
+    "border-via-line",
+    "bg-via-surface",
+    "px-app-gutter",
+    "app-button",
+    "rounded-via-control",
+    "transition-[background-color,border-color,color,transform]",
+    "app-button--primary",
+    "text-via-surface",
+    "top-[calc(var(--app-topbar-height)+16px)]"
+  ],
+  "requestLog": [],
+  "consoleLog": [],
+  "pageErrors": []
+}

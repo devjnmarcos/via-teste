@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Via Reversa · suíte operacional navegável</title>
+</head>
+<body>
+  <script>
+    window.__suiteV12 = 'suite-v12-applied';
+
+    fetch('/files/home-operational-index-v10.html')
+      .then(response => response.text())
+      .then(source => {
+        const switcher = `<nav class="screen-switcher" aria-label="Telas da proposta">
+          <button id="switch-home" class="active" type="button" onclick="showView('home')">01 · Home</button>
+          <button id="switch-detail" type="button" onclick="showView('detail')">02 · Operação</button>
+          <button id="switch-live" type="button" onclick="showView('live')">03 · Ao vivo</button>
+          <button id="switch-orders" type="button" onclick="showView('orders')">04 · Pedidos</button>
+          <button id="switch-order" type="button" onclick="showView('order')">05 · Pedido #48224</button>
+        </nav>`;
+
+        const suiteStyles = `<style id="suite-v12-styles">
+          .proposal-bar { display: none !important; }
+          .app-shell { grid-template-columns: 237px minmax(0, 1fr); height: 100vh; margin: 0; border: 0; border-radius: 0; box-shadow: none; }
+          .view { height: calc(100% - 58px); }
+          .proposal-bar { min-height: 58px; height: auto; gap: 18px; }
+          .screen-switcher { flex-wrap: wrap; justify-content: flex-end; }
+          .screen-switcher button { white-space: nowrap; }
+          .op-note { display: block; }
+          .stage { min-width: 0; min-height: 78px; }
+          .stage-name { min-height: 34px; align-items: flex-start; line-height: 1.25; }
+          .stage-progress { bottom: 0; }
+          .legend, .flow-label, .section-meta, .op-note, .metric-note,
+          .page-subtitle, .sync, .tail-note, .panel-sub, .flow-context,
+          .client-table td, .stage-name, .stage-share, .status-line { font-size: 11px; }
+          .board-header, .client-table th, .detail-metrics .metric-label { font-size: 10px; }
+
+          .suite-screen .page-head { min-height: 72px; }
+          .suite-screen .metrics-strip { min-height: 76px; }
+          .suite-screen .metric { grid-template-columns: 28px minmax(0, 1fr); }
+          .suite-screen .metric-copy { min-width: 0; }
+          .suite-screen .metric-copy strong { display: block; font-size: 12px; }
+          .suite-screen .metric-copy span { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
+          .suite-screen .metric-compact-value { font-size: 22px; font-weight: 750; letter-spacing: -.035em; }
+          .suite-screen .metric-compact-value.danger { color: var(--red); }
+          .suite-screen .metric-compact-value.warning { color: oklch(55% 0.14 73); }
+          .orders-metrics .metric { grid-template-columns: 28px minmax(0, 1fr); }
+          .orders-metrics .metric::before { display: block; color: var(--subtle); font-size: 15px; line-height: 1; }
+          .orders-metrics .metric:nth-child(1)::before { content: '▤'; }
+          .orders-metrics .metric:nth-child(2)::before { content: '⌁'; color: oklch(55% 0.14 73); }
+          .orders-metrics .metric:nth-child(3)::before { content: '↶'; color: oklch(55% 0.14 73); }
+          .orders-metrics .metric:nth-child(4)::before { content: '△'; color: var(--red); }
+          .status-label { display: inline-flex; align-items: center; gap: 7px; color: var(--ink); font-size: 11px; white-space: normal; }
+          .status-label::before { width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: var(--subtle); content: ''; }
+          .status-label.info::before { background: var(--blue); }
+          .status-label.warning::before { background: var(--amber); }
+          .status-label.danger { color: var(--red); }
+          .status-label.danger::before { background: var(--red); }
+          .status-label.success::before { background: var(--green); }
+          .table-wrap { min-width: 0; overflow: auto; }
+          .suite-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+          .suite-table th { height: 38px; padding: 0 12px; border-bottom: 1px solid var(--line); background: var(--surface-2); color: var(--muted); font-size: 10px; font-weight: 720; letter-spacing: .035em; text-align: left; text-transform: uppercase; }
+          .suite-table td { height: 58px; padding: 8px 12px; border-bottom: 1px solid var(--line); color: var(--ink); font-size: 12px; vertical-align: middle; }
+          .suite-table tbody tr { cursor: pointer; }
+          .suite-table tbody tr:hover { background: var(--blue-soft); }
+          .suite-table small { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; }
+          .suite-table .order-code { color: var(--ink); font-weight: 740; }
+          .suite-table .row-link { color: var(--blue-strong); font-weight: 700; text-align: right; }
+          .suite-table .sla-danger { color: var(--red); font-weight: 720; }
+          .suite-table .sla-warning { color: oklch(54% 0.14 73); font-weight: 720; }
+
+          .live-layout { display: grid; grid-template-columns: minmax(0, 1fr) 310px; min-height: 510px; }
+          .live-main { min-width: 0; border-right: 1px solid var(--line); }
+          .live-toolbar { display: flex; align-items: center; justify-content: space-between; min-height: 61px; padding: 10px 18px; border-bottom: 1px solid var(--line); }
+          .live-toolbar strong { display: block; font-size: 13px; }
+          .live-toolbar span { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
+          .filter-group { display: flex; gap: 6px; }
+          .filter-button { min-height: 32px; padding: 0 10px; border: 1px solid var(--line-strong); border-radius: 5px; background: var(--surface); color: var(--muted); font-size: 11px; }
+          .filter-button.active { border-color: var(--blue); background: var(--blue-soft); color: var(--blue-strong); font-weight: 700; }
+          .live-table { min-width: 730px; }
+          .live-table th:nth-child(1) { width: 78px; }
+          .live-table th:nth-child(3) { width: 112px; }
+          .live-table th:nth-child(4) { width: 102px; }
+          .live-table th:nth-child(6) { width: 90px; }
+          .attention-panel { min-width: 0; }
+          .attention-head { display: flex; align-items: center; justify-content: space-between; min-height: 61px; padding: 10px 17px; border-bottom: 1px solid var(--line); }
+          .attention-head strong { font-size: 13px; }
+          .attention-head b { color: var(--red); font-size: 17px; }
+          .attention-item { width: 100%; min-height: 106px; padding: 14px 17px; border: 0; border-bottom: 1px solid var(--line); background: var(--surface); text-align: left; }
+          .attention-item:hover { background: var(--blue-soft); }
+          .attention-item-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+          .attention-item-top strong { font-size: 12px; }
+          .attention-item p { margin: 8px 0 5px; color: var(--ink); font-size: 11px; line-height: 1.45; }
+          .attention-item small { color: var(--muted); font-size: 10px; }
+
+          .orders-tabs { display: flex; gap: 24px; min-height: 49px; padding: 0 18px; border-bottom: 1px solid var(--line); }
+          .orders-metrics .metric { display: block; padding: 13px 18px; }
+          .orders-metrics .metric-copy { display: block; }
+          .orders-metrics .metric-compact-value { display: block; margin-bottom: 1px; }
+          .orders-tab { display: inline-flex; align-items: center; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--muted); font-size: 12px; }
+          .orders-tab.active { border-color: var(--blue); color: var(--ink); font-weight: 720; }
+          .filters-bar { display: flex; align-items: center; gap: 8px; min-height: 58px; padding: 9px 18px; border-bottom: 1px solid var(--line); }
+          .filter-search { display: flex; align-items: center; width: 265px; height: 36px; padding: 0 11px; border: 1px solid var(--line-strong); border-radius: 5px; background: var(--surface-2); color: var(--muted); font-size: 11px; }
+          .filters-spacer { flex: 1; }
+          .orders-table { min-width: 980px; }
+          .orders-table th:nth-child(1), .orders-table td:nth-child(1) { width: 38px; text-align: center; }
+          .orders-table th:nth-child(2) { width: 78px; }
+          .orders-table th:nth-child(3) { width: 140px; }
+          .orders-table th:nth-child(7) { width: 48px; }
+          .orders-table th:nth-child(8) { width: 95px; }
+          .orders-table th:nth-child(9) { width: 78px; }
+          .orders-table th:nth-child(10) { width: 58px; }
+          .check-box { display: inline-block; width: 14px; height: 14px; border: 1px solid var(--line-strong); border-radius: 3px; }
+
+          .order-head { display: flex; align-items: center; min-height: 80px; padding: 12px 20px; border-bottom: 1px solid var(--line); }
+          .order-back { width: 30px; border: 0; background: transparent; color: var(--blue-strong); font-size: 22px; }
+          .order-title { min-width: 0; }
+          .order-title h1 { margin: 0; font-size: 20px; letter-spacing: -.025em; }
+          .order-title p { margin: 3px 0 0; color: var(--muted); font-size: 11px; }
+          .order-state { margin-left: 12px; }
+          .order-actions { display: flex; gap: 7px; margin-left: auto; }
+          .journey { display: grid; grid-template-columns: 140px minmax(0, 1fr); min-height: 98px; padding: 12px 20px; border-bottom: 1px solid var(--line); }
+          .journey-label strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+          .journey-label span { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+          .journey-track { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: start; }
+          .journey-step { position: relative; min-width: 0; padding: 1px 16px 0 0; }
+          .journey-step::before { position: absolute; top: 17px; left: 18px; right: 0; height: 1px; background: var(--blue); content: ''; }
+          .journey-step:last-child::before { display: none; }
+          .journey-time { color: var(--muted); font-size: 10px; }
+          .journey-node { position: relative; z-index: 1; display: grid; place-items: center; width: 19px; height: 19px; margin: 3px 0 4px; border-radius: 50%; background: var(--blue); color: var(--surface); font-size: 10px; }
+          .journey-step.danger .journey-node { background: var(--red); }
+          .journey-step.danger::before { background: var(--line); }
+          .journey-name { display: block; font-size: 11px; font-weight: 720; }
+          .journey-copy { display: block; margin-top: 1px; color: var(--muted); font-size: 10px; }
+          .journey-step.danger .journey-name, .journey-step.danger .journey-copy { color: var(--red); }
+          .order-counts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); min-height: 62px; border-bottom: 1px solid var(--line); }
+          .order-count { display: flex; align-items: center; gap: 10px; padding: 0 20px; border-right: 1px solid var(--line); }
+          .order-count:last-child { border-right: 0; }
+          .order-count b { font-size: 18px; }
+          .order-count span { color: var(--muted); font-size: 11px; }
+          .order-count svg, .summary-label svg, .establishment-row svg { width: 14px; height: 14px; color: var(--subtle); flex: 0 0 auto; }
+          .summary-label { display: inline-flex; align-items: center; gap: 7px; }
+          .order-tabs { display: flex; min-height: 48px; gap: 22px; padding: 0 20px; border-bottom: 1px solid var(--line); }
+          .order-tab { display: inline-flex; align-items: center; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--muted); font-size: 11px; }
+          .order-tab.active { border-color: var(--blue); color: var(--ink); font-weight: 720; }
+          .order-body { display: grid; grid-template-columns: minmax(0, 1fr) 322px; min-height: 358px; }
+          .order-main { min-width: 0; padding: 16px 20px 22px; border-right: 1px solid var(--line); }
+          .subsection-title { display: flex; align-items: center; min-height: 30px; color: var(--ink); font-size: 10px; font-weight: 750; letter-spacing: .05em; text-transform: uppercase; }
+          .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line-strong); }
+          .summary-cell { min-height: 82px; padding: 13px 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+          .summary-cell:nth-child(3n) { border-right: 0; }
+          .summary-cell:nth-last-child(-n+3) { border-bottom: 0; }
+          .summary-label { color: var(--muted); font-size: 10px; }
+          .summary-value { display: block; margin-top: 4px; font-size: 12px; font-weight: 720; }
+          .summary-note { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; }
+          .establishments { margin-top: 12px; border-top: 1px solid var(--line-strong); }
+          .establishment-row { display: grid; grid-template-columns: 120px minmax(0, 1fr) 160px 20px; align-items: center; min-height: 47px; border-bottom: 1px solid var(--line); font-size: 11px; }
+          .establishment-row strong { font-size: 11px; }
+          .establishment-row span { color: var(--muted); }
+          .decision-panel { min-width: 0; }
+          .decision-block { padding: 17px 18px; border-bottom: 1px solid var(--line); }
+          .decision-kicker { color: var(--red); font-size: 10px; font-weight: 720; }
+          .decision-block h2 { margin: 6px 0 6px; font-size: 15px; }
+          .decision-block p { margin: 0; color: var(--ink); font-size: 11px; line-height: 1.5; }
+          .elapsed { display: flex; justify-content: space-between; margin-top: 15px; color: var(--muted); font-size: 10px; }
+          .elapsed strong { color: var(--red); }
+          .elapsed-track { position: relative; height: 6px; margin-top: 6px; border-radius: 3px; background: var(--surface-3); }
+          .elapsed-track span { display: block; width: 82%; height: 100%; border-radius: 3px; background: var(--red); }
+          .decision-actions { display: grid; grid-template-columns: 1fr 1.4fr; gap: 7px; margin-top: 14px; }
+          .responsibility { padding: 16px 18px; }
+          .responsibility-title { margin-bottom: 10px; color: var(--muted); font-size: 10px; font-weight: 720; letter-spacing: .04em; text-transform: uppercase; }
+          .responsibility-row { display: flex; justify-content: space-between; min-height: 28px; font-size: 11px; }
+          .responsibility-row strong { font-weight: 720; }
+
+          @media (max-width: 1380px) {
+            .screen-switcher button { padding-left: 9px; padding-right: 9px; }
+            .live-layout { grid-template-columns: minmax(0, 1fr) 288px; }
+            .attention-item { min-height: 98px; }
+            .suite-table th, .suite-table td { padding-left: 9px; padding-right: 9px; }
+            .order-body { grid-template-columns: minmax(0, 1fr) 300px; }
+            .summary-cell { padding-left: 12px; padding-right: 12px; }
+          }
+        </style>`;
+
+        const suiteScreens = `
+          <div id="live-view" class="view suite-screen">
+            <header class="page-head">
+              <div><h1 class="page-title">Operação ao vivo</h1><div class="page-subtitle">Pedidos acontecendo agora, por etapa e tempo de permanência</div></div>
+              <div class="page-actions"><div class="sync"><span class="sync-dot"></span><span>Atualização automática · 13:42:18</span></div><button class="btn" type="button">Filtrar operação</button><button class="btn" type="button">Pausar atualização</button></div>
+            </header>
+            <section class="metrics-strip">
+              <div class="metric"><svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg><div class="metric-copy"><span class="metric-compact-value">146</span><strong>Ativos agora</strong><span>pedidos em andamento</span></div></div>
+              <div class="metric"><svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h4a3 3 0 0 0 3-3v-2a3 3 0 0 1 3-3"/></svg><div class="metric-copy"><span class="metric-compact-value">96</span><strong>Em rota</strong><span>coletas em andamento</span></div></div>
+              <div class="metric"><svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><path d="M3 3l18 18"/></svg><div class="metric-copy"><span class="metric-compact-value warning">18</span><strong>Ponto de apoio não identificado</strong><span>aguardando roteirização</span></div></div>
+              <div class="metric"><svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 3 20h18L12 3Z"/></svg><div class="metric-copy"><span class="metric-compact-value danger">7</span><strong>Ocorrências abertas</strong><span>3 fora do SLA</span></div></div>
+            </section>
+            <div class="live-layout">
+              <section class="live-main">
+                <div class="live-toolbar"><div><strong>Pedidos em andamento agora</strong><span>146 pedidos ordenados por risco e tempo na etapa</span></div><div class="filter-group"><button class="filter-button active">Todos</button><button class="filter-button">Em rota</button><button class="filter-button">Ocorrência</button></div></div>
+                <div class="table-wrap"><table class="suite-table live-table"><thead><tr><th>Pedido</th><th>Cliente</th><th>Etapa atual</th><th>Tempo na etapa</th><th>Ponto de apoio / responsável</th><th>SLA</th><th></th></tr></thead><tbody>
+                  <tr onclick="showView('order')"><td class="order-code">#48231</td><td><strong>Renner</strong><small>Troca · SP</small></td><td><span class="status-label info">Em rota</span></td><td><strong>11 min</strong><small>desde 13:31</small></td><td><strong>Ponto de apoio Centro</strong><small>Lucas M.</small></td><td><strong>43 min</strong><small>restantes</small></td><td class="row-link">›</td></tr>
+                  <tr onclick="showView('order')"><td class="order-code">#48229</td><td><strong>Amazon BR</strong><small>Reversa · SP</small></td><td><span class="status-label info">Atribuído</span></td><td><strong>4 min</strong><small>desde 13:38</small></td><td><strong>Ponto de apoio Zona Sul</strong><small>João R.</small></td><td><strong>1h22</strong><small>restantes</small></td><td class="row-link">›</td></tr>
+                  <tr onclick="showView('order')"><td class="order-code">#48224</td><td><strong>Casas Bahia</strong><small>Reversa · SP</small></td><td><span class="status-label danger">Ocorrência</span></td><td><strong>18 min</strong><small>desde 13:24</small></td><td><strong>Ponto de apoio Zona Sul</strong><small>Marcos L.</small></td><td><strong class="sla-danger">Expirado</strong><small>há 18 min</small></td><td class="row-link">›</td></tr>
+                  <tr onclick="showView('order')"><td class="order-code">#48222</td><td><strong>Netshoes</strong><small>Troca · RJ</small></td><td><span class="status-label info">Coleta iniciada</span></td><td><strong>26 min</strong><small>desde 13:16</small></td><td><strong>Ponto de apoio Centro</strong><small>Camila F.</small></td><td><strong>36 min</strong><small>restantes</small></td><td class="row-link">›</td></tr>
+                  <tr onclick="showView('order')"><td class="order-code">#48217</td><td><strong>Centauro</strong><small>Reversa · SP</small></td><td><span class="status-label warning">Em estoque</span></td><td><strong>1h12</strong><small>desde 12:30</small></td><td><strong>Centro SP</strong><small>Ana P.</small></td><td><strong>2h05</strong><small>restantes</small></td><td class="row-link">›</td></tr>
+                </tbody></table></div>
+              </section>
+              <aside class="attention-panel">
+                <div class="attention-head"><strong>Precisam de ação</strong><b>4</b></div>
+                <button class="attention-item" onclick="showView('order')"><span class="attention-item-top"><strong>#48224</strong><span class="status-label danger">Ocorrência</span></span><p>Endereço não localizado pelo transportador.</p><small>SLA expirado há 18 min</small></button>
+                <button class="attention-item" onclick="showView('order')"><span class="attention-item-top"><strong>#48197</strong><span class="status-label warning">Sem ponto de apoio</span></span><p>Pedido ainda não possui ponto de apoio definido.</p><small>Aguardando há 22 min</small></button>
+                <button class="attention-item" onclick="showView('order')"><span class="attention-item-top"><strong>#48219</strong><span class="status-label warning">Back Order</span></span><p>Previsão de reposição ainda não registrada.</p><small>Atualizado há 14 min</small></button>
+                <button class="attention-item" onclick="showView('order')"><span class="attention-item-top"><strong>#48228</strong><span class="status-label warning">Sem atualização</span></span><p>Rota ativa sem novo evento operacional.</p><small>Último evento há 31 min</small></button>
+              </aside>
+            </div>
+          </div>
+
+          <div id="orders-view" class="view suite-screen">
+            <header class="page-head"><div><h1 class="page-title">Pedidos</h1><div class="page-subtitle">Listagem completa por recorte de status</div></div><div class="page-actions"><button class="btn">Exportar XLSX</button><button class="btn primary">Criar pedido</button></div></header>
+            <section class="metrics-strip orders-metrics">
+              <div class="metric"><div class="metric-copy"><span class="metric-compact-value">28</span><strong>Não processado</strong><span>filtrar este status</span></div></div>
+              <div class="metric"><div class="metric-copy"><span class="metric-compact-value warning">18</span><strong>Ponto de apoio não identificado</strong><span>aguardando roteirização</span></div></div>
+              <div class="metric"><div class="metric-copy"><span class="metric-compact-value warning">42</span><strong>Back Order</strong><span>aguardando reposição</span></div></div>
+              <div class="metric"><div class="metric-copy"><span class="metric-compact-value danger">7</span><strong>Ocorrências hoje</strong><span>3 fora do SLA</span></div></div>
+            </section>
+            <nav class="orders-tabs"><button class="orders-tab active">Em aberto · 5</button><button class="orders-tab">Em rota · 1</button><button class="orders-tab">Concluídos / Ocorrências · 4</button></nav>
+            <div class="filters-bar"><div class="filter-search">⌕&nbsp;&nbsp; Buscar por código ou cliente...</div><button class="btn">Operação</button><button class="btn">Período</button><button class="btn">Mais filtros · 3</button><div class="filters-spacer"></div><button class="text-action">Configurar colunas</button></div>
+            <div class="table-wrap"><table class="suite-table orders-table"><thead><tr><th><span class="check-box"></span></th><th>Pedido</th><th>Status</th><th>Cliente</th><th>Operação</th><th>Ponto de apoio / transportador</th><th>UF</th><th>Criado</th><th>SLA</th><th></th></tr></thead><tbody>
+              <tr onclick="showView('order')"><td><span class="check-box"></span></td><td class="order-code">#48219</td><td><span class="status-label warning">Back Order</span></td><td>Renner</td><td>Troca</td><td>Não atribuído</td><td>RJ</td><td>15/07 19:02</td><td class="sla-warning">em risco</td><td class="row-link">Abrir</td></tr>
+              <tr onclick="showView('order')"><td><span class="check-box"></span></td><td class="order-code">#48208</td><td><span class="status-label info">Atribuído</span></td><td>Amazon BR</td><td>Reversa</td><td>Ponto de apoio Centro</td><td>SP</td><td>15/07 14:55</td><td>5h 40m</td><td class="row-link">Abrir</td></tr>
+              <tr onclick="showView('order')"><td><span class="check-box"></span></td><td class="order-code">#48201</td><td><span class="status-label">Em estoque</span></td><td>Netshoes</td><td>Troca</td><td>Ponto de apoio Zona Sul</td><td>PR</td><td>15/07 11:30</td><td>8h 05m</td><td class="row-link">Abrir</td></tr>
+              <tr onclick="showView('order')"><td><span class="check-box"></span></td><td class="order-code">#48197</td><td><span class="status-label warning">Ponto de apoio não identificado</span></td><td>Renner</td><td>Reversa</td><td>Não atribuído</td><td>RS</td><td>15/07 09:18</td><td class="sla-warning">em risco</td><td class="row-link">Abrir</td></tr>
+              <tr onclick="showView('order')"><td><span class="check-box"></span></td><td class="order-code">#48190</td><td><span class="status-label info">Não processado</span></td><td>Casas Bahia</td><td>Reversa</td><td>Não atribuído</td><td>BA</td><td>15/07 08:02</td><td>12h 00m</td><td class="row-link">Abrir</td></tr>
+            </tbody></table></div>
+          </div>
+
+          <div id="order-view" class="view suite-screen">
+            <header class="order-head"><button class="order-back" onclick="showView('orders')">‹</button><div class="order-title"><h1>Pedido #48224</h1><p>Casas Bahia · Reversa · criado em 16/07 às 07:40</p></div><div class="order-state"><span class="status-label danger">Ocorrência</span></div><div class="order-actions"><button class="btn">Editar</button><button class="btn">Reatribuir</button><button class="btn primary">Resolver ocorrência</button></div></header>
+            <section class="journey"><div class="journey-label"><strong>Jornada do pedido</strong><span>Última atualização às 09:14</span></div><div class="journey-track">
+              <div class="journey-step"><span class="journey-time">07:40</span><i class="journey-node">✓</i><strong class="journey-name">Criado</strong><span class="journey-copy">Pedido recebido</span></div>
+              <div class="journey-step"><span class="journey-time">07:41</span><i class="journey-node">✓</i><strong class="journey-name">Atribuído</strong><span class="journey-copy">Transportador definido</span></div>
+              <div class="journey-step"><span class="journey-time">07:58</span><i class="journey-node">✓</i><strong class="journey-name">Em rota</strong><span class="journey-copy">Coleta iniciada</span></div>
+              <div class="journey-step danger"><span class="journey-time">09:14</span><i class="journey-node">!</i><strong class="journey-name">Ocorrência</strong><span class="journey-copy">Endereço não localizado</span></div>
+            </div></section>
+            <section class="order-counts"><div class="order-count"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 4h12v16H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><b>1</b><span>item</span></div><div class="order-count"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 3 20h18L12 3Z"/><path d="M12 9v5M12 17h.01"/></svg><b>3</b><span>ocorrências</span></div><div class="order-count"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 7h14v12H5z"/><path d="M8 7V5h8v2"/><circle cx="12" cy="13" r="2"/></svg><b>2</b><span>evidências</span></div><div class="order-count"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="15" rx="1"/><path d="M8 3v4M16 3v4M4 9h16"/></svg><b>1</b><span>agendamento</span></div></section>
+            <nav class="order-tabs"><button class="order-tab active">Visão geral</button><button class="order-tab">Itens · 1</button><button class="order-tab">Ocorrências · 3</button><button class="order-tab">Evidências · 2</button><button class="order-tab">Agendamento</button><button class="order-tab">Histórico</button></nav>
+            <div class="order-body"><section class="order-main"><div class="subsection-title">Resumo operacional</div><div class="summary-grid">
+              <div class="summary-cell"><span class="summary-label">♙ <span>Cliente</span></span><strong class="summary-value">Casas Bahia</strong><span class="summary-note">Conta principal</span></div>
+              <div class="summary-cell"><span class="summary-label">⌁ <span>Operação</span></span><strong class="summary-value">Reversa</strong><span class="summary-note">1 item</span></div>
+              <div class="summary-cell"><span class="summary-label">▤ <span>Documento</span></span><strong class="summary-value">NF 883.192</strong><span class="summary-note">Pedido externo 92014</span></div>
+              <div class="summary-cell"><span class="summary-label">⌖ <span>Endereço</span></span><strong class="summary-value">Av. Paulista, 1578</strong><span class="summary-note">São Paulo · SP</span></div>
+              <div class="summary-cell"><span class="summary-label">⌂ <span>Ponto de apoio</span></span><strong class="summary-value">Ponto de apoio Zona Sul</strong><span class="summary-note">Atribuído às 07:41</span></div>
+              <div class="summary-cell"><span class="summary-label">▣ <span>Transportador</span></span><strong class="summary-value">Marcos L.</strong><span class="summary-note">Em rota desde 07:58</span></div>
+              <div class="summary-cell"><span class="summary-label">▦ <span>Agendamento</span></span><strong class="summary-value">Hoje, 14:30</strong><span class="summary-note">Janela até 16:00</span></div>
+              <div class="summary-cell"><span class="summary-label">◷ <span>SLA</span></span><strong class="summary-value" style="color:var(--red)">Expirado 1h18</strong><span class="summary-note">Meta contratual 2h</span></div>
+              <div class="summary-cell"><span class="summary-label">⟳ <span>Última atualização</span></span><strong class="summary-value">09:14</strong><span class="summary-note">Há 47 minutos</span></div>
+            </div><div class="subsection-title" style="margin-top:10px">Estabelecimentos envolvidos</div><div class="establishments">
+              <div class="establishment-row"><strong>Origem</strong><span>Casas Bahia · Loja Paulista</span><span>Av. Paulista, 1578</span><b>›</b></div>
+              <div class="establishment-row"><strong>Ponto de apoio</strong><span>Ponto de apoio Zona Sul</span><span>Responsável: Ana Duarte</span><b>›</b></div>
+              <div class="establishment-row"><strong>Destino</strong><span>Centro de distribuição Cajamar</span><span>Rod. Anhanguera, km 33</span><b>›</b></div>
+            </div></section><aside class="decision-panel"><div class="decision-block"><div class="decision-kicker">SLA expirado · requer decisão</div><h2>Confirmar novo endereço</h2><p>O transportador não localizou o número informado. Confirme os dados com o cliente ou devolva o pedido ao ponto de apoio.</p><div class="elapsed"><span>Tempo decorrido</span><strong>3h18</strong></div><div class="elapsed-track"><span></span></div><div class="decision-actions"><button class="btn primary">Registrar solução</button><button class="btn">Devolver ao ponto de apoio</button></div></div><div class="responsibility"><div class="responsibility-title">Responsabilidade atual</div><div class="responsibility-row"><span>Responsável</span><strong>Ana Duarte</strong></div><div class="responsibility-row"><span>Transportador</span><strong>Marcos L.</strong></div><div class="responsibility-row"><span>Operação</span><strong>Reversa</strong></div></div></aside></div>
+          </div>`;
+
+        const suiteController = `<script id="suite-v12-controller">
+          (function () {
+            const viewNames = ['home', 'detail', 'live', 'orders', 'order'];
+            const labels = {
+              home: 'Home',
+              detail: 'Home / Operações / ',
+              live: 'Operação / Ao vivo',
+              orders: 'Operação / Pedidos',
+              order: 'Operação / Pedidos / #48224'
+            };
+
+            window.showView = function (name) {
+              const target = viewNames.includes(name) ? name : 'home';
+              viewNames.forEach(function (view) {
+                const element = document.getElementById(view + '-view');
+                if (element) element.classList.toggle('active', view === target);
+                const switchButton = document.getElementById('switch-' + view);
+                if (switchButton) switchButton.classList.toggle('active', view === target);
+              });
+
+              document.querySelectorAll('.nav-link').forEach(function (link) {
+                const label = link.querySelector('.nav-text');
+                const text = label ? label.textContent.trim() : '';
+                const active = (target === 'live' && text === 'Operação ao vivo') ||
+                  ((target === 'orders' || target === 'order') && text === 'Pedidos') ||
+                  ((target === 'home' || target === 'detail') && text === 'Home');
+                link.classList.toggle('active', active);
+              });
+
+              const crumb = document.getElementById('breadcrumb-current');
+              if (crumb) {
+                crumb.textContent = target === 'detail'
+                  ? labels.detail + document.getElementById('detail-title').textContent
+                  : labels[target];
+              }
+              if (window.location.hash.slice(1) !== target) history.replaceState(null, '', '#' + target);
+            };
+
+            document.querySelectorAll('.nav-link').forEach(function (link) {
+              const label = link.querySelector('.nav-text');
+              const text = label ? label.textContent.trim() : '';
+              if (text === 'Home') link.onclick = function () { showView('home'); };
+              if (text === 'Operação ao vivo') link.onclick = function () { showView('live'); };
+              if (text === 'Pedidos') link.onclick = function () { showView('orders'); };
+            });
+
+            const requested = window.location.hash.slice(1);
+            showView(viewNames.includes(requested) ? requested : 'home');
+          })();
+        <\/script>`;
+
+        const bodyClose = '<' + '/body>';
+
+        source = source
+          .replace('<title>Via Reversa · Home como índice operacional</title>', '<title>Via Reversa · suíte operacional navegável</title>')
+          .replace('Nova arquitetura da Home', 'Suíte de validação')
+          .replace('Via Reversa · índice operacional', 'Via Reversa · sistema operacional')
+          .replace(/<nav class="screen-switcher"[\s\S]*?<\/nav>/, switcher)
+          .replace('height: calc(100vh - 58px);', 'height: calc(100vh - 74px);')
+          .replace("renderOperation('reversa');\n    if (window.location.hash === '#detail') showView('detail');", "renderOperation('reversa');")
+          .replace('</head>', suiteStyles + '</head>')
+          .replace('    </section>\n  </main>', suiteScreens + '\n    </section>\n  </main>')
+          .replace(bodyClose, suiteController + bodyClose);
+
+        document.open();
+        document.write(source);
+        document.close();
+      });
+  </script>
+</body>
+</html>

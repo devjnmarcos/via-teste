@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Via Reversa · Home como índice operacional</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: oklch(25% 0.025 253);
+      --muted: oklch(51% 0.022 253);
+      --subtle: oklch(66% 0.018 253);
+      --line: oklch(88% 0.012 253);
+      --line-strong: oklch(82% 0.018 253);
+      --surface: oklch(99% 0.004 253);
+      --surface-2: oklch(97.5% 0.008 253);
+      --surface-3: oklch(94.5% 0.014 253);
+      --sidebar: oklch(25% 0.04 253);
+      --sidebar-line: oklch(34% 0.04 253);
+      --blue: oklch(62% 0.19 254);
+      --blue-strong: oklch(53% 0.2 254);
+      --blue-soft: oklch(95% 0.035 254);
+      --cyan: oklch(69% 0.13 219);
+      --green: oklch(59% 0.13 146);
+      --amber: oklch(68% 0.14 73);
+      --red: oklch(59% 0.19 27);
+      --violet: oklch(58% 0.14 292);
+      --shadow: 0 1px 2px oklch(20% 0.02 253 / 0.08), 0 10px 32px oklch(20% 0.02 253 / 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-width: 1180px; min-height: 100%; background: oklch(91.5% 0.014 253); color: var(--ink); }
+    body { font-family: "Segoe UI", Roboto, Arial, sans-serif; font-size: 13px; line-height: 1.38; }
+    button, input, select { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+
+    .proposal-bar {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border-bottom: 1px solid oklch(82% 0.018 253);
+      background: oklch(92.5% 0.014 253);
+    }
+
+    .proposal-eyebrow { color: var(--blue-strong); font-size: 11px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+    .proposal-title { margin-top: 2px; font-size: 18px; font-weight: 720; letter-spacing: -.02em; }
+
+    .screen-switcher { display: flex; padding: 4px; gap: 4px; border: 1px solid var(--line-strong); border-radius: 7px; background: oklch(94% 0.012 253); }
+    .screen-switcher button { border: 0; border-radius: 4px; background: transparent; padding: 7px 13px; font-size: 12px; font-weight: 650; color: var(--muted); }
+    .screen-switcher button.active { color: var(--blue-strong); background: var(--surface); box-shadow: 0 1px 2px oklch(20% 0.02 253 / .09); }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 228px minmax(0, 1fr);
+      height: calc(100vh - 58px);
+      margin: 0 16px 16px;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-top: 0;
+      border-radius: 0 0 9px 9px;
+      box-shadow: var(--shadow);
+      background: var(--surface);
+    }
+
+    .sidebar { display: flex; flex-direction: column; min-height: 0; padding: 22px 12px 14px; color: oklch(90% 0.02 253); background: var(--sidebar); }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 21px; }
+    .brand-mark { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 6px; background: var(--blue); color: oklch(99% 0.002 253); font-size: 11px; font-weight: 800; }
+    .brand-name { color: oklch(98% 0.006 253); font-size: 13px; font-weight: 720; }
+    .brand-sub { margin-top: 1px; color: oklch(76% 0.03 253); font-size: 11px; }
+    .nav-label { margin: 6px 10px 6px; color: oklch(66% 0.045 253); font-size: 10px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+    .nav-link { display: flex; align-items: center; min-height: 40px; gap: 10px; margin: 1px 0; padding: 0 10px; border: 0; border-radius: 6px; color: oklch(80% 0.03 253); background: transparent; text-align: left; text-decoration: none; }
+    .nav-link:hover { background: oklch(29% 0.045 253); }
+    .nav-link.active { color: oklch(98% 0.005 253); background: oklch(34% 0.075 253); font-weight: 700; }
+    .nav-icon { width: 15px; height: 15px; color: oklch(66% 0.035 253); flex: 0 0 auto; }
+    .nav-link.active .nav-icon { color: oklch(95% 0.02 253); }
+    .nav-text { flex: 1; }
+    .nav-count { min-width: 25px; padding: 2px 6px; border-radius: 10px; background: oklch(34% 0.05 253); color: oklch(87% 0.025 253); font-size: 10px; font-weight: 700; text-align: center; }
+    .sidebar-spacer { flex: 1; }
+    .sidebar-footer { border-top: 1px solid var(--sidebar-line); padding-top: 9px; }
+
+    .workspace { min-width: 0; min-height: 0; overflow: hidden; background: var(--surface); }
+    .topbar { display: flex; align-items: center; justify-content: space-between; height: 58px; padding: 0 20px; border-bottom: 1px solid var(--line); background: var(--surface); }
+    .breadcrumbs { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+    .breadcrumbs strong { color: var(--ink); font-weight: 680; }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .search { display: flex; align-items: center; gap: 8px; width: 330px; height: 36px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface-2); color: var(--muted); }
+    .search input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; font-size: 12px; }
+    .avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--blue-soft); color: var(--blue-strong); font-size: 11px; font-weight: 800; }
+
+    .view { display: none; height: calc(100% - 58px); overflow: auto; background: var(--surface); }
+    .view.active { display: block; }
+    .page-head { display: flex; align-items: center; justify-content: space-between; min-height: 72px; padding: 12px 20px; border-bottom: 1px solid var(--line); }
+    .page-title { margin: 0; font-size: 20px; line-height: 1.2; font-weight: 735; letter-spacing: -.025em; }
+    .page-subtitle { margin-top: 3px; color: var(--muted); font-size: 12px; }
+    .page-actions { display: flex; align-items: center; gap: 8px; }
+    .sync { display: flex; align-items: center; gap: 7px; margin-right: 8px; color: var(--muted); font-size: 11px; }
+    .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+    .btn { min-height: 36px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); color: var(--ink); font-weight: 620; }
+    .btn:hover { border-color: oklch(71% 0.04 253); background: var(--surface-2); }
+    .btn.primary { border-color: var(--blue); background: var(--blue); color: oklch(98% 0.005 253); }
+    .btn.icon-back { display: inline-flex; align-items: center; gap: 7px; }
+
+    .metrics-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); min-height: 78px; border-bottom: 1px solid var(--line); }
+    .metric { display: grid; grid-template-columns: 30px auto; align-items: center; gap: 8px; min-width: 0; padding: 12px 18px; border-right: 1px solid var(--line); }
+    .metric:last-child { border-right: 0; }
+    .metric-icon { width: 18px; height: 18px; color: var(--subtle); }
+    .metric-line { display: flex; align-items: baseline; gap: 9px; }
+    .metric-value { color: var(--ink); font-size: 23px; font-weight: 750; letter-spacing: -.035em; }
+    .metric-label { font-size: 12px; font-weight: 680; }
+    .metric-note { margin-top: 1px; color: var(--muted); font-size: 11px; }
+    .metric[data-tone="danger"] .metric-value { color: var(--red); }
+    .metric[data-tone="warning"] .metric-value { color: oklch(55% 0.14 73); }
+
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; min-height: 58px; padding: 11px 20px 10px; border-bottom: 1px solid var(--line); }
+    .section-title { margin: 0; font-size: 15px; font-weight: 720; }
+    .section-meta { margin-top: 2px; color: var(--muted); font-size: 11px; }
+    .legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 14px; color: var(--muted); font-size: 10px; }
+    .legend-item { display: inline-flex; align-items: center; gap: 5px; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .tone-new { color: oklch(58% 0.02 253); }
+    .tone-wait { color: var(--amber); }
+    .tone-assigned { color: var(--violet); }
+    .tone-route { color: var(--blue); }
+    .tone-done { color: var(--green); }
+
+    .operations-board { border-bottom: 1px solid var(--line); }
+    .board-header, .operation-row { display: grid; grid-template-columns: minmax(190px, 1.2fr) minmax(270px, 2fr) 92px 118px 92px 112px 32px; align-items: center; column-gap: 16px; padding: 0 20px; }
+    .board-header { min-height: 36px; color: var(--muted); background: var(--surface-2); font-size: 10px; font-weight: 720; letter-spacing: .045em; text-transform: uppercase; }
+    .operation-row { width: 100%; min-height: 64px; border: 0; border-top: 1px solid var(--line); background: var(--surface); text-align: left; }
+    .operation-row:hover, .operation-row:focus-visible { outline: 0; background: var(--blue-soft); }
+    .op-name { font-size: 13px; font-weight: 710; }
+    .op-note { margin-top: 2px; color: var(--muted); font-size: 11px; font-weight: 400; }
+    .flow-bar { display: flex; width: 100%; height: 9px; overflow: hidden; border-radius: 2px; background: var(--surface-3); }
+    .flow-bar span { height: 100%; min-width: 2px; }
+    .flow-bar .new { background: oklch(63% 0.02 253); }
+    .flow-bar .wait { background: var(--amber); }
+    .flow-bar .assigned { background: var(--violet); }
+    .flow-bar .route { background: var(--blue); }
+    .flow-bar .done { background: var(--green); }
+    .flow-label { display: flex; justify-content: space-between; margin-top: 5px; color: var(--muted); font-size: 10px; }
+    .num { font-variant-numeric: tabular-nums; font-weight: 720; }
+    .num.large { font-size: 16px; }
+    .risk { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); }
+    .risk.warn { color: oklch(54% 0.14 73); }
+    .risk.bad { color: var(--red); }
+    .chevron { color: var(--blue-strong); font-size: 18px; text-align: right; }
+
+    .home-tail { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(270px, .75fr); min-height: 172px; }
+    .trend-panel { padding: 14px 20px 10px; border-right: 1px solid var(--line); }
+    .tail-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .tail-title { font-size: 12px; font-weight: 700; }
+    .tail-note { color: var(--muted); font-size: 10px; }
+    .trend-svg { width: 100%; height: 112px; overflow: visible; }
+    .trend-grid { stroke: var(--line); stroke-width: 1; }
+    .trend-area { fill: url(#trendFill); }
+    .trend-line { fill: none; stroke: var(--blue); stroke-width: 2.3; stroke-linejoin: round; stroke-linecap: round; }
+    .trend-point { fill: var(--surface); stroke: var(--blue); stroke-width: 2; }
+    .trend-label { fill: var(--muted); font-size: 9px; }
+    .period-summary { display: grid; grid-template-columns: 1fr 1fr; align-content: center; padding: 18px 20px; }
+    .period-item { min-height: 58px; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+    .period-item:nth-child(odd) { border-right: 1px solid var(--line); padding-left: 0; }
+    .period-item:nth-child(even) { padding-right: 0; }
+    .period-item:nth-last-child(-n+2) { border-bottom: 0; }
+    .period-value { font-size: 17px; font-weight: 740; }
+    .period-label { color: var(--muted); font-size: 10px; }
+
+    .detail-metrics { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .detail-metrics .metric { grid-template-columns: 1fr; gap: 0; padding-left: 20px; }
+    .detail-metrics .metric-label { color: var(--muted); font-size: 10px; font-weight: 620; text-transform: uppercase; letter-spacing: .045em; }
+    .detail-metrics .metric-value { margin-top: 3px; font-size: 20px; }
+    .detail-metrics .metric-note { font-size: 10px; }
+
+    .flow-section { padding: 15px 20px 16px; border-bottom: 1px solid var(--line); }
+    .flow-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .flow-title { font-size: 13px; font-weight: 720; }
+    .flow-context { color: var(--muted); font-size: 10px; }
+    .stage-flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .stage { position: relative; min-height: 58px; padding: 0 18px; border-right: 1px solid var(--line); }
+    .stage:first-child { padding-left: 0; }
+    .stage:last-child { padding-right: 0; border-right: 0; }
+    .stage-name { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 10px; font-weight: 650; }
+    .stage-value { margin-top: 4px; font-size: 20px; font-weight: 750; }
+    .stage-share { color: var(--muted); font-size: 10px; }
+    .stage-progress { position: absolute; left: 18px; right: 18px; bottom: 0; height: 3px; background: var(--surface-3); }
+    .stage:first-child .stage-progress { left: 0; }
+    .stage:last-child .stage-progress { right: 0; }
+    .stage-progress span { display: block; height: 100%; background: currentColor; }
+
+    .detail-body { display: grid; grid-template-columns: minmax(620px, 1.55fr) minmax(320px, .8fr); min-height: 345px; }
+    .client-panel { border-right: 1px solid var(--line); }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; min-height: 52px; padding: 10px 20px; border-bottom: 1px solid var(--line); }
+    .panel-title { font-size: 13px; font-weight: 720; }
+    .panel-sub { margin-top: 2px; color: var(--muted); font-size: 10px; }
+    .text-action { border: 0; background: transparent; color: var(--blue-strong); font-size: 11px; font-weight: 680; }
+    .client-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .client-table th { height: 34px; padding: 0 12px; color: var(--muted); background: var(--surface-2); font-size: 9px; font-weight: 720; letter-spacing: .04em; text-align: left; text-transform: uppercase; }
+    .client-table td { height: 51px; padding: 0 12px; border-top: 1px solid var(--line); font-size: 11px; }
+    .client-table th:first-child, .client-table td:first-child { padding-left: 20px; width: 31%; }
+    .client-table th:last-child, .client-table td:last-child { padding-right: 20px; }
+    .client-name { display: block; font-size: 12px; font-weight: 690; }
+    .client-meta { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
+    .sla { display: inline-flex; align-items: center; gap: 5px; }
+    .mini-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .sla.good { color: var(--green); }
+    .sla.warn { color: oklch(55% 0.14 73); }
+    .sla.bad { color: var(--red); }
+
+    .analysis-panel { min-width: 0; }
+    .detail-chart { padding: 14px 20px 10px; border-bottom: 1px solid var(--line); }
+    .detail-chart svg { width: 100%; height: 136px; }
+    .status-list { padding: 10px 20px 16px; }
+    .status-line { display: grid; grid-template-columns: minmax(105px, 1fr) minmax(70px, 1.1fr) 34px; align-items: center; gap: 9px; min-height: 27px; font-size: 10px; }
+    .status-track { height: 5px; border-radius: 2px; background: var(--surface-3); overflow: hidden; }
+    .status-track span { display: block; height: 100%; border-radius: 2px; }
+    .status-number { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    @media (max-width: 1380px) {
+      .app-shell { grid-template-columns: 226px minmax(0, 1fr); margin-left: 16px; margin-right: 16px; }
+      .board-header, .operation-row { grid-template-columns: minmax(170px, 1.05fr) minmax(210px, 1.6fr) 70px 102px 80px 96px 24px; column-gap: 12px; padding-left: 18px; padding-right: 18px; }
+      .legend { gap: 9px; }
+      .metric { padding-left: 14px; padding-right: 14px; }
+      .detail-body { grid-template-columns: minmax(600px, 1.45fr) minmax(300px, .75fr); }
+    }
+  </style>
+</head>
+<body>
+  <header class="proposal-bar">
+    <div>
+      <div class="proposal-eyebrow">Nova arquitetura da Home</div>
+      <div class="proposal-title">Via Reversa · índice operacional</div>
+    </div>
+    <nav class="screen-switcher" aria-label="Telas da proposta">
+      <button id="switch-home" class="active" type="button" onclick="showView('home')">01 · Home geral</button>
+      <button id="switch-detail" type="button" onclick="showView('detail')">02 · Detalhe por operação</button>
+    </nav>
+  </header>
+
+  <main class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">VR</div>
+        <div><div class="brand-name">Via Reversa</div><div class="brand-sub">Central operacional</div></div>
+      </div>
+
+      <div class="nav-label">Visão geral</div>
+      <button class="nav-link active" type="button" onclick="showView('home')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg>
+        <span class="nav-text">Home</span>
+      </button>
+
+      <div class="nav-label" style="margin-top:16px">Operação</div>
+      <a class="nav-link" href="#" onclick="return false">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg>
+        <span class="nav-text">Operação ao vivo</span><span class="nav-count">146</span>
+      </a>
+      <a class="nav-link" href="#" onclick="return false">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        <span class="nav-text">Pedidos</span><span class="nav-count">609</span>
+      </a>
+      <a class="nav-link" href="#" onclick="return false">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 3 20h18L12 3Z"/><path d="M12 9v5M12 17h.01"/></svg>
+        <span class="nav-text">Ocorrências</span><span class="nav-count">7</span>
+      </a>
+      <a class="nav-link" href="#" onclick="return false">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="1"/><path d="M8 3v4M16 3v4M4 9h16"/></svg>
+        <span class="nav-text">Agendamentos</span>
+      </a>
+
+      <div class="nav-label" style="margin-top:16px">Rede</div>
+      <a class="nav-link" href="#" onclick="return false">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V8l8-5 8 5v12H4Z"/><path d="M9 20v-6h6v6"/></svg>
+        <span class="nav-text">Estabelecimentos</span>
+      </a>
+      <a class="nav-link" href="#" onclick="return false">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <span class="nav-text">Pontos de apoio</span>
+      </a>
+      <a class="nav-link" href="#" onclick="return false">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+        <span class="nav-text">Transportadores</span>
+      </a>
+
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-footer">
+        <a class="nav-link" href="#" onclick="return false">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21H9.6v-.08A1.7 1.7 0 0 0 8.5 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3V9.6h.08A1.7 1.7 0 0 0 4.6 8.5a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.08A1.7 1.7 0 0 0 15.5 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.13.39.35.74.65 1 .3.26.69.4 1.1.4H21v4h-.08A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+          <span class="nav-text">Configurações</span>
+        </a>
+      </div>
+    </aside>
+
+    <section class="workspace">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>Via Reversa</span><span>/</span><strong id="breadcrumb-current">Home</strong></div>
+        <div class="top-actions">
+          <label class="search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            <span class="sr-only">Buscar</span>
+            <input placeholder="Buscar pedido, cliente ou estabelecimento">
+          </label>
+          <div class="avatar">AD</div>
+        </div>
+      </header>
+
+      <div id="home-view" class="view active">
+        <header class="page-head">
+          <div><h1 class="page-title">Visão geral</h1><div class="page-subtitle">Panorama consolidado de todas as operações</div></div>
+          <div class="page-actions">
+            <div class="sync"><span class="sync-dot"></span><span>Atualizado às 13:42</span></div>
+            <button class="btn" type="button">Hoje · últimos 7 dias</button>
+            <button class="btn" type="button">Exportar</button>
+          </div>
+        </header>
+
+        <section class="metrics-strip" aria-label="Indicadores gerais">
+          <div class="metric">
+            <svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+            <div><div class="metric-line"><span class="metric-value">609</span><span class="metric-label">pedidos no fluxo</span></div><div class="metric-note">em todas as operações</div></div>
+          </div>
+          <div class="metric">
+            <svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>
+            <div><div class="metric-line"><span class="metric-value">312</span><span class="metric-label">concluídos hoje</span></div><div class="metric-note">+8% comparado a ontem</div></div>
+          </div>
+          <div class="metric" data-tone="danger">
+            <svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 3 20h18L12 3Z"/><path d="M12 9v5M12 17h.01"/></svg>
+            <div><div class="metric-line"><span class="metric-value">7</span><span class="metric-label">ocorrências hoje</span></div><div class="metric-note">3 fora do SLA</div></div>
+          </div>
+          <div class="metric">
+            <svg class="metric-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg>
+            <div><div class="metric-line"><span class="metric-value">97%</span><span class="metric-label">produtividade</span></div><div class="metric-note">concluídos sobre fechados</div></div>
+          </div>
+        </section>
+
+        <section class="operations-board">
+          <header class="section-head">
+            <div><h2 class="section-title">Operações</h2><div class="section-meta">6 operações ativas · volume e desempenho no mesmo recorte</div></div>
+            <div class="legend" aria-label="Legenda do fluxo">
+              <span class="legend-item tone-new"><i class="dot"></i>Não processado</span>
+              <span class="legend-item tone-wait"><i class="dot"></i>Ponto de apoio não identificado</span>
+              <span class="legend-item tone-assigned"><i class="dot"></i>Atribuído</span>
+              <span class="legend-item tone-route"><i class="dot"></i>Em rota</span>
+              <span class="legend-item tone-done"><i class="dot"></i>Concluído</span>
+            </div>
+          </header>
+          <div class="board-header"><span>Operação</span><span>Distribuição do fluxo</span><span>No fluxo</span><span>Concluídos hoje</span><span>Ocorrências</span><span>Produtividade</span><span></span></div>
+
+          <button class="operation-row" type="button" onclick="openDetail('reversa')">
+            <span><span class="op-name">Logística Reversa</span><span class="op-note">12 clientes ativos</span></span>
+            <span><span class="flow-bar"><i class="new" style="width:7%"></i><i class="wait" style="width:5%"></i><i class="assigned" style="width:14%"></i><i class="route" style="width:27%"></i><i class="done" style="width:47%"></i></span><span class="flow-label"><span>abertos 53%</span><span>concluídos 47%</span></span></span>
+            <span class="num large">198</span><span class="num">112</span><span class="risk bad"><i class="mini-dot"></i><b>3</b></span><span class="num">97%</span><span class="chevron">›</span>
+          </button>
+          <button class="operation-row" type="button" onclick="openDetail('weelog')">
+            <span><span class="op-name">Weelog</span><span class="op-note">8 clientes ativos</span></span>
+            <span><span class="flow-bar"><i class="new" style="width:9%"></i><i class="wait" style="width:4%"></i><i class="assigned" style="width:16%"></i><i class="route" style="width:31%"></i><i class="done" style="width:40%"></i></span><span class="flow-label"><span>abertos 60%</span><span>concluídos 40%</span></span></span>
+            <span class="num large">134</span><span class="num">68</span><span class="risk"><i class="mini-dot" style="color:var(--green)"></i><b>0</b></span><span class="num">99%</span><span class="chevron">›</span>
+          </button>
+          <button class="operation-row" type="button" onclick="openDetail('lote')">
+            <span><span class="op-name">Entrega em Lote</span><span class="op-note">6 clientes ativos</span></span>
+            <span><span class="flow-bar"><i class="new" style="width:5%"></i><i class="wait" style="width:9%"></i><i class="assigned" style="width:15%"></i><i class="route" style="width:32%"></i><i class="done" style="width:39%"></i></span><span class="flow-label"><span>abertos 61%</span><span>concluídos 39%</span></span></span>
+            <span class="num large">96</span><span class="num">46</span><span class="risk warn"><i class="mini-dot"></i><b>2</b></span><span class="num">96%</span><span class="chevron">›</span>
+          </button>
+          <button class="operation-row" type="button" onclick="openDetail('expressa')">
+            <span><span class="op-name">Entrega Expressa</span><span class="op-note">5 clientes ativos</span></span>
+            <span><span class="flow-bar"><i class="new" style="width:7%"></i><i class="wait" style="width:3%"></i><i class="assigned" style="width:12%"></i><i class="route" style="width:25%"></i><i class="done" style="width:53%"></i></span><span class="flow-label"><span>abertos 47%</span><span>concluídos 53%</span></span></span>
+            <span class="num large">78</span><span class="num">41</span><span class="risk"><i class="mini-dot" style="color:var(--green)"></i><b>0</b></span><span class="num">100%</span><span class="chevron">›</span>
+          </button>
+          <button class="operation-row" type="button" onclick="openDetail('incremental')">
+            <span><span class="op-name">Logística Incremental</span><span class="op-note">4 clientes ativos</span></span>
+            <span><span class="flow-bar"><i class="new" style="width:11%"></i><i class="wait" style="width:9%"></i><i class="assigned" style="width:19%"></i><i class="route" style="width:29%"></i><i class="done" style="width:32%"></i></span><span class="flow-label"><span>abertos 68%</span><span>concluídos 32%</span></span></span>
+            <span class="num large">61</span><span class="num">27</span><span class="risk bad"><i class="mini-dot"></i><b>2</b></span><span class="num">93%</span><span class="chevron">›</span>
+          </button>
+          <button class="operation-row" type="button" onclick="openDetail('store')">
+            <span><span class="op-name">Store</span><span class="op-note">3 clientes ativos</span></span>
+            <span><span class="flow-bar"><i class="new" style="width:5%"></i><i class="wait" style="width:2%"></i><i class="assigned" style="width:8%"></i><i class="route" style="width:20%"></i><i class="done" style="width:65%"></i></span><span class="flow-label"><span>abertos 35%</span><span>concluídos 65%</span></span></span>
+            <span class="num large">42</span><span class="num">18</span><span class="risk"><i class="mini-dot" style="color:var(--green)"></i><b>0</b></span><span class="num">100%</span><span class="chevron">›</span>
+          </button>
+        </section>
+
+        <section class="home-tail">
+          <div class="trend-panel">
+            <div class="tail-head"><span class="tail-title">Ritmo das operações · últimos 7 dias</span><span class="tail-note">volume consolidado</span></div>
+            <svg class="trend-svg" viewBox="0 0 760 112" preserveAspectRatio="none" role="img" aria-label="Volume consolidado dos últimos sete dias">
+              <defs><linearGradient id="trendFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="oklch(62% 0.19 254)" stop-opacity=".26"/><stop offset="1" stop-color="oklch(62% 0.19 254)" stop-opacity=".02"/></linearGradient></defs>
+              <path class="trend-grid" d="M0 25H760M0 57H760M0 89H760"/>
+              <path class="trend-area" d="M0 82 L126 70 L253 74 L380 45 L506 62 L633 27 L760 18 L760 98 L0 98 Z"/>
+              <path class="trend-line" d="M0 82 L126 70 L253 74 L380 45 L506 62 L633 27 L760 18"/>
+              <circle class="trend-point" cx="760" cy="18" r="3.5"/>
+              <g class="trend-label"><text x="0" y="110">Qua</text><text x="122" y="110">Qui</text><text x="249" y="110">Sex</text><text x="376" y="110">Sáb</text><text x="502" y="110">Dom</text><text x="629" y="110">Seg</text><text x="748" y="110">Ter</text></g>
+            </svg>
+          </div>
+          <div class="period-summary">
+            <div class="period-item"><div class="period-value">+8%</div><div class="period-label">volume comparado à semana anterior</div></div>
+            <div class="period-item"><div class="period-value">−12%</div><div class="period-label">ocorrências no período</div></div>
+            <div class="period-item"><div class="period-value">38</div><div class="period-label">clientes ativos</div></div>
+            <div class="period-item"><div class="period-value">18</div><div class="period-label">aguardando ponto de apoio</div></div>
+          </div>
+        </section>
+      </div>
+
+      <div id="detail-view" class="view">
+        <header class="page-head">
+          <div><h1 id="detail-title" class="page-title">Logística Reversa</h1><div id="detail-subtitle" class="page-subtitle">12 clientes · 198 pedidos no fluxo</div></div>
+          <div class="page-actions">
+            <label class="sr-only" for="operation-select">Trocar operação</label>
+            <select id="operation-select" class="btn" onchange="renderOperation(this.value)">
+              <option value="reversa">Logística Reversa</option><option value="weelog">Weelog</option><option value="lote">Entrega em Lote</option><option value="expressa">Entrega Expressa</option><option value="incremental">Logística Incremental</option><option value="store">Store</option>
+            </select>
+            <button class="btn icon-back" type="button" onclick="showView('home')"><span>←</span> Voltar à visão geral</button>
+          </div>
+        </header>
+
+        <section class="metrics-strip detail-metrics">
+          <div class="metric"><div><div class="metric-label">Pedidos no fluxo</div><div id="d-total" class="metric-value">198</div><div class="metric-note">nesta operação</div></div></div>
+          <div class="metric"><div><div class="metric-label">Sem ponto de apoio</div><div id="d-wait" class="metric-value">10</div><div class="metric-note">5% do fluxo</div></div></div>
+          <div class="metric"><div><div class="metric-label">Em rota</div><div id="d-route" class="metric-value">53</div><div class="metric-note">27% do fluxo</div></div></div>
+          <div class="metric"><div><div class="metric-label">Concluídos hoje</div><div id="d-done" class="metric-value">112</div><div class="metric-note">+9% desde ontem</div></div></div>
+          <div class="metric" data-tone="danger"><div><div class="metric-label">Ocorrências hoje</div><div id="d-occ" class="metric-value">3</div><div class="metric-note">1 fora do SLA</div></div></div>
+        </section>
+
+        <section class="flow-section">
+          <div class="flow-title-row"><span class="flow-title">Fluxo da operação</span><span class="flow-context">posição atual dos pedidos</span></div>
+          <div class="stage-flow">
+            <div class="stage tone-new"><div class="stage-name"><i class="dot"></i>Não processado</div><div id="stage-new" class="stage-value">14</div><div class="stage-share">7% do fluxo</div><div class="stage-progress"><span style="width:25%"></span></div></div>
+            <div class="stage tone-wait"><div class="stage-name"><i class="dot"></i>Ponto de apoio não identificado</div><div id="stage-wait" class="stage-value">10</div><div class="stage-share">5% do fluxo</div><div class="stage-progress"><span style="width:18%"></span></div></div>
+            <div class="stage tone-assigned"><div class="stage-name"><i class="dot"></i>Atribuído</div><div id="stage-assigned" class="stage-value">28</div><div class="stage-share">14% do fluxo</div><div class="stage-progress"><span style="width:50%"></span></div></div>
+            <div class="stage tone-route"><div class="stage-name"><i class="dot"></i>Em rota</div><div id="stage-route" class="stage-value">53</div><div class="stage-share">27% do fluxo</div><div class="stage-progress"><span style="width:78%"></span></div></div>
+            <div class="stage tone-done"><div class="stage-name"><i class="dot"></i>Concluído hoje</div><div id="stage-done" class="stage-value">93</div><div class="stage-share">47% do fluxo</div><div class="stage-progress"><span style="width:100%"></span></div></div>
+          </div>
+        </section>
+
+        <section class="detail-body">
+          <div class="client-panel">
+            <header class="panel-head"><div><div class="panel-title">Clientes nesta operação</div><div id="client-count" class="panel-sub">12 clientes ordenados por risco e volume</div></div><button class="text-action" type="button">Ver todos os clientes</button></header>
+            <table class="client-table">
+              <thead><tr><th>Cliente / conta</th><th>No fluxo</th><th>Em rota</th><th>Ocorrências</th><th>SLA</th><th>Produtividade</th></tr></thead>
+              <tbody id="client-rows"></tbody>
+            </table>
+          </div>
+          <aside class="analysis-panel">
+            <div class="detail-chart">
+              <div class="tail-head"><span class="tail-title">Volume · últimos 7 dias</span><span id="detail-change" class="tail-note">+9% no período</span></div>
+              <svg viewBox="0 0 360 136" preserveAspectRatio="none" role="img" aria-label="Volume da operação nos últimos sete dias">
+                <defs><linearGradient id="detailFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="oklch(62% 0.19 254)" stop-opacity=".25"/><stop offset="1" stop-color="oklch(62% 0.19 254)" stop-opacity=".01"/></linearGradient></defs>
+                <path class="trend-grid" d="M0 26H360M0 65H360M0 104H360"/>
+                <path fill="url(#detailFill)" d="M0 98L60 88L120 92L180 58L240 71L300 39L360 25L360 119L0 119Z"/>
+                <path class="trend-line" d="M0 98L60 88L120 92L180 58L240 71L300 39L360 25"/>
+                <g class="trend-label"><text x="0" y="134">Qua</text><text x="56" y="134">Qui</text><text x="116" y="134">Sex</text><text x="176" y="134">Sáb</text><text x="236" y="134">Dom</text><text x="296" y="134">Seg</text><text x="348" y="134">Ter</text></g>
+              </svg>
+            </div>
+            <div class="status-list">
+              <div class="tail-head"><span class="tail-title">Distribuição atual</span><span class="tail-note">198 pedidos</span></div>
+              <div class="status-line"><span>Concluído hoje</span><span class="status-track"><i style="display:block;width:100%;height:100%;background:var(--green)"></i></span><span class="status-number">93</span></div>
+              <div class="status-line"><span>Em rota</span><span class="status-track"><i style="display:block;width:57%;height:100%;background:var(--blue)"></i></span><span class="status-number">53</span></div>
+              <div class="status-line"><span>Atribuído</span><span class="status-track"><i style="display:block;width:30%;height:100%;background:var(--violet)"></i></span><span class="status-number">28</span></div>
+              <div class="status-line"><span>Não processado</span><span class="status-track"><i style="display:block;width:15%;height:100%;background:oklch(63% 0.02 253)"></i></span><span class="status-number">14</span></div>
+              <div class="status-line"><span>Sem ponto de apoio</span><span class="status-track"><i style="display:block;width:11%;height:100%;background:var(--amber)"></i></span><span class="status-number">10</span></div>
+            </div>
+          </aside>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const operations = {
+      reversa: { name: 'Logística Reversa', clients: 12, total: 198, wait: 10, route: 53, done: 112, occ: 3, change: '+9% no período', stages: [14, 10, 28, 53, 93], accounts: [['Casas Bahia · Conta principal',48,18,2,'bad','Em risco','96%'],['Renner · Reversa SP',37,12,0,'good','Dentro do SLA','100%'],['Amazon BR · Conta Sul',31,9,1,'warn','Atenção','97%'],['Netshoes · Reversa',26,8,0,'good','Dentro do SLA','100%'],['Centauro · Conta Sudeste',22,6,0,'good','Dentro do SLA','98%']] },
+      weelog: { name: 'Weelog', clients: 8, total: 134, wait: 5, route: 42, done: 68, occ: 0, change: '+5% no período', stages: [12,5,21,42,54], accounts: [['Mercado Livre · Conta SP',36,14,0,'good','Dentro do SLA','100%'],['Magazine Luiza · Conta principal',29,9,0,'good','Dentro do SLA','99%'],['Dafiti · Conta Sul',24,8,0,'good','Dentro do SLA','100%'],['Petz · Conta Sudeste',19,6,0,'good','Dentro do SLA','98%'],['Fast Shop · Conta SP',14,3,0,'good','Dentro do SLA','100%']] },
+      lote: { name: 'Entrega em Lote', clients: 6, total: 96, wait: 9, route: 31, done: 46, occ: 2, change: '+3% no período', stages: [5,9,14,31,37], accounts: [['Renner · Entrega em Lote',28,10,1,'warn','Atenção','96%'],['Amazon BR · Conta principal',21,8,0,'good','Dentro do SLA','100%'],['Netshoes · Conta Sul',18,5,1,'bad','Em risco','94%'],['Centauro · Conta SP',14,4,0,'good','Dentro do SLA','98%'],['Casas Bahia · Conta RJ',9,2,0,'good','Dentro do SLA','100%']] },
+      expressa: { name: 'Entrega Expressa', clients: 5, total: 78, wait: 2, route: 20, done: 41, occ: 0, change: '+11% no período', stages: [5,2,10,20,41], accounts: [['Amazon BR · Expressa',24,8,0,'good','Dentro do SLA','100%'],['Mercado Livre · Expressa SP',19,5,0,'good','Dentro do SLA','100%'],['Renner · Expressa',14,3,0,'good','Dentro do SLA','99%'],['Fast Shop · Conta principal',11,2,0,'good','Dentro do SLA','100%'],['Petz · Expressa',10,2,0,'good','Dentro do SLA','100%']] },
+      incremental: { name: 'Logística Incremental', clients: 4, total: 61, wait: 6, route: 18, done: 27, occ: 2, change: '−2% no período', stages: [7,6,12,18,18], accounts: [['Casas Bahia · Incremental',21,7,1,'bad','Em risco','92%'],['Centauro · Conta principal',16,5,1,'warn','Atenção','94%'],['Netshoes · Conta Sul',13,4,0,'good','Dentro do SLA','98%'],['Renner · Incremental',11,2,0,'good','Dentro do SLA','100%']] },
+      store: { name: 'Store', clients: 3, total: 42, wait: 1, route: 8, done: 18, occ: 0, change: '+14% no período', stages: [2,1,3,8,28], accounts: [['Loja Paulista · Store',18,4,0,'good','Dentro do SLA','100%'],['Loja Barra · Store',14,3,0,'good','Dentro do SLA','100%'],['Loja Morumbi · Store',10,1,0,'good','Dentro do SLA','100%']] }
+    };
+
+    function showView(view) {
+      document.getElementById('home-view').classList.toggle('active', view === 'home');
+      document.getElementById('detail-view').classList.toggle('active', view === 'detail');
+      document.getElementById('switch-home').classList.toggle('active', view === 'home');
+      document.getElementById('switch-detail').classList.toggle('active', view === 'detail');
+      document.getElementById('breadcrumb-current').textContent = view === 'home' ? 'Home' : 'Home / Operações / ' + document.getElementById('detail-title').textContent;
+    }
+
+    function openDetail(key) {
+      document.getElementById('operation-select').value = key;
+      renderOperation(key);
+      showView('detail');
+    }
+
+    function renderOperation(key) {
+      const op = operations[key];
+      document.getElementById('detail-title').textContent = op.name;
+      document.getElementById('detail-subtitle').textContent = `${op.clients} clientes · ${op.total} pedidos no fluxo`;
+      document.getElementById('d-total').textContent = op.total;
+      document.getElementById('d-wait').textContent = op.wait;
+      document.getElementById('d-route').textContent = op.route;
+      document.getElementById('d-done').textContent = op.done;
+      document.getElementById('d-occ').textContent = op.occ;
+      document.getElementById('detail-change').textContent = op.change;
+      document.getElementById('client-count').textContent = `${op.clients} clientes ordenados por risco e volume`;
+      ['new','wait','assigned','route','done'].forEach((name, index) => document.getElementById(`stage-${name}`).textContent = op.stages[index]);
+      document.getElementById('client-rows').innerHTML = op.accounts.map(account => `<tr><td><span class="client-name">${account[0]}</span><span class="client-meta">conta ativa</span></td><td class="num">${account[1]}</td><td class="num">${account[2]}</td><td class="num">${account[3]}</td><td><span class="sla ${account[4]}"><i class="mini-dot"></i>${account[5]}</span></td><td class="num">${account[6]}</td></tr>`).join('');
+      document.getElementById('breadcrumb-current').textContent = 'Home / Operações / ' + op.name;
+    }
+
+    renderOperation('reversa');
+    if (window.location.hash === '#detail') showView('detail');
+  </script>
+</body>
+</html>

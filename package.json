@@ -1,0 +1,43 @@
+{
+  "name": "via-reversa-v2-front",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck",
+    "lint": "eslint .",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "harvest:test": "node --test scripts/harvest-v2/self-test.mjs",
+    "harvest:smoke": "node scripts/harvest-v2/run.mjs",
+    "harvest:routes": "node scripts/harvest-v2/run.mjs",
+    "harvest:validate": "node scripts/harvest-v2/validate.mjs",
+    "verify": "npm run test:run && npm run typecheck && npm run lint && npm run build && node scripts/verify-foundation.mjs"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.117",
+    "@nuxt/ui": "^4.10.0",
+    "chart.js": "^4.5.1",
+    "nuxt": "^4.4.8",
+    "tailwindcss": "^4.3.3",
+    "vue": "^3.5.40",
+    "vue-chartjs": "^5.3.4"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.16.0",
+    "@nuxt/test-utils": "^4.0.3",
+    "@vue/test-utils": "^2.4.11",
+    "eslint": "^10.7.0",
+    "happy-dom": "^20.10.6",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10",
+    "vue-tsc": "^3.3.7"
+  }
+}
