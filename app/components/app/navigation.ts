@@ -10,8 +10,15 @@ export interface NavigationGroup {
   children: NavigationItem[]
 }
 
+/** Itens soltos (sem grupo) no topo, igual aos root links do legado (Calendário, Audit. de Localização). */
 export const navigationItems: NavigationItem[] = [
   { label: 'Home', to: '/', icon: 'i-lucide-layout-dashboard' },
+  { label: 'Calendário', to: '/calendario', icon: 'i-lucide-calendar' },
+  { label: 'Auditoria geográfica', to: '/operacao/geo-audit', icon: 'i-lucide-map-pin-off' }
+]
+
+/** Labels e ordem fiéis ao grupo Operação do legado (troca "Criar Pedido" por "Operação ao vivo", novo no V2). */
+export const operacaoNavigation: NavigationItem[] = [
   { label: 'Operação ao vivo', to: '/operacao/ao-vivo', icon: 'i-lucide-radio-tower' },
   { label: 'Pedidos', to: '/pedidos', icon: 'i-lucide-package-search' },
   { label: 'Lotes', to: '/operacao/lotes', icon: 'i-lucide-layers' },
@@ -22,10 +29,14 @@ export const navigationItems: NavigationItem[] = [
   { label: 'Tratativas', to: '/operacao/tratativas', icon: 'i-lucide-messages-square' },
   { label: 'Ocorrências NG', to: '/operacao/ocorrencias-ng', icon: 'i-lucide-radar' },
   { label: 'Disparo Chatbot', to: '/operacao/disparo-chatbot', icon: 'i-lucide-bot' },
-  { label: 'Auditoria geográfica', to: '/operacao/geo-audit', icon: 'i-lucide-map-pin-off' },
-  { label: 'Dashboard Reversa', to: '/operacao/dashboard-reversa', icon: 'i-lucide-chart-column-increasing' },
-  { label: 'Calendário', to: '/calendario', icon: 'i-lucide-calendar' }
+  { label: 'Dashboard Reversa', to: '/operacao/dashboard-reversa', icon: 'i-lucide-chart-column-increasing' }
 ]
+
+export const operacaoNavGroup: NavigationGroup = {
+  label: 'Operação',
+  icon: 'i-lucide-workflow',
+  children: operacaoNavigation
+}
 
 /** Labels e ordem iguais ao menu Cadastros do legado. */
 export const cadastrosNavigation: NavigationItem[] = [
@@ -139,6 +150,7 @@ export const secondaryNavigation: NavigationItem[] = [
 
 /** Todos os grupos com submenu na sidebar. */
 export const navigationGroups: NavigationGroup[] = [
+  operacaoNavGroup,
   dashboardsNavGroup,
   slaAnalyticsNavGroup,
   resumosNavGroup,

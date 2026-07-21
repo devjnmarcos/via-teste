@@ -6,6 +6,7 @@ import {
   devolucoesNavGroup,
   faturasNavGroup,
   navigationItems,
+  operacaoNavGroup,
   resumosNavGroup,
   secondaryNavigation,
   slaAnalyticsNavGroup
@@ -19,6 +20,7 @@ const faturasOpen = ref(false)
 const resumosOpen = ref(false)
 const slaOpen = ref(false)
 const dashboardsOpen = ref(false)
+const operacaoOpen = ref(false)
 
 function isActive(to: string | undefined) {
   if (!to) return false
@@ -29,6 +31,8 @@ function isActive(to: string | undefined) {
 function groupHasActiveChild(children: { to?: string }[]) {
   return children.some((item) => Boolean(item.to) && isActive(item.to))
 }
+
+const operacaoActive = computed(() => groupHasActiveChild(operacaoNavGroup.children))
 
 const cadastrosActive = computed(() => groupHasActiveChild(cadastrosNavGroup.children))
 
@@ -69,9 +73,14 @@ watch(
     if (resumosActive.value) resumosOpen.value = true
     if (slaActive.value) slaOpen.value = true
     if (dashboardsActive.value) dashboardsOpen.value = true
+    if (operacaoActive.value) operacaoOpen.value = true
   },
   { immediate: true }
 )
+
+function toggleOperacao() {
+  operacaoOpen.value = !operacaoOpen.value
+}
 
 function toggleCadastros() {
   cadastrosOpen.value = !cadastrosOpen.value
@@ -142,11 +151,56 @@ const navLinkSubClass = 'nav-link--sub min-h-[34px] pl-[18px] text-xs [&_svg]:si
           aria-hidden="true"
         />
         <span>{{ item.label }}</span>
-        <span
-          v-if="item.to === '/operacao/ao-vivo'"
-          class="numeric min-w-[25px] rounded-[10px] bg-[oklch(34%_0.05_253)] px-1.5 py-0.5 text-center text-[10px] font-bold text-[oklch(87%_0.025_253)]"
-        >146</span>
       </NuxtLink>
+
+      <div class="my-px">
+        <button
+          :class="[navLinkClass, 'cursor-pointer']"
+          type="button"
+          :aria-expanded="operacaoOpen"
+          aria-controls="nav-operacao-submenu"
+          data-testid="nav-group-operacao"
+          @click="toggleOperacao"
+        >
+          <UIcon
+            :name="operacaoNavGroup.icon"
+            aria-hidden="true"
+          />
+          <span>{{ operacaoNavGroup.label }}</span>
+          <UIcon
+            name="i-lucide-chevron-right"
+            class="nav-chevron !size-[13px] transition-transform duration-160 ease-in-out"
+            :class="operacaoOpen ? 'nav-chevron--open rotate-90' : undefined"
+            aria-hidden="true"
+          />
+        </button>
+        <div
+          v-if="operacaoOpen"
+          id="nav-operacao-submenu"
+          class="py-0.5 pb-1.5"
+          role="group"
+          aria-label="Operação"
+          data-testid="nav-submenu-operacao"
+        >
+          <NuxtLink
+            v-for="item in operacaoNavGroup.children"
+            :key="item.to"
+            :to="item.to"
+            :class="[navLinkClass, navLinkSubClass, isActive(item.to) ? navLinkActiveClass : undefined]"
+            :aria-current="isActive(item.to) ? 'page' : undefined"
+          >
+            <UIcon
+              :name="item.icon"
+              aria-hidden="true"
+            />
+            <span>{{ item.label }}</span>
+            <span
+              v-if="item.to === '/operacao/ao-vivo'"
+              class="numeric min-w-[25px] rounded-[10px] bg-[oklch(34%_0.05_253)] px-1.5 py-0.5 text-center text-[10px] font-bold text-[oklch(87%_0.025_253)]"
+            >146</span>
+          </NuxtLink>
+        </div>
+      </div>
 
       <p class="mx-2.5 mt-[18px] mb-1.5 text-[10px] font-bold tracking-[0.13em] text-[oklch(66%_0.045_253)] uppercase">Gestão</p>
 

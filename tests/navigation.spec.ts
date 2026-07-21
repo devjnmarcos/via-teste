@@ -3,15 +3,23 @@ import {
   cadastrosNavigation,
   devolucoesNavigation,
   navigationItems,
+  operacaoNavigation,
   resumosNavigation
 } from '../app/components/app/navigation'
 import { getOrderDetailBundle } from '../app/data/demo/order-detail'
 import { resolveBreadcrumbs } from '../app/utils/breadcrumbs'
 
 describe('navegação oficial', () => {
-  it('expõe Home, operação ao vivo, pedidos, lotes e Dashboard Reversa no mesmo shell', () => {
+  it('expõe Home e itens soltos (Calendário, Auditoria geográfica) fora de grupo', () => {
     expect(navigationItems.map(item => item.to)).toEqual([
       '/',
+      '/calendario',
+      '/operacao/geo-audit'
+    ])
+  })
+
+  it('agrupa operação ao vivo, pedidos, lotes e Dashboard Reversa no grupo Operação', () => {
+    expect(operacaoNavigation.map(item => item.to)).toEqual([
       '/operacao/ao-vivo',
       '/pedidos',
       '/operacao/lotes',
@@ -22,14 +30,13 @@ describe('navegação oficial', () => {
       '/operacao/tratativas',
       '/operacao/ocorrencias-ng',
       '/operacao/disparo-chatbot',
-      '/operacao/geo-audit',
-      '/operacao/dashboard-reversa',
-      '/calendario'
+      '/operacao/dashboard-reversa'
     ])
   })
 
   it('usa ícones Lucide em todos os destinos', () => {
     expect(navigationItems.every(item => item.icon.startsWith('i-lucide-'))).toBe(true)
+    expect(operacaoNavigation.every(item => item.icon.startsWith('i-lucide-'))).toBe(true)
   })
 
   it('inclui submenu Cadastros com 12 destinos', () => {
