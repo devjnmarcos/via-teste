@@ -98,7 +98,7 @@ describe('devolucoes-metrics', () => {
       'Itens na caixa',
       'Itens Reversa',
       'Itens Entrega',
-      'Status DEV OUT'
+      'Status Despachos'
     ])
   })
 

@@ -1,13 +1,12 @@
 <script setup lang="ts">
 /**
  * Listagem CRUD Onda 3 — DataTable + MetricsStrip + AppModal + Pagination.
- * Usuários: delete com keyword. Regiões: expand. Aprovações: aprovar/recusar + trend.
+ * Usuários: delete com keyword. Regiões: expand. Aprovações: aprovar/recusar.
  */
 import type { DataTableColumn } from '../../types/data-table'
 import type { CadastroOnda3Kind, CadastroOnda3Row } from '../../data/demo/cadastros-onda3'
 import {
   approveCadastroSolicitacao,
-  aprovacoesTrend,
   buildCadastroOnda3Metrics,
   cadastroOnda3Configs,
   createEmptyCadastroOnda3,
@@ -60,6 +59,9 @@ const columns = computed((): DataTableColumn<CadastroOnda3Row>[] => {
     { type: 'text', key: 'meta', label: 'Detalhe', width: '18%' },
     { type: 'text', key: 'statusLabel', label: 'Status', width: '110px' }
   )
+  if (props.kind === 'contas') {
+    cols.push({ type: 'text', key: 'tipo', label: 'Tipo', width: '130px' })
+  }
   if (props.kind !== 'aprovacoes-pas') {
     cols.push({ type: 'switch', key: 'active', label: 'Ativo', width: '72px' })
   }
@@ -126,6 +128,8 @@ function openEdit(row: CadastroOnda3Row) {
   form.keyword = row.keyword
   form.queueStatus = row.queueStatus
   form.children = row.children ? structuredClone(row.children) : []
+  form.tipo = row.tipo
+  form.isTransporter = row.isTransporter
   formOpen.value = true
 }
 
@@ -179,6 +183,8 @@ function saveForm() {
       target.active = form.active
       target.statusLabel = form.active ? (target.queueStatus === 'pendente' ? 'Pendente' : 'Ativo') : 'Inativo'
       if (form.keyword !== undefined) target.keyword = String(form.keyword).trim()
+      if (form.tipo !== undefined) target.tipo = String(form.tipo)
+      if (form.isTransporter !== undefined) target.isTransporter = Boolean(form.isTransporter)
     }
   }
   else {
@@ -191,7 +197,9 @@ function saveForm() {
       statusLabel: props.kind === 'aprovacoes-pas' ? 'Pendente' : form.active ? 'Ativo' : 'Inativo',
       keyword: form.keyword ? String(form.keyword).trim() : undefined,
       queueStatus: props.kind === 'aprovacoes-pas' ? 'pendente' : undefined,
-      children: props.kind === 'regioes' ? [] : undefined
+      children: props.kind === 'regioes' ? [] : undefined,
+      tipo: props.kind === 'contas' ? String(form.tipo) : undefined,
+      isTransporter: props.kind === 'usuarios' ? Boolean(form.isTransporter) : undefined
     }
     rows.value = [created, ...rows.value]
   }
@@ -243,24 +251,6 @@ function confirmDelete() {
         :placeholder="config.searchPlaceholder"
         class="w-[280px] [&_input]:h-9 [&_input]:border-via-line-strong [&_input]:bg-via-surface-2 [&_input]:text-[11px]"
       />
-    </section>
-
-    <section
-      v-if="config.hasTrend"
-      class="border-b border-via-line"
-      aria-label="Tendência de aprovações"
-    >
-      <ChartPanel
-        title="Solicitações na semana"
-        note="fila pontos de apoio / transportadores"
-      >
-        <VolumeTrendChart
-          :series="aprovacoesTrend"
-          title="Aprovações · 7 dias"
-          note="fixture"
-          :height="160"
-        />
-      </ChartPanel>
     </section>
 
     <DataTable
@@ -322,6 +312,16 @@ function confirmDelete() {
           :label="field.label"
         >
           <USwitch v-model="(form as Record<string, unknown>)[field.key] as boolean" />
+        </AppFormField>
+        <AppFormField
+          v-else-if="field.type === 'select'"
+          :label="field.label"
+        >
+          <USelectMenu
+            v-model="(form as Record<string, unknown>)[field.key] as string"
+            value-key="value"
+            :items="field.options ?? []"
+          />
         </AppFormField>
         <AppFormField
           v-else

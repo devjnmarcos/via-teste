@@ -1,19 +1,17 @@
 <script setup lang="ts">
 /**
  * Operação → Tratativas (chatbot).
+ * A listagem de pedidos elegíveis e o disparo em lote foram migrados para a
+ * listagem de pedidos (plano irmão); esta tela mantém apenas indicadores e
+ * gráficos de acompanhamento.
  */
-import type { DataTableColumn } from '~/types/data-table'
-import type { TratativaOrderRow } from '~/data/demo/tratativas'
 import {
   buildTratativasDistribution,
-  markTratativaWorked,
-  markTratativasDispatched,
   tratativaStatusOptions,
   tratativasState,
   tratativasVolumeTrend
 } from '~/data/demo/tratativas'
 import { buildTratativasMetrics } from '~/utils/operacao-p3-metrics'
-import { DEFAULT_PAGE_SIZE, slicePage } from '~/utils/pagination'
 import { useToast } from '~/composables/useToast'
 
 useSeoMeta({ title: 'Tratativas · Operação · Via Reversa' })
@@ -21,51 +19,6 @@ useSeoMeta({ title: 'Tratativas · Operação · Via Reversa' })
 const toast = useToast()
 const search = ref('')
 const statusFilter = ref('all')
-const selectedIds = ref<string[]>([])
-const page = ref(1)
-const pageSize = ref(DEFAULT_PAGE_SIZE)
-const dispatchOpen = ref(false)
-
-const columns = computed<DataTableColumn<TratativaOrderRow>[]>(() => [
-  { type: 'text', key: 'orderId', label: 'Pedido', width: '100px' },
-  { type: 'text', key: 'client', label: 'Cliente', width: '16%' },
-  { type: 'text', key: 'accountName', label: 'Conta', width: '18%' },
-  { type: 'text', key: 'channel', label: 'Canal', width: '110px' },
-  { type: 'text', key: 'statusLabel', label: 'Status', width: '120px' },
-  { type: 'text', key: 'lastContactLabel', label: 'Último contato', width: '130px' },
-  { type: 'text', key: 'attempts', label: 'Tentativas', width: '100px' },
-  {
-    type: 'actions',
-    key: 'actions',
-    label: 'Ações',
-    width: '180px',
-    items: (row) => [
-      {
-        key: 'toggle',
-        label: selectedIds.value.includes(row.orderId) ? 'Remover' : 'Incluir',
-        icon: selectedIds.value.includes(row.orderId) ? 'i-lucide-check' : 'i-lucide-plus',
-        variant: 'ghost' as const,
-        disabled: row.status === 'disparado',
-        ariaLabel: `Alternar pedido ${row.orderId}`
-      },
-      {
-        key: 'work',
-        label: 'Trabalhar',
-        icon: 'i-lucide-check-check',
-        variant: 'ghost' as const,
-        disabled: row.status === 'trabalhado',
-        ariaLabel: `Marcar pedido ${row.orderId} como trabalhado`
-      },
-      {
-        key: 'open',
-        label: 'Abrir',
-        icon: 'i-lucide-external-link',
-        variant: 'ghost' as const,
-        ariaLabel: `Abrir pedido ${row.orderId}`
-      }
-    ]
-  }
-])
 
 const filteredRows = computed(() => {
   const query = search.value.trim().toLowerCase()
@@ -82,54 +35,13 @@ const listMetrics = computed(() =>
     filteredRows.value,
     tratativasState.contactsToday,
     tratativasState.workedToday,
-    selectedIds.value.length
+    // Seleção e disparo em lote saíram desta tela (migrados para /pedidos);
+    // não há mais seleção local, então o indicador de "Selecionados" fica zerado.
+    0
   )
 )
 
 const distribution = computed(() => buildTratativasDistribution(filteredRows.value))
-const pagedRows = computed(() => slicePage(filteredRows.value, page.value, pageSize.value))
-
-watch([search, statusFilter], () => {
-  page.value = 1
-  selectedIds.value = selectedIds.value.filter((id) =>
-    filteredRows.value.some((row) => row.orderId === id && row.status !== 'disparado')
-  )
-})
-
-function onAction(payload: { row: TratativaOrderRow; action: string }) {
-  if (payload.action === 'open') {
-    navigateTo(`/pedidos/${payload.row.orderId}`)
-    return
-  }
-  if (payload.action === 'work') {
-    if (markTratativaWorked(payload.row.orderId)) {
-      toast.success('Tratativa registrada', `Pedido ${payload.row.orderId} marcado como trabalhado.`)
-    }
-    return
-  }
-  if (payload.action !== 'toggle' || payload.row.status === 'disparado') return
-  const id = payload.row.orderId
-  if (selectedIds.value.includes(id)) {
-    selectedIds.value = selectedIds.value.filter((item) => item !== id)
-  } else {
-    selectedIds.value = [...selectedIds.value, id]
-  }
-}
-
-function openDispatch() {
-  if (selectedIds.value.length === 0) {
-    toast.error('Seleção vazia', 'Inclua pedidos pendentes para disparo.')
-    return
-  }
-  dispatchOpen.value = true
-}
-
-function confirmDispatch() {
-  const count = markTratativasDispatched([...selectedIds.value])
-  selectedIds.value = []
-  dispatchOpen.value = false
-  toast.success('Disparo solicitado', `${count} pedido(s) enfileirados no chatbot (mock).`)
-}
 
 function refresh() {
   toast.success('Atualizado', 'Tratativas recarregadas (mock).')
@@ -150,25 +62,11 @@ function refresh() {
         Monitor
       </AppButton>
       <AppButton
-        icon="i-lucide-bot"
-        variant="ghost"
-        to="/operacao/disparo-chatbot"
-      >
-        Disparo
-      </AppButton>
-      <AppButton
         icon="i-lucide-refresh-cw"
         variant="ghost"
         @click="refresh"
       >
         Atualizar
-      </AppButton>
-      <AppButton
-        icon="i-lucide-send"
-        :disabled="selectedIds.length === 0"
-        @click="openDispatch"
-      >
-        Disparar
       </AppButton>
     </PageHeader>
 
@@ -225,34 +123,5 @@ function refresh() {
         </ChartPanel>
       </div>
     </section>
-
-    <DataTable
-      :columns="columns"
-      :rows="pagedRows"
-      min-width="1120px"
-      empty-title="Nenhuma tratativa"
-      empty-description="Ajuste os filtros para ver pedidos elegíveis."
-      @action="onAction"
-    />
-
-    <Pagination
-      v-model:page="page"
-      v-model:page-size="pageSize"
-      :total="filteredRows.length"
-    />
-
-    <AppModal
-      v-model:open="dispatchOpen"
-      variant="confirm"
-      title="Disparar chatbot"
-      description="Confirma o disparo para os pedidos selecionados?"
-      confirm-label="Disparar"
-      confirm-variant="primary"
-      @confirm="confirmDispatch"
-    >
-      <p class="text-sm text-via-muted">
-        {{ selectedIds.length }} pedido(s) serão enfileirados no canal (mock).
-      </p>
-    </AppModal>
   </div>
 </template>

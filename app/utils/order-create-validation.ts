@@ -73,26 +73,34 @@ function validateParty(party: OrderAddressParty, prefix: string): FieldErrors {
   return errors
 }
 
-export function validateOperacaoStep(form: OrderCreateForm): FieldErrors {
+export function validateClienteStep(form: OrderCreateForm): FieldErrors {
   const errors: FieldErrors = {}
-  if (!form.kindCtrl) errors.kindCtrl = 'Selecione o tipo de pedido.'
   if (!form.accountId) errors.accountId = 'Selecione o cliente.'
   return errors
 }
 
-export function validateOrigemStep(form: OrderCreateForm): FieldErrors {
-  return validateParty(form.origin, 'origin')
+export function validateOperacaoStep(form: OrderCreateForm): FieldErrors {
+  const errors: FieldErrors = {}
+  if (!form.kindCtrl) errors.kindCtrl = 'Selecione o tipo de operação.'
+
+  const scheduledAt = requireText(form.scheduledAt, 'Data de agendamento é obrigatória.')
+  if (scheduledAt) errors.scheduledAt = scheduledAt
+
+  const carrierId = requireText(form.carrierId, 'Selecione o transportador.')
+  if (carrierId) errors.carrierId = carrierId
+
+  return errors
 }
 
-export function validateDestinoStep(form: OrderCreateForm): FieldErrors {
-  return validateParty(form.destiny, 'destiny')
+export function validateEnderecoStep(form: OrderCreateForm): FieldErrors {
+  return validateParty(form.address, 'address')
 }
 
 export function validateItem(item: OrderCreateItem, index: number): FieldErrors {
   const prefix = `items.${index}`
   const errors: FieldErrors = {}
-  const description = requireText(item.description, 'Descrição é obrigatória.')
-  if (description) errors[`${prefix}.description`] = description
+  const productId = requireText(item.productId, 'Selecione um produto.')
+  if (productId) errors[`${prefix}.productId`] = productId
 
   const quantity = requirePositive(item.quantity, 'Quantidade mínima é 1.')
   if (quantity) errors[`${prefix}.quantity`] = quantity
@@ -130,19 +138,19 @@ export function validateOrderCreateStep(
   form: OrderCreateForm
 ): FieldErrors {
   switch (stepId) {
+    case 'cliente':
+      return validateClienteStep(form)
     case 'operacao':
       return validateOperacaoStep(form)
-    case 'origem':
-      return validateOrigemStep(form)
-    case 'destino':
-      return validateDestinoStep(form)
+    case 'endereco':
+      return validateEnderecoStep(form)
     case 'itens':
       return validateItensStep(form)
     case 'revisao':
       return {
+        ...validateClienteStep(form),
         ...validateOperacaoStep(form),
-        ...validateOrigemStep(form),
-        ...validateDestinoStep(form),
+        ...validateEnderecoStep(form),
         ...validateItensStep(form)
       }
     default:

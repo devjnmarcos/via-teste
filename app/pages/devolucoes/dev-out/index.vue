@@ -17,7 +17,7 @@ import {
 import { buildDevOutListMetrics } from '~/utils/devolucoes-metrics'
 import { DEFAULT_PAGE_SIZE, slicePage } from '~/utils/pagination'
 
-useSeoMeta({ title: 'DEV OUT · Devoluções · Via Reversa' })
+useSeoMeta({ title: 'Despachos · Remessas · Via Reversa' })
 
 const route = useRoute()
 
@@ -181,7 +181,7 @@ function confirmDelete() {
 <template>
   <div class="devolucao-page">
     <PageHeader
-      title="DEV OUT"
+      title="Despachos"
       subtitle="Saída de Devolução ao Fornecedor"
     >
       <AppButton

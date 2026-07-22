@@ -22,6 +22,8 @@ import {
 import { dashboardsNavigation } from '../app/components/app/navigation'
 import { isTypedColumn } from '../app/types/data-table'
 import { pctTone } from '../app/utils/chart-theme'
+import { operationFilterOptions, operationVolumeRatio, operations, totalOrders } from '../app/data/demo/operations'
+import { scaleDashboardReversaFixture } from '../app/utils/dashboard-reversa-filter'
 
 const chartWrappers = [
   'app/components/charts/VolumeTrendChart.vue',
@@ -140,5 +142,42 @@ describe('Charts DS (Chart.js)', () => {
     const source = readFileSync('app/components/app/MetricsStrip.vue', 'utf8')
     expect(source).toMatch(/gap:\s*0|gap-0/)
     expect(source).toMatch(/border-right:\s*1px solid var\(--via-line\)|border-r border-via-line/)
+  })
+})
+
+describe('Filtro de Operação (Dashboard Reversa)', () => {
+  it('expõe "Todas as operações" + as 6 operações do domínio', () => {
+    expect(operationFilterOptions[0]).toEqual({ label: 'Todas as operações', value: 'all' })
+    expect(operationFilterOptions).toHaveLength(operations.length + 1)
+    expect(operationFilterOptions.slice(1).map((item) => item.value)).toEqual(
+      operations.map((operation) => operation.slug)
+    )
+  })
+
+  it('calcula o ratio de cada operação sobre o total e cai para 1 em "all"/slug desconhecido', () => {
+    expect(operationVolumeRatio('all')).toBe(1)
+    expect(operationVolumeRatio('slug-inexistente')).toBe(1)
+    const store = operations.find((operation) => operation.slug === 'store')!
+    expect(operationVolumeRatio('store')).toBeCloseTo(store.total / totalOrders, 6)
+  })
+
+  it('escalona campos numéricos preservando percentuais e strings', () => {
+    const scaledKpis = scaleDashboardReversaFixture({ trabalhado: 820, concluidos: 610 }, 0.5)
+    expect(scaledKpis).toEqual({ trabalhado: 410, concluidos: 305 })
+
+    const scaledRow = scaleDashboardReversaFixture(
+      { id: '1', uf: 'SP', total_atribuidos: 186, pct_coletados: 79.6 },
+      0.5
+    )
+    expect(scaledRow).toEqual({ id: '1', uf: 'SP', total_atribuidos: 93, pct_coletados: 79.6 })
+  })
+
+  it('adiciona o USelectMenu de Operação na barra de filtros e usa o ratio ao carregar as abas', () => {
+    const source = readFileSync('app/pages/operacao/dashboard-reversa.vue', 'utf8')
+    expect(source).toMatch(/v-model="operationId"/)
+    expect(source).toMatch(/aria-label="Operação"/)
+    expect(source).toMatch(/operationFilterOptions/)
+    expect(source).toMatch(/scaleDashboardReversaFixture/)
+    expect(source).toMatch(/operationVolumeRatio\(operationId\.value\)/)
   })
 })

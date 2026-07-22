@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { existsSync, readFileSync } from 'node:fs'
 import {
   dashboardsNavigation,
   navigationItems
@@ -22,10 +23,6 @@ import {
   routesState
 } from '../app/data/demo/roteirizacao'
 import {
-  expedicaoState,
-  markOrdersPrinted
-} from '../app/data/demo/expedicao'
-import {
   buildMonthCells,
   buildWeekCells,
   countEventsByDay,
@@ -42,7 +39,6 @@ import {
 } from '../app/utils/dashboards-metrics'
 import {
   buildCalendarioMetrics,
-  buildExpedicaoMetrics,
   buildRoutesListMetrics,
   buildRoteirizacaoMetrics
 } from '../app/utils/operacao-p2-metrics'
@@ -137,18 +133,7 @@ describe('roteirização e rotas', () => {
   })
 })
 
-describe('expedição e calendário', () => {
-  it('marca etiquetas como impressas', () => {
-    const ready = expedicaoState.orders.find((order) => !order.printed)
-    expect(ready).toBeTruthy()
-    const before = expedicaoState.printedToday
-    const count = markOrdersPrinted([ready!.orderId])
-    expect(count).toBe(1)
-    expect(expedicaoState.printedToday).toBe(before + 1)
-    expect(buildExpedicaoMetrics(expedicaoState.orders, 1, expedicaoState.printedToday)[1]?.label)
-      .toBe('Impressos hoje')
-  })
-
+describe('calendário', () => {
   it('monta grade do mês e eventos do dia', () => {
     const cells = buildMonthCells(2026, 6)
     expect(cells.length % 7).toBe(0)
@@ -195,10 +180,6 @@ describe('breadcrumbs P2', () => {
       { label: 'Dashboards', to: '/dashboards' },
       { label: 'loja-tv' }
     ])
-    expect(resolveBreadcrumbs('/operacao/expedicao')).toEqual([
-      { label: 'Home', to: '/' },
-      { label: 'Expedição' }
-    ])
     expect(resolveBreadcrumbs('/operacao/roteirizacao')).toEqual([
       { label: 'Home', to: '/' },
       { label: 'Roteirização' }
@@ -212,5 +193,34 @@ describe('breadcrumbs P2', () => {
       { label: 'Home', to: '/' },
       { label: 'Calendário' }
     ])
+  })
+})
+
+describe('conteúdo da tela de Calendário', () => {
+  it('remove o painel de tendência e ocupa a largura toda', () => {
+    const path = 'app/pages/calendario.vue'
+    expect(existsSync(path)).toBe(true)
+    const source = readFileSync(path, 'utf8')
+    expect(source).not.toContain('ChartPanel')
+    expect(source).not.toContain('VolumeTrendChart')
+    expect(source).not.toContain('calendarioVolumeTrend')
+    expect(source).toContain('grid-cols-1')
+    expect(source).toContain('<ViaCalendar')
+    expect(source).toContain('<ViaCalendarWeek')
+  })
+})
+
+describe('conteúdo da tela de Indicadores', () => {
+  it('remove tabela e gráficos, mantém apenas filtros e métricas', () => {
+    const path = 'app/pages/dashboards/indicadores.vue'
+    expect(existsSync(path)).toBe(true)
+    const source = readFileSync(path, 'utf8')
+    expect(source).not.toContain('<DataTable')
+    expect(source).not.toContain('<Pagination')
+    expect(source).not.toContain('StackedBarChart')
+    expect(source).not.toContain('PercentTrendChart')
+    expect(source).not.toContain('ChartPanel')
+    expect(source).toContain('<MetricsStrip')
+    expect(source).toContain('buildIndicadoresMetrics')
   })
 })

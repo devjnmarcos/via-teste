@@ -1,8 +1,9 @@
 <script setup lang="ts">
 /**
- * Redirect Configurações → SLA.
+ * Redirect Configurações → Integrações (única página da seção após a remoção
+ * de SLA/Processamento/Externos).
  */
-await navigateTo('/configuracoes/sla', { replace: true })
+await navigateTo('/configuracoes/integracoes', { replace: true })
 </script>
 
 <template>

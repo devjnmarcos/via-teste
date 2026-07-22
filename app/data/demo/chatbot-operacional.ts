@@ -2,19 +2,7 @@
  * Fixtures de Chatbot operacional (disparo, monitor, Mileto backfill).
  */
 
-import type { StatusKey, TrendPoint } from '../../types/domain'
-
-export type DispatchStatus = 'elegivel' | 'enviado' | 'falha' | 'skipped'
-
-export interface ChatbotDispatchRow extends Record<string, unknown> {
-  id: string
-  orderId: string
-  client: string
-  accountName: string
-  template: string
-  status: DispatchStatus
-  statusLabel: string
-}
+import type { TrendPoint } from '../../types/domain'
 
 export interface ChatbotQueueRow extends Record<string, unknown> {
   id: string
@@ -34,87 +22,6 @@ export interface MiletoBackfillJob extends Record<string, unknown> {
   processed: number
   total: number
   startedAtLabel: string
-}
-
-export const chatbotDispatchState = {
-  successToday: 214,
-  failedToday: 11,
-  skippedToday: 28,
-  queued: 36,
-  orders: [
-    {
-      id: 'cd-1',
-      orderId: '51101',
-      client: 'Ana Souza',
-      accountName: 'Casas Bahia · Nacional',
-      template: 'Coleta agendada',
-      status: 'elegivel' as const,
-      statusLabel: 'Elegível'
-    },
-    {
-      id: 'cd-2',
-      orderId: '51102',
-      client: 'Bruno Lima',
-      accountName: 'Casas Bahia · Nacional',
-      template: 'Lembrete coleta',
-      status: 'elegivel' as const,
-      statusLabel: 'Elegível'
-    },
-    {
-      id: 'cd-3',
-      orderId: '51103',
-      client: 'Carla Mendes',
-      accountName: 'Renner · Sul',
-      template: 'Coleta agendada',
-      status: 'enviado' as const,
-      statusLabel: 'Enviado'
-    },
-    {
-      id: 'cd-4',
-      orderId: '51104',
-      client: 'Diego Alves',
-      accountName: 'Amazon BR · Reversa',
-      template: 'Confirmação',
-      status: 'falha' as const,
-      statusLabel: 'Falha'
-    },
-    {
-      id: 'cd-5',
-      orderId: '51105',
-      client: 'Elena Rocha',
-      accountName: 'Casas Bahia · Nacional',
-      template: 'Lembrete coleta',
-      status: 'elegivel' as const,
-      statusLabel: 'Elegível'
-    },
-    {
-      id: 'cd-6',
-      orderId: '51106',
-      client: 'Fábio Nunes',
-      accountName: 'Renner · Sul',
-      template: 'Coleta agendada',
-      status: 'skipped' as const,
-      statusLabel: 'Skipped'
-    },
-    {
-      id: 'cd-7',
-      orderId: '51107',
-      client: 'Gisele Prado',
-      accountName: 'Amazon BR · Reversa',
-      template: 'Confirmação',
-      status: 'elegivel' as const,
-      statusLabel: 'Elegível'
-    },
-    {
-      id: 'cd-8',
-      orderId: '51108',
-      client: 'Hugo Martins',
-      accountName: 'Casas Bahia · Nacional',
-      template: 'Coleta agendada',
-      status: 'elegivel' as const,
-      statusLabel: 'Elegível'
-    }
-  ] as ChatbotDispatchRow[]
 }
 
 export const chatbotMonitorQueues: ChatbotQueueRow[] = [
@@ -195,38 +102,6 @@ export const miletoBackfillState = {
       startedAtLabel: '—'
     }
   ] as MiletoBackfillJob[]
-}
-
-export function buildDispatchDistribution(
-  rows: ChatbotDispatchRow[]
-): Array<{ status: StatusKey; value: number; label?: string }> {
-  const counts: Record<DispatchStatus, number> = {
-    elegivel: 0,
-    enviado: 0,
-    falha: 0,
-    skipped: 0
-  }
-  for (const row of rows) counts[row.status] += 1
-  return [
-    { status: 'assigned', value: counts.elegivel, label: 'Elegíveis' },
-    { status: 'done', value: counts.enviado, label: 'Enviados' },
-    { status: 'occurrence', value: counts.falha, label: 'Falhas' },
-    { status: 'stock', value: counts.skipped, label: 'Skipped' }
-  ]
-}
-
-export function dispatchChatbotOrders(orderIds: string[]): number {
-  let count = 0
-  for (const row of chatbotDispatchState.orders) {
-    if (!orderIds.includes(row.orderId)) continue
-    if (row.status !== 'elegivel') continue
-    row.status = 'enviado'
-    row.statusLabel = 'Enviado'
-    count += 1
-  }
-  chatbotDispatchState.successToday += count
-  chatbotDispatchState.queued = Math.max(0, chatbotDispatchState.queued - count)
-  return count
 }
 
 export function startMiletoBackfill(jobId: string): boolean {

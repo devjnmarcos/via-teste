@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { existsSync, readFileSync } from 'node:fs'
 import { createLot, getLot, lotesState } from '../app/data/demo/lotes'
 import { createFatura, getFatura, isFaturaKind, listFaturasByKind } from '../app/data/demo/faturas'
 import { buildLotesListMetrics, mapLotStatusKey } from '../app/utils/lotes-metrics'
@@ -86,5 +87,18 @@ describe('navegação e breadcrumbs — lotes e faturas', () => {
       { label: 'Faturas', to: '/faturas' },
       { label: '#9001' }
     ])
+  })
+})
+
+describe('conteúdo da tela de Lotes', () => {
+  it('remove a seção de Volume de importações e mantém tabela e paginação', () => {
+    const path = 'app/pages/operacao/lotes/index.vue'
+    expect(existsSync(path)).toBe(true)
+    const source = readFileSync(path, 'utf8')
+    expect(source).not.toContain('Volume de importações')
+    expect(source).not.toContain('VolumeTrendChart')
+    expect(source).not.toContain('lotesVolumeTrend')
+    expect(source).toContain('<DataTable')
+    expect(source).toContain('<Pagination')
   })
 })

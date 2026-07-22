@@ -138,13 +138,6 @@ export function resolveBreadcrumbs(
     ]
   }
 
-  if (normalized === '/operacao/expedicao') {
-    return [
-      { label: 'Home', to: '/' },
-      { label: 'Expedição' }
-    ]
-  }
-
   if (normalized === '/operacao/roteirizacao') {
     return [
       { label: 'Home', to: '/' },
@@ -168,13 +161,6 @@ export function resolveBreadcrumbs(
     ]
   }
 
-  if (normalized === '/loja/check-in') {
-    return [
-      { label: 'Home', to: '/' },
-      { label: 'Check In' }
-    ]
-  }
-
   if (normalized === '/operacao/tratativas') {
     return [
       { label: 'Home', to: '/' },
@@ -189,13 +175,6 @@ export function resolveBreadcrumbs(
     ]
   }
 
-  if (normalized === '/operacao/disparo-chatbot') {
-    return [
-      { label: 'Home', to: '/' },
-      { label: 'Disparo Chatbot' }
-    ]
-  }
-
   if (normalized === '/operacao/geo-audit') {
     return [
       { label: 'Home', to: '/' },
@@ -206,7 +185,6 @@ export function resolveBreadcrumbs(
   if (normalized === '/operacao/chatbot-monitor') {
     return [
       { label: 'Home', to: '/' },
-      { label: 'Disparo Chatbot', to: '/operacao/disparo-chatbot' },
       { label: 'Monitor' }
     ]
   }
@@ -276,20 +254,6 @@ export function resolveBreadcrumbs(
       { label: 'Home', to: '/' },
       { label: 'Pedidos', to: '/pedidos' },
       { label: `#${id}` }
-    ]
-  }
-
-  if (normalized === '/pontos-de-apoio') {
-    return [
-      { label: 'Home', to: '/' },
-      { label: 'Pontos de apoio' }
-    ]
-  }
-
-  if (normalized === '/transportadores') {
-    return [
-      { label: 'Home', to: '/' },
-      { label: 'Transportadores' }
     ]
   }
 
@@ -429,7 +393,6 @@ export function resolveBreadcrumbs(
   if (normalized === '/configuracoes' || normalized.startsWith('/configuracoes/')) {
     const segments = normalized.split('/').filter(Boolean)
     const section = segments[1]
-    const third = segments[2]
 
     const crumbs: BreadcrumbItem[] = [
       { label: 'Home', to: '/' },
@@ -441,14 +404,15 @@ export function resolveBreadcrumbs(
       return crumbs
     }
 
-    if (section === 'sla' && third === 'auditoria') {
-      crumbs.push({ label: 'SLA', to: '/configuracoes/sla' })
-      crumbs.push({ label: 'Auditoria' })
-      return crumbs
-    }
-
     crumbs.push({ label: configuracaoNavLabel(section) })
     return crumbs
+  }
+
+  if (normalized === '/logs/integracao') {
+    return [
+      { label: 'Home', to: '/' },
+      { label: 'Logs · Integração' }
+    ]
   }
 
   if (normalized === '/login') {

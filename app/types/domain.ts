@@ -108,6 +108,10 @@ export interface Order {
   stageDuration: string
   sla: string
   slaTone: StatusTone
+  /** Etiqueta 100×150mm já gerada para este pedido (bloqueia "Gerar etiqueta" em lote). */
+  labelPrinted?: boolean
+  /** Pedido elegível para disparo de template de chatbot em lote. */
+  chatbotEligible?: boolean
   items: number
   occurrences: number
   evidences: number
@@ -240,7 +244,7 @@ export type CadastroKind =
   | 'usuarios'
   | 'aprovacoes-pas'
   | 'ocorrencias'
-  | 'ocorrencias-externas'
+  | 'operacoes'
   | 'regioes'
   | 'feriados'
   | 'produtos'

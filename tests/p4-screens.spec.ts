@@ -13,12 +13,6 @@ import {
   enqueueFixInvalidAddresses,
   geoAuditState
 } from '../app/data/demo/geo-audit'
-import {
-  buildPontosApoioMetrics,
-  buildTransportadoresMetrics,
-  pontosApoioRows,
-  transportadoresRows
-} from '../app/data/demo/gestao-rede'
 import { resolveBreadcrumbs } from '../app/utils/breadcrumbs'
 import { existsSync, readFileSync } from 'node:fs'
 
@@ -34,7 +28,7 @@ describe('navegação P4 / gap fechado', () => {
     ])
   })
 
-  it('mantém os 11 cadastros legados como ready; Operações é stub novo ainda não implementado', () => {
+  it('mantém os 11 cadastros legados e o novo Operações como ready', () => {
     const legacyReadyLabels = [
       'SLA', 'Fretes', 'Empresas', 'Operadores', 'Usuários',
       "Aprovações PA's", 'Ocorrências', 'Regiões', 'Feriados', 'Produtos', 'Templates Chatbot'
@@ -44,7 +38,7 @@ describe('navegação P4 / gap fechado', () => {
     expect(legacyItems.every((item) => item.ready)).toBe(true)
 
     const operacoesItem = cadastroNavItems.find((item) => item.label === 'Operações')
-    expect(operacoesItem?.ready).toBe(false)
+    expect(operacoesItem?.ready).toBe(true)
   })
 })
 
@@ -80,11 +74,6 @@ describe('geo-audit e gestão de rede', () => {
     expect(result.queued).toBe(before)
     expect(geoAuditState.rows.every((row) => row.status === 'corrigido')).toBe(true)
   })
-
-  it('calcula métricas de PA e transportadores', () => {
-    expect(buildPontosApoioMetrics(pontosApoioRows)[0]?.label).toBe('Pontos')
-    expect(buildTransportadoresMetrics(transportadoresRows)[0]?.label).toBe('Transportadores')
-  })
 })
 
 describe('breadcrumbs P4', () => {
@@ -92,14 +81,6 @@ describe('breadcrumbs P4', () => {
     expect(resolveBreadcrumbs('/operacao/geo-audit')).toEqual([
       { label: 'Home', to: '/' },
       { label: 'Rastreio' }
-    ])
-    expect(resolveBreadcrumbs('/pontos-de-apoio')).toEqual([
-      { label: 'Home', to: '/' },
-      { label: 'Pontos de apoio' }
-    ])
-    expect(resolveBreadcrumbs('/transportadores')).toEqual([
-      { label: 'Home', to: '/' },
-      { label: 'Transportadores' }
     ])
     expect(resolveBreadcrumbs('/pedidos/novo-proprio')).toEqual([
       { label: 'Home', to: '/' },
@@ -125,8 +106,6 @@ describe('rotas P4 materializadas', () => {
   const files = [
     ['app/pages/operacao/geo-audit.vue', 'MetricsStrip'],
     ['app/pages/operacao/geo-audit.vue', 'VolumeTrendChart'],
-    ['app/pages/pontos-de-apoio/index.vue', 'DataTable'],
-    ['app/pages/transportadores/index.vue', 'AppModal'],
     ['app/pages/pedidos/[id]/editar.vue', 'OrderEditForm'],
     ['app/pages/pedidos/[id]/checkout.vue', 'AppFormField'],
     ['app/pages/pedidos/novo-proprio.vue', 'OrderCreateWizard'],
@@ -137,5 +116,13 @@ describe('rotas P4 materializadas', () => {
   it.each(files)('materializa %s com %s', (path, token) => {
     expect(existsSync(path)).toBe(true)
     expect(readFileSync(path, 'utf8')).toContain(token)
+  })
+})
+
+describe('remoção de Pontos de apoio e Transportadores', () => {
+  it('as páginas e a fixture gestao-rede.ts não existem mais', () => {
+    expect(existsSync('app/pages/pontos-de-apoio/index.vue')).toBe(false)
+    expect(existsSync('app/pages/transportadores/index.vue')).toBe(false)
+    expect(existsSync('app/data/demo/gestao-rede.ts')).toBe(false)
   })
 })

@@ -60,7 +60,7 @@ export function buildDevInListMetrics(rows: DevInBoxRow[]): Metric[] {
     {
       label: 'Itens conferidos',
       value: items,
-      note: readyForLot > 0 ? `${readyForLot} sem vínculo DEV OUT` : 'soma no filtro',
+      note: readyForLot > 0 ? `${readyForLot} sem vínculo Despachos` : 'soma no filtro',
       icon: 'i-lucide-scan-barcode'
     }
   ]
@@ -135,7 +135,7 @@ export function buildDevInDetailMetrics(box: DevInBoxRow): Metric[] {
       icon: 'i-lucide-truck'
     },
     {
-      label: 'Status DEV OUT',
+      label: 'Status Despachos',
       value: box.lotOutStatus === '—' ? 'Sem vínculo' : box.lotOutStatus,
       note: box.lotOutStatus === '—' ? 'pronta para lote se fechada' : 'vínculo com lote',
       icon: 'i-lucide-link'

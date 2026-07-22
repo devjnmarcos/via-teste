@@ -10,8 +10,7 @@ import {
   createLot,
   lotesAccountOptions,
   lotesState,
-  lotesStatusOptions,
-  lotesVolumeTrend
+  lotesStatusOptions
 } from '~/data/demo/lotes'
 import { buildLotesListMetrics } from '~/utils/lotes-metrics'
 import { DEFAULT_PAGE_SIZE, slicePage } from '~/utils/pagination'
@@ -156,21 +155,6 @@ function onAction(payload: { row: LotRow; action: string }) {
         value-key="value"
         :items="accountFilterOptions"
         class="w-[220px]"
-      />
-    </section>
-
-    <section
-      class="border-b border-via-line bg-via-surface px-[18px] pt-4 pb-2"
-      aria-label="Tendência de importações"
-    >
-      <header class="mb-3 [&_h2]:m-0 [&_h2]:text-sm [&_h2]:font-bold [&_h2]:text-via-ink [&_p]:mt-1 [&_p]:mb-0 [&_p]:text-xs [&_p]:text-via-muted">
-        <h2>Volume de importações</h2>
-        <p>Lotes criados nos últimos 7 dias (fixture).</p>
-      </header>
-      <VolumeTrendChart
-        :series="lotesVolumeTrend"
-        title="Lotes criados · 7 dias"
-        note="volume diário"
       />
     </section>
 

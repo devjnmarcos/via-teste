@@ -10,7 +10,7 @@ useSeoMeta({ title: 'Novo pedido próprio · Via Reversa' })
     <PageHeader
       back-to="/pedidos"
       title="Criação de pedido próprio"
-      subtitle="Fluxo new_own — origem vinculada à conta autenticada"
+      subtitle="Fluxo new_own — cliente vinculado à conta autenticada"
     >
       <AppButton
         to="/pedidos/novo"

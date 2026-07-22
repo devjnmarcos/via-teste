@@ -53,10 +53,13 @@ import {
   trabalhadoUfColumns,
   visaoGeralFixture
 } from '~/data/demo/dashboard-reversa'
+import { operationFilterOptions, operationVolumeRatio } from '~/data/demo/operations'
+import { scaleDashboardReversaFixture } from '~/utils/dashboard-reversa-filter'
 
 useSeoMeta({ title: 'Dashboard Reversa · Operação · Via Reversa' })
 
 const accountId = ref<string>('all')
+const operationId = ref<string>('all')
 const periodKind = ref<PeriodKind>('created_at')
 const periodStart = ref('2026-07-01')
 const periodEnd = ref('2026-07-17')
@@ -79,7 +82,7 @@ const tabCache = reactive<{
   agendamentos: AgendamentosFixture | null
   resumo: ResumoFixture | null
 }>({
-  'visao-geral': structuredClone(visaoGeralFixture),
+  'visao-geral': scaleDashboardReversaFixture(visaoGeralFixture, operationVolumeRatio(operationId.value)),
   mailing: null,
   trabalhado: null,
   backlog: null,
@@ -91,7 +94,9 @@ const tabCache = reactive<{
 const filterSummary = computed(() => {
   const account =
     accountFilterOptions.find((item) => item.value === accountId.value)?.label ?? 'Todas as contas'
-  return `${periodStart.value} a ${periodEnd.value} · ${account}`
+  const operation =
+    operationFilterOptions.find((item) => item.value === operationId.value)?.label ?? 'Todas as operações'
+  return `${periodStart.value} a ${periodEnd.value} · ${account} · ${operation}`
 })
 
 const pageSubtitle = computed(() => `Painel de indicadores · ${filterSummary.value}`)
@@ -141,26 +146,27 @@ const filteredAgendamentos = computed(() => {
 
 function ensureTabLoaded(tab: DashboardReversaTabId) {
   visitedTabs.value.add(tab)
+  const ratio = operationVolumeRatio(operationId.value)
   if (tab === 'visao-geral' && !tabCache['visao-geral']) {
-    tabCache['visao-geral'] = structuredClone(visaoGeralFixture)
+    tabCache['visao-geral'] = scaleDashboardReversaFixture(visaoGeralFixture, ratio)
   }
   if (tab === 'mailing' && !tabCache.mailing) {
-    tabCache.mailing = structuredClone(mailingFixture)
+    tabCache.mailing = scaleDashboardReversaFixture(mailingFixture, ratio)
   }
   if (tab === 'trabalhado' && !tabCache.trabalhado) {
-    tabCache.trabalhado = structuredClone(trabalhadoFixture)
+    tabCache.trabalhado = scaleDashboardReversaFixture(trabalhadoFixture, ratio)
   }
   if (tab === 'backlog' && !tabCache.backlog) {
-    tabCache.backlog = structuredClone(backlogFixture)
+    tabCache.backlog = scaleDashboardReversaFixture(backlogFixture, ratio)
   }
   if (tab === 'motoboys' && !tabCache.motoboys) {
-    tabCache.motoboys = structuredClone(motoboysFixture)
+    tabCache.motoboys = scaleDashboardReversaFixture(motoboysFixture, ratio)
   }
   if (tab === 'agendamentos' && !tabCache.agendamentos) {
-    tabCache.agendamentos = structuredClone(agendamentosFixture)
+    tabCache.agendamentos = scaleDashboardReversaFixture(agendamentosFixture, ratio)
   }
   if (tab === 'resumo' && !tabCache.resumo) {
-    tabCache.resumo = structuredClone(resumoFixture)
+    tabCache.resumo = scaleDashboardReversaFixture(resumoFixture, ratio)
   }
 }
 
@@ -189,10 +195,14 @@ function applyAgendFilters() {
   loading.value = true
   tabCache.agendamentos = null
   window.setTimeout(() => {
-    tabCache.agendamentos = structuredClone(agendamentosFixture)
+    tabCache.agendamentos = scaleDashboardReversaFixture(agendamentosFixture, operationVolumeRatio(operationId.value))
     loading.value = false
   }, 180)
 }
+
+watch(operationId, () => {
+  invalidateAndReload()
+})
 
 onMounted(() => {
   ensureTabLoaded('visao-geral')
@@ -224,6 +234,13 @@ onMounted(() => {
         :items="[...accountFilterOptions]"
         class="w-[220px] [&_button]:h-9 [&_button]:border-via-line-strong [&_button]:bg-via-surface-2 [&_button]:text-[11px]"
         aria-label="Conta"
+      />
+      <USelectMenu
+        v-model="operationId"
+        value-key="value"
+        :items="[...operationFilterOptions]"
+        class="w-[220px] [&_button]:h-9 [&_button]:border-via-line-strong [&_button]:bg-via-surface-2 [&_button]:text-[11px]"
+        aria-label="Operação"
       />
       <USelectMenu
         v-model="periodKind"

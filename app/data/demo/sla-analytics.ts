@@ -778,3 +778,34 @@ export function buildSlaStackedSeries(rows: SlaEntityRow[]): StackedSeriesPoint[
 export function isSlaReportVariant(value: string): value is SlaReportVariant {
   return value in slaVariantMeta
 }
+
+export type SlaConsolidatedTabId = 'ranking' | 'by-date'
+
+export interface SlaConsolidatedTab {
+  id: SlaConsolidatedTabId
+  label: string
+}
+
+/**
+ * Abas da página consolidada `/dashboards/sla` — substitui a divisão em
+ * 8 arquivos (4 dimensões × 2 modos) por 1 filtro de dimensão + 2 abas.
+ */
+export const slaConsolidatedTabs: SlaConsolidatedTab[] = [
+  { id: 'ranking', label: 'Ranking por entidade' },
+  { id: 'by-date', label: 'Evolução por data' }
+]
+
+export interface SlaDimensionOption {
+  value: SlaDimension
+  label: string
+  entityVariant: SlaReportVariant
+  dateVariant: SlaReportVariant
+}
+
+/** Filtro de dimensão único da página consolidada. */
+export const slaConsolidatedDimensions: SlaDimensionOption[] = [
+  { value: 'customer', label: 'Cliente', entityVariant: 'por-cliente', dateVariant: 'cliente-por-data' },
+  { value: 'state', label: 'Estado', entityVariant: 'por-estado', dateVariant: 'estado-por-data' },
+  { value: 'support_point', label: 'Ponto de apoio', entityVariant: 'por-pa', dateVariant: 'pa-por-data' },
+  { value: 'transporter', label: 'Transportador', entityVariant: 'por-transportador', dateVariant: 'transportador-por-data' }
+]

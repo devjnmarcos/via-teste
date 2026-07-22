@@ -15,7 +15,7 @@ import {
 import { buildDevInListMetrics } from '~/utils/devolucoes-metrics'
 import { DEFAULT_PAGE_SIZE, slicePage } from '~/utils/pagination'
 
-useSeoMeta({ title: 'DEV IN · Devoluções · Via Reversa' })
+useSeoMeta({ title: 'Caixas · Remessas · Via Reversa' })
 
 const route = useRoute()
 
@@ -49,7 +49,7 @@ const columns: DataTableColumn<DevInBoxRow>[] = [
   { type: 'text', key: 'createdAtLabel', label: 'Aberto em', width: '130px' },
   { type: 'text', key: 'closedAtLabel', label: 'Fechado em', width: '130px' },
   { type: 'text', key: 'totItemsIn', label: 'Itens', width: '72px', align: 'right' },
-  { type: 'text', key: 'lotOutStatus', label: 'Status DEV OUT', width: '120px' },
+  { type: 'text', key: 'lotOutStatus', label: 'Status Despachos', width: '120px' },
   {
     type: 'actions',
     key: 'actions',
@@ -158,7 +158,7 @@ function onAction(payload: { row: DevInBoxRow; action: string }) {
 <template>
   <div class="devolucao-page">
     <PageHeader
-      title="DEV IN"
+      title="Caixas"
       subtitle="Entrada de Devolução ao Fornecedor"
     >
       <AppButton

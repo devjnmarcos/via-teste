@@ -2,8 +2,7 @@
  * Fixtures e helpers da Onda 3 de Cadastros (10 kinds além de SLA/Fretes).
  * Create/edit curto em modal; Usuários usa delete com keyword; Regiões usa expand.
  */
-import type { Metric } from '../../types/domain'
-import type { CadastroKind } from '../../types/domain'
+import type { CadastroKind, Metric } from '../../types/domain'
 
 export type CadastroOnda3Kind = Exclude<CadastroKind, 'sla' | 'fretes'>
 
@@ -20,13 +19,18 @@ export interface CadastroOnda3Row extends Record<string, unknown> {
   children?: { id: string; label: string; detail: string }[]
   /** Status de fila (aprovações). */
   queueStatus?: 'pendente' | 'aprovado' | 'recusado'
+  /** Tags do Account legado (kinds JSON array) — só usado no kind 'contas'. */
+  tipo?: string
+  /** Espelha User.is_transporter do legado — só usado no kind 'usuarios'. */
+  isTransporter?: boolean
 }
 
 export interface CadastroOnda3FormField {
   key: keyof CadastroOnda3Row & string
   label: string
   placeholder?: string
-  type?: 'text' | 'email' | 'switch'
+  type?: 'text' | 'email' | 'switch' | 'select'
+  options?: { label: string; value: string }[]
 }
 
 export interface CadastroOnda3Config {
@@ -38,7 +42,6 @@ export interface CadastroOnda3Config {
   formFields: CadastroOnda3FormField[]
   hasExpand?: boolean
   hasApproveActions?: boolean
-  hasTrend?: boolean
 }
 
 const empresas: CadastroOnda3Row[] = [
@@ -48,15 +51,15 @@ const empresas: CadastroOnda3Row[] = [
 ]
 
 const contas: CadastroOnda3Row[] = [
-  { id: 'cta-1', name: 'CB · CD Cajamar', detail: 'Casas Bahia', meta: 'Reversa · SP', statusLabel: 'Ativa', active: true },
-  { id: 'cta-2', name: 'RN · Hub Sul', detail: 'Renner', meta: 'Troca · RS', statusLabel: 'Ativa', active: true },
-  { id: 'cta-3', name: 'AMZ · São Paulo', detail: 'Amazon BR', meta: 'Reversa · SP', statusLabel: 'Pausada', active: false }
+  { id: 'cta-1', name: 'CB · CD Cajamar', detail: 'Casas Bahia', meta: 'Reversa · SP', statusLabel: 'Ativa', active: true, tipo: 'Cliente' },
+  { id: 'cta-2', name: 'RN · Hub Sul', detail: 'Renner', meta: 'Troca · RS', statusLabel: 'Ativa', active: true, tipo: 'Cliente' },
+  { id: 'cta-3', name: 'AMZ · São Paulo', detail: 'Amazon BR', meta: 'Reversa · SP', statusLabel: 'Pausada', active: false, tipo: 'Fornecedor' }
 ]
 
 const usuarios: CadastroOnda3Row[] = [
-  { id: 'usr-1', name: 'Ana Duarte', detail: 'Operações', meta: 'Admin', statusLabel: 'Ativo', active: true, keyword: 'ana.duarte@viareversa.com' },
-  { id: 'usr-2', name: 'João Ribeiro', detail: 'Ponto de apoio Centro', meta: 'Operador', statusLabel: 'Ativo', active: true, keyword: 'joao.ribeiro@viareversa.com' },
-  { id: 'usr-3', name: 'Camila Ferreira', detail: 'Backoffice', meta: 'Analista', statusLabel: 'Inativo', active: false, keyword: 'camila.ferreira@viareversa.com' }
+  { id: 'usr-1', name: 'Ana Duarte', detail: 'Operações', meta: 'Admin', statusLabel: 'Ativo', active: true, keyword: 'ana.duarte@viareversa.com', isTransporter: false },
+  { id: 'usr-2', name: 'João Ribeiro', detail: 'Ponto de apoio Centro', meta: 'Operador', statusLabel: 'Ativo', active: true, keyword: 'joao.ribeiro@viareversa.com', isTransporter: true },
+  { id: 'usr-3', name: 'Camila Ferreira', detail: 'Backoffice', meta: 'Analista', statusLabel: 'Inativo', active: false, keyword: 'camila.ferreira@viareversa.com', isTransporter: false }
 ]
 
 const aprovacoes: CadastroOnda3Row[] = [
@@ -72,10 +75,14 @@ const ocorrencias: CadastroOnda3Row[] = [
   { id: 'oc-3', name: 'Embalagem danificada', detail: 'Coleta', meta: 'Informativa', statusLabel: 'Inativa', active: false }
 ]
 
-const ocorrenciasExternas: CadastroOnda3Row[] = [
-  { id: 'ox-1', name: 'Mileto · AUSENTE', detail: 'Código MLT-01', meta: 'Externo', statusLabel: 'Mapeada', active: true },
-  { id: 'ox-2', name: 'Kangu · CEP inválido', detail: 'Código KG-88', meta: 'Externo', statusLabel: 'Mapeada', active: true },
-  { id: 'ox-3', name: 'Carrier · Recusa', detail: 'Código CR-12', meta: 'Externo', statusLabel: 'Pendente', active: false }
+const operacoes: CadastroOnda3Row[] = [
+  { id: 'op-1', name: 'Logística Reversa', detail: 'Coleta e retorno ao CD', meta: 'Reversa', statusLabel: 'Ativo', active: true },
+  { id: 'op-2', name: 'Entrega em Lote', detail: 'Expedição consolidada', meta: 'Direta', statusLabel: 'Ativo', active: true },
+  { id: 'op-3', name: 'Entrega Expressa', detail: 'SLA curto, prioridade alta', meta: 'Direta', statusLabel: 'Ativo', active: true },
+  { id: 'op-4', name: 'Logística Incremental', detail: 'Reposição contínua de estoque', meta: 'Reversa', statusLabel: 'Ativo', active: true },
+  { id: 'op-5', name: 'Weelog', detail: 'Integração Weelog', meta: 'Parceiro', statusLabel: 'Ativo', active: true },
+  { id: 'op-6', name: 'VTEX', detail: 'Pedidos originados na VTEX', meta: 'Marketplace', statusLabel: 'Ativo', active: true },
+  { id: 'op-7', name: 'Store', detail: 'Venda em loja física', meta: 'Loja', statusLabel: 'Inativo', active: false }
 ]
 
 const regioes: CadastroOnda3Row[] = [
@@ -139,7 +146,7 @@ const store: Record<CadastroOnda3Kind, CadastroOnda3Row[]> = {
   usuarios: structuredClone(usuarios),
   'aprovacoes-pas': structuredClone(aprovacoes),
   ocorrencias: structuredClone(ocorrencias),
-  'ocorrencias-externas': structuredClone(ocorrenciasExternas),
+  operacoes: structuredClone(operacoes),
   regioes: structuredClone(regioes),
   feriados: structuredClone(feriados),
   produtos: structuredClone(produtos),
@@ -170,6 +177,16 @@ export const cadastroOnda3Configs: Record<CadastroOnda3Kind, CadastroOnda3Config
       { key: 'name', label: 'Conta *', placeholder: 'Ex.: CB · CD Cajamar' },
       { key: 'detail', label: 'Empresa', placeholder: 'Casas Bahia' },
       { key: 'meta', label: 'Operação / UF', placeholder: 'Reversa · SP' },
+      {
+        key: 'tipo',
+        label: 'Tipo',
+        type: 'select',
+        options: [
+          { label: 'Cliente', value: 'Cliente' },
+          { label: 'Fornecedor', value: 'Fornecedor' },
+          { label: 'Ponto de apoio', value: 'Ponto de apoio' }
+        ]
+      },
       { key: 'active', label: 'Ativa', type: 'switch' }
     ]
   },
@@ -184,6 +201,7 @@ export const cadastroOnda3Configs: Record<CadastroOnda3Kind, CadastroOnda3Config
       { key: 'keyword', label: 'E-mail *', placeholder: 'usuario@empresa.com', type: 'email' },
       { key: 'detail', label: 'Área', placeholder: 'Operações' },
       { key: 'meta', label: 'Papel', placeholder: 'Operador' },
+      { key: 'isTransporter', label: 'É transportador', type: 'switch' },
       { key: 'active', label: 'Ativo', type: 'switch' }
     ]
   },
@@ -194,7 +212,6 @@ export const cadastroOnda3Configs: Record<CadastroOnda3Kind, CadastroOnda3Config
     searchPlaceholder: 'Buscar ponto de apoio ou transportador…',
     deleteMode: 'confirm',
     hasApproveActions: true,
-    hasTrend: true,
     formFields: [
       { key: 'name', label: 'Solicitante *', placeholder: 'Ponto de apoio ou transportador' },
       { key: 'detail', label: 'Local / tipo', placeholder: 'Cidade · UF' },
@@ -214,17 +231,17 @@ export const cadastroOnda3Configs: Record<CadastroOnda3Kind, CadastroOnda3Config
       { key: 'active', label: 'Ativa', type: 'switch' }
     ]
   },
-  'ocorrencias-externas': {
-    kind: 'ocorrencias-externas',
-    singular: 'item de ocorrência',
-    createLabel: 'Novo item externo',
-    searchPlaceholder: 'Buscar código ou provedor…',
+  operacoes: {
+    kind: 'operacoes',
+    singular: 'operação',
+    createLabel: 'Nova operação',
+    searchPlaceholder: 'Buscar tipo de operação…',
     deleteMode: 'confirm',
     formFields: [
-      { key: 'name', label: 'Item *', placeholder: 'Provedor · código' },
-      { key: 'detail', label: 'Código externo', placeholder: 'MLT-01' },
-      { key: 'meta', label: 'Origem', placeholder: 'Externo' },
-      { key: 'active', label: 'Ativo', type: 'switch' }
+      { key: 'name', label: 'Operação *', placeholder: 'Ex.: Logística Reversa' },
+      { key: 'detail', label: 'Descrição', placeholder: 'Contexto operacional' },
+      { key: 'meta', label: 'Natureza', placeholder: 'Reversa' },
+      { key: 'active', label: 'Ativa', type: 'switch' }
     ]
   },
   regioes: {
@@ -298,7 +315,11 @@ export function createEmptyCadastroOnda3(kind: CadastroOnda3Kind): Omit<Cadastro
     statusLabel: 'Ativo',
     active: true
   }
-  if (kind === 'usuarios') base.keyword = ''
+  if (kind === 'usuarios') {
+    base.keyword = ''
+    base.isTransporter = false
+  }
+  if (kind === 'contas') base.tipo = 'Cliente'
   if (kind === 'aprovacoes-pas') {
     base.queueStatus = 'pendente'
     base.statusLabel = 'Pendente'
@@ -333,18 +354,8 @@ export function buildCadastroOnda3Metrics(rows: CadastroOnda3Row[], kind: Cadast
   ]
 }
 
-export const aprovacoesTrend = [
-  { label: 'Seg', value: 2 },
-  { label: 'Ter', value: 4 },
-  { label: 'Qua', value: 3 },
-  { label: 'Qui', value: 5 },
-  { label: 'Sex', value: 1 },
-  { label: 'Sáb', value: 0 },
-  { label: 'Dom', value: 1 }
-]
-
 export function isCadastroOnda3Kind(kind: CadastroKind): kind is CadastroOnda3Kind {
-  return kind !== 'sla' && kind !== 'fretes'
+  return Object.hasOwn(cadastroOnda3Configs, kind)
 }
 
 export function approveCadastroSolicitacao(kind: CadastroOnda3Kind, id: string): boolean {

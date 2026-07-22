@@ -5,9 +5,7 @@
 import type { Metric } from '../types/domain'
 import type { TratativaOrderRow } from '../data/demo/tratativas'
 import type { OcorrenciaNgRow } from '../data/demo/ocorrencias-ng'
-import type { ChatbotDispatchRow, ChatbotQueueRow, MiletoBackfillJob } from '../data/demo/chatbot-operacional'
-import type { CheckInHistoryRow } from '../data/demo/loja-check-in'
-import type { ConfigExternalRow, ConfigSlaAuditRow } from '../data/demo/configuracoes'
+import type { ChatbotQueueRow, MiletoBackfillJob } from '../data/demo/chatbot-operacional'
 
 export function buildTratativasMetrics(
   rows: TratativaOrderRow[],
@@ -115,58 +113,6 @@ export function buildOcorrenciasNgMetrics(
   ]
 }
 
-export function buildChatbotDispatchMetrics(
-  rows: ChatbotDispatchRow[],
-  successToday: number,
-  failedToday: number,
-  skippedToday: number,
-  queued: number,
-  selectedCount: number
-): Metric[] {
-  return [
-    {
-      label: 'Selecionados',
-      value: selectedCount,
-      note: 'para disparo',
-      icon: 'i-lucide-check-check',
-      tone: selectedCount > 0 ? 'assigned' : undefined
-    },
-    {
-      label: 'Sucesso hoje',
-      value: successToday,
-      note: 'enviados',
-      icon: 'i-lucide-send',
-      tone: 'success'
-    },
-    {
-      label: 'Falhas hoje',
-      value: failedToday,
-      note: 'canal',
-      icon: 'i-lucide-triangle-alert',
-      tone: failedToday > 0 ? 'danger' : undefined
-    },
-    {
-      label: 'Skipped',
-      value: skippedToday,
-      note: 'ignorados',
-      icon: 'i-lucide-skip-forward'
-    },
-    {
-      label: 'Na fila',
-      value: queued,
-      note: 'aguardando',
-      icon: 'i-lucide-list-ordered',
-      tone: 'info'
-    },
-    {
-      label: 'Elegíveis',
-      value: rows.filter((row) => row.status === 'elegivel').length,
-      note: 'na listagem',
-      icon: 'i-lucide-bot'
-    }
-  ]
-}
-
 export function buildChatbotMonitorMetrics(queues: ChatbotQueueRow[]): Metric[] {
   const waiting = queues.reduce((acc, row) => acc + row.waiting, 0)
   const processing = queues.reduce((acc, row) => acc + row.processing, 0)
@@ -254,88 +200,3 @@ export function buildMiletoBackfillMetrics(jobs: MiletoBackfillJob[]): Metric[] 
   ]
 }
 
-export function buildLojaCheckInMetrics(
-  checkInsToday: number,
-  queue: number,
-  divergences: number,
-  history: CheckInHistoryRow[]
-): Metric[] {
-  return [
-    {
-      label: 'Check-ins hoje',
-      value: checkInsToday,
-      note: 'confirmados',
-      icon: 'i-lucide-scan-line',
-      tone: 'success'
-    },
-    {
-      label: 'Na fila',
-      value: queue,
-      note: 'aguardando',
-      icon: 'i-lucide-list-ordered',
-      tone: queue > 0 ? 'info' : undefined
-    },
-    {
-      label: 'Divergências',
-      value: divergences,
-      note: 'no dia',
-      icon: 'i-lucide-git-compare',
-      tone: divergences > 0 ? 'warning' : undefined
-    },
-    {
-      label: 'Histórico',
-      value: history.length,
-      note: 'registros recentes',
-      icon: 'i-lucide-history'
-    }
-  ]
-}
-
-export function buildConfigExternalsMetrics(rows: ConfigExternalRow[]): Metric[] {
-  const active = rows.filter((row) => row.active).length
-  return [
-    {
-      label: 'Integrações',
-      value: rows.length,
-      note: 'cadastradas',
-      icon: 'i-lucide-plug'
-    },
-    {
-      label: 'Ativas',
-      value: active,
-      note: 'sincronizando',
-      icon: 'i-lucide-circle-check',
-      tone: 'success'
-    },
-    {
-      label: 'Inativas',
-      value: rows.length - active,
-      note: 'pausadas',
-      icon: 'i-lucide-pause-circle'
-    }
-  ]
-}
-
-export function buildConfigAuditMetrics(rows: ConfigSlaAuditRow[]): Metric[] {
-  const users = new Set(rows.map((row) => row.user)).size
-  return [
-    {
-      label: 'Alterações',
-      value: rows.length,
-      note: 'no histórico',
-      icon: 'i-lucide-scroll-text'
-    },
-    {
-      label: 'Usuários',
-      value: users,
-      note: 'que alteraram',
-      icon: 'i-lucide-users'
-    },
-    {
-      label: 'Última',
-      value: rows[0]?.changedAtLabel ?? '—',
-      note: 'registro mais recente',
-      icon: 'i-lucide-clock'
-    }
-  ]
-}

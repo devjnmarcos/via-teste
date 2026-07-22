@@ -4,31 +4,36 @@ const baseOrders: Order[] = [
   {
     id: '48219', href: '/pedidos/48219', client: 'Renner', operation: 'Troca', state: 'RJ', status: 'backOrder',
     supportPoint: 'Não atribuído', responsible: 'Aguardando reposição', region: 'RJ', createdAt: '15/07 19:02', updatedAt: 'há 14 min',
-    stageDuration: '23 min', sla: 'Em risco', slaTone: 'warning', items: 2, occurrences: 0, evidences: 0, scheduling: 0,
+    stageDuration: '23 min', sla: 'Em risco', slaTone: 'warning', labelPrinted: false, chatbotEligible: false,
+    items: 2, occurrences: 0, evidences: 0, scheduling: 0,
     events: [], establishments: []
   },
   {
     id: '48208', href: '/pedidos/48208', client: 'Amazon BR', operation: 'Reversa', state: 'SP', status: 'assigned',
     supportPoint: 'Ponto de apoio Centro', responsible: 'João R.', region: 'SP', createdAt: '15/07 14:55', updatedAt: 'há 8 min',
-    stageDuration: '4 min', sla: '5h40', slaTone: 'success', items: 1, occurrences: 0, evidences: 1, scheduling: 0,
+    stageDuration: '4 min', sla: '5h40', slaTone: 'success', labelPrinted: false, chatbotEligible: true,
+    items: 1, occurrences: 0, evidences: 1, scheduling: 0,
     events: [], establishments: []
   },
   {
     id: '48201', href: '/pedidos/48201', client: 'Netshoes', operation: 'Troca', state: 'PR', status: 'stock',
     supportPoint: 'Ponto de apoio Zona Sul', responsible: 'Camila F.', region: 'PR', createdAt: '15/07 11:30', updatedAt: 'há 19 min',
-    stageDuration: '1h12', sla: '8h05', slaTone: 'success', items: 1, occurrences: 0, evidences: 0, scheduling: 1,
+    stageDuration: '1h12', sla: '8h05', slaTone: 'success', labelPrinted: true, chatbotEligible: false,
+    items: 1, occurrences: 0, evidences: 0, scheduling: 1,
     events: [], establishments: []
   },
   {
     id: '48197', href: '/pedidos/48197', client: 'Renner', operation: 'Reversa', state: 'RS', status: 'supportMissing',
     supportPoint: 'Não atribuído', responsible: 'Aguardando roteirização', region: 'RS', createdAt: '15/07 09:18', updatedAt: 'há 22 min',
-    stageDuration: '22 min', sla: 'Em risco', slaTone: 'warning', items: 1, occurrences: 0, evidences: 0, scheduling: 0,
+    stageDuration: '22 min', sla: 'Em risco', slaTone: 'warning', labelPrinted: false, chatbotEligible: false,
+    items: 1, occurrences: 0, evidences: 0, scheduling: 0,
     events: [], establishments: []
   },
   {
     id: '48190', href: '/pedidos/48190', client: 'Casas Bahia', operation: 'Reversa', state: 'BA', status: 'new',
     supportPoint: 'Não atribuído', responsible: 'Triagem', region: 'BA', createdAt: '15/07 08:02', updatedAt: 'há 11 min',
-    stageDuration: '11 min', sla: '12h00', slaTone: 'success', items: 1, occurrences: 0, evidences: 0, scheduling: 0,
+    stageDuration: '11 min', sla: '12h00', slaTone: 'success', labelPrinted: false, chatbotEligible: true,
+    items: 1, occurrences: 0, evidences: 0, scheduling: 0,
     events: [], establishments: []
   }
 ]
@@ -48,6 +53,8 @@ export const featuredOrder: Order = {
   stageDuration: '18 min',
   sla: 'Expirado 1h18',
   slaTone: 'danger',
+  labelPrinted: true,
+  chatbotEligible: false,
   items: 1,
   occurrences: 3,
   evidences: 2,

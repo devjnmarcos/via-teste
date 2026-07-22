@@ -26,7 +26,7 @@ if (!lot.value) {
   throw createError({ statusCode: 404, statusMessage: 'Lote não encontrado' })
 }
 
-useSeoMeta({ title: () => `DEV OUT #${lotId.value} · Devoluções · Via Reversa` })
+useSeoMeta({ title: () => `Despacho #${lotId.value} · Remessas · Via Reversa` })
 
 const boxToAssociate = ref<string | undefined>()
 const removeOpen = ref(false)
@@ -148,7 +148,7 @@ function confirmReturn() {
   >
     <PageHeader
       back-to="/devolucoes/dev-out"
-      :title="`DEV OUT #${lot.id}`"
+      :title="`Despacho #${lot.id}`"
       :subtitle="subtitle"
     >
       <StatusLabel

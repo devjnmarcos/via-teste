@@ -41,13 +41,6 @@ function refresh() {
       subtitle="Saúde das filas de disparo e webhooks"
     >
       <AppButton
-        icon="i-lucide-bot"
-        variant="ghost"
-        to="/operacao/disparo-chatbot"
-      >
-        Disparo
-      </AppButton>
-      <AppButton
         icon="i-lucide-refresh-cw"
         variant="ghost"
         @click="refresh"

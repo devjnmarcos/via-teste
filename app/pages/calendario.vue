@@ -11,7 +11,6 @@ import {
   calendarioEvents,
   calendarioMonthIndex,
   calendarioMonthLabel,
-  calendarioVolumeTrend,
   calendarioYear,
   countEventsByDay,
   eventsForDay,
@@ -206,10 +205,10 @@ function onAction(payload: { row: CalendarEvent; action: string }) {
     </section>
 
     <section
-      class="grid grid-cols-[minmax(0,1.4fr)_minmax(260px,0.6fr)] border-b border-via-line max-[1100px]:grid-cols-1"
-      aria-label="Agenda e tendência"
+      class="grid grid-cols-1 border-b border-via-line"
+      aria-label="Agenda"
     >
-      <div class="min-w-0 border-r border-via-line max-[1100px]:border-r-0 max-[1100px]:border-b">
+      <div class="min-w-0">
         <ViaCalendar
           v-if="viewMode === 'month'"
           :cells="cells"
@@ -227,19 +226,6 @@ function onAction(payload: { row: CalendarEvent; action: string }) {
           :events-by-day="eventsByDay"
           @select="onSelectDay"
         />
-      </div>
-      <div class="min-w-0">
-        <ChartPanel
-          title="Volume agendado"
-          note="dias com pedidos"
-        >
-          <VolumeTrendChart
-            :series="calendarioVolumeTrend"
-            title="Agendamentos · mês"
-            note="pedidos"
-            :height="200"
-          />
-        </ChartPanel>
       </div>
     </section>
 

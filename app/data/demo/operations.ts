@@ -86,6 +86,23 @@ export const operations: Operation[] = [
 
 export const totalOrders = operations.reduce((sum, operation) => sum + operation.total, 0)
 
+export interface OperationFilterOption {
+  label: string
+  value: string
+}
+
+export const operationFilterOptions: OperationFilterOption[] = [
+  { label: 'Todas as operações', value: 'all' },
+  ...operations.map((operation) => ({ label: operation.name, value: operation.slug }))
+]
+
+export function operationVolumeRatio(operationSlug: string): number {
+  if (operationSlug === 'all') return 1
+  const operation = operations.find((item) => item.slug === operationSlug)
+  if (!operation || totalOrders === 0) return 1
+  return operation.total / totalOrders
+}
+
 export const homeMetrics: Metric[] = [
   { label: 'Pedidos no fluxo', value: totalOrders, note: 'todas as operações', icon: 'i-lucide-package-search' },
   { label: 'Em rota agora', value: 146, note: '96 coletas em andamento', icon: 'i-lucide-route' },

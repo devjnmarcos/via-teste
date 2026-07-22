@@ -18,7 +18,7 @@ export interface OrderAddressParty {
 
 export interface OrderCreateItem {
   id: string
-  description: string
+  productId: string
   quantity: number | null
   price: number | null
   sizeX: number | null
@@ -26,20 +26,22 @@ export interface OrderCreateItem {
   sizeZ: number | null
   weight: number | null
   serialNumber?: string
+  notes?: string
 }
 
 export interface OrderCreateForm {
-  kindCtrl: OrderKindCtrl
   accountId: string
-  origin: OrderAddressParty
-  destiny: OrderAddressParty
+  kindCtrl: OrderKindCtrl
+  scheduledAt: string
+  carrierId: string
+  address: OrderAddressParty
   items: OrderCreateItem[]
 }
 
 export type OrderCreateStepId =
+  | 'cliente'
   | 'operacao'
-  | 'origem'
-  | 'destino'
+  | 'endereco'
   | 'itens'
   | 'revisao'
 

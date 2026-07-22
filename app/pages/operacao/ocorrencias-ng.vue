@@ -5,10 +5,8 @@
 import type { DataTableColumn } from '~/types/data-table'
 import type { OcorrenciaNgRow } from '~/data/demo/ocorrencias-ng'
 import {
-  buildOcorrenciasNgDistribution,
   ocorrenciasNgFilterOptions,
   ocorrenciasNgState,
-  ocorrenciasNgTrend,
   resendMiletoOccurrence
 } from '~/data/demo/ocorrencias-ng'
 import { buildOcorrenciasNgMetrics } from '~/utils/operacao-p3-metrics'
@@ -77,7 +75,6 @@ const listMetrics = computed(() =>
   )
 )
 
-const distribution = computed(() => buildOcorrenciasNgDistribution(filteredRows.value))
 const pagedRows = computed(() => slicePage(filteredRows.value, page.value, pageSize.value))
 
 watch([search, alignFilter], () => {
@@ -155,37 +152,6 @@ function refresh() {
         :items="ocorrenciasNgFilterOptions"
         class="w-[200px]"
       />
-    </section>
-
-    <section
-      class="grid grid-cols-2 border-b border-via-line max-[1100px]:grid-cols-1"
-      aria-label="Gráficos"
-    >
-      <div class="min-w-0 border-r border-via-line max-[1100px]:border-r-0 max-[1100px]:border-b">
-        <ChartPanel
-          title="Divergências por dia"
-          note="volume (fixture)"
-        >
-          <VolumeTrendChart
-            :series="ocorrenciasNgTrend"
-            title="Divergências · 7 dias"
-            note="Mileto"
-            :height="160"
-          />
-        </ChartPanel>
-      </div>
-      <div class="min-w-0">
-        <ChartPanel
-          title="Alinhamento"
-          note="pedido × Mileto"
-        >
-          <StatusDistribution
-            :items="distribution"
-            title="Alinhamento NG"
-            :height="200"
-          />
-        </ChartPanel>
-      </div>
     </section>
 
     <DataTable

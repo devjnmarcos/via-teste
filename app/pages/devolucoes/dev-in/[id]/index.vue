@@ -25,7 +25,7 @@ if (!box.value) {
   throw createError({ statusCode: 404, statusMessage: 'Caixa não encontrada' })
 }
 
-useSeoMeta({ title: () => `DEV IN #${boxId.value} · Devoluções · Via Reversa` })
+useSeoMeta({ title: () => `Caixa #${boxId.value} · Remessas · Via Reversa` })
 
 const closeOpen = ref(false)
 const unassignOpen = ref(false)
@@ -134,7 +134,7 @@ function confirmClose() {
   >
     <PageHeader
       back-to="/devolucoes/dev-in"
-      :title="`DEV IN #${box.id}`"
+      :title="`Caixa #${box.id}`"
       :subtitle="subtitle"
     >
       <StatusLabel

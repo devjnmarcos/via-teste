@@ -4,7 +4,6 @@
 
 import type { Metric } from '../types/domain'
 import type { RouteRow, ScriptingOrderRow } from '../data/demo/roteirizacao'
-import type { ExpedicaoOrderRow } from '../data/demo/expedicao'
 import type { CalendarEvent } from '../data/demo/calendario'
 
 export function buildRoutesListMetrics(rows: RouteRow[]): Metric[] {
@@ -118,50 +117,6 @@ export function buildRouteDetailMetrics(
       value: status,
       note: 'situação atual',
       icon: 'i-lucide-info'
-    }
-  ]
-}
-
-export function buildExpedicaoMetrics(
-  rows: ExpedicaoOrderRow[],
-  selectedCount: number,
-  printedToday: number
-): Metric[] {
-  const ready = rows.filter((row) => !row.printed).length
-  const printed = rows.filter((row) => row.printed).length
-
-  return [
-    {
-      label: 'Selecionados',
-      value: selectedCount,
-      note: 'para impressão',
-      icon: 'i-lucide-check-check',
-      tone: selectedCount > 0 ? 'assigned' : undefined
-    },
-    {
-      label: 'Impressos hoje',
-      value: printedToday,
-      note: 'volume do dia',
-      icon: 'i-lucide-printer',
-      tone: 'success'
-    },
-    {
-      label: 'Prontos',
-      value: ready,
-      note: 'elegíveis agora',
-      icon: 'i-lucide-tag'
-    },
-    {
-      label: 'Já impressos',
-      value: printed,
-      note: 'no filtro',
-      icon: 'i-lucide-file-check'
-    },
-    {
-      label: 'Na listagem',
-      value: rows.length,
-      note: 'após filtros',
-      icon: 'i-lucide-list'
     }
   ]
 }

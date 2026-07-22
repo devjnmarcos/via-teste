@@ -1,3 +1,4 @@
+import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import {
   navigationItems,
@@ -15,22 +16,10 @@ import {
   resendMiletoOccurrence
 } from '../app/data/demo/ocorrencias-ng'
 import {
-  chatbotDispatchState,
   chatbotMonitorQueues,
-  dispatchChatbotOrders,
   miletoBackfillState,
   startMiletoBackfill
 } from '../app/data/demo/chatbot-operacional'
-import {
-  confirmCheckIn,
-  lookupCheckInOrder,
-  lojaCheckInState
-} from '../app/data/demo/loja-check-in'
-import {
-  configExternalsState,
-  configSlaAuditRows,
-  toggleExternalActive
-} from '../app/data/demo/configuracoes'
 import {
   confirmPublicSchedule,
   getPublicOrderByHash,
@@ -38,11 +27,7 @@ import {
   searchPublicOrder
 } from '../app/data/demo/compartilhamento-publico'
 import {
-  buildChatbotDispatchMetrics,
   buildChatbotMonitorMetrics,
-  buildConfigAuditMetrics,
-  buildConfigExternalsMetrics,
-  buildLojaCheckInMetrics,
   buildMiletoBackfillMetrics,
   buildOcorrenciasNgMetrics,
   buildTratativasMetrics
@@ -92,40 +77,43 @@ describe('fixtures e métricas P3', () => {
     expect(resendMiletoOccurrence(divergente!.orderId)).toBe(true)
   })
 
-  it('chatbot: disparo, monitor e backfill', () => {
-    expect(
-      buildChatbotDispatchMetrics(chatbotDispatchState.orders, 1, 1, 1, 1, 1)[0]?.label
-    ).toBe('Selecionados')
+  it('chatbot: monitor e backfill', () => {
     expect(buildChatbotMonitorMetrics(chatbotMonitorQueues)[0]?.label).toBe('Aguardando')
     expect(buildMiletoBackfillMetrics(miletoBackfillState.jobs).length).toBe(5)
-    const elegivel = chatbotDispatchState.orders.find((row) => row.status === 'elegivel')
-    expect(elegivel).toBeTruthy()
-    expect(dispatchChatbotOrders([elegivel!.orderId])).toBe(1)
     const idle = miletoBackfillState.jobs.find((job) => job.status === 'idle')
     expect(idle).toBeTruthy()
     expect(startMiletoBackfill(idle!.id)).toBe(true)
   })
 
-  it('check-in, configs e público', () => {
-    expect(lookupCheckInOrder('52120')?.canConfirm).toBe(true)
-    expect(confirmCheckIn('52120')?.orderId).toBe('52120')
-    expect(
-      buildLojaCheckInMetrics(
-        lojaCheckInState.checkInsToday,
-        lojaCheckInState.queue,
-        lojaCheckInState.divergences,
-        lojaCheckInState.history
-      )[0]?.label
-    ).toBe('Check-ins hoje')
-
-    expect(buildConfigExternalsMetrics(configExternalsState.rows).length).toBe(3)
-    expect(toggleExternalActive(configExternalsState.rows[0]!.id, false)).toBe(true)
-    expect(buildConfigAuditMetrics(configSlaAuditRows)[0]?.label).toBe('Alterações')
-
+  it('configs e público', () => {
     expect(searchPublicOrder('53101')?.hash).toBe('abc123')
     expect(getPublicOrderByHash('abc123')?.orderId).toBe('53101')
     expect(confirmPublicSchedule('demo', 'slot-1')?.available).toBe(true)
     expect(payPublicCheckout('kangu-demo')?.status).toBe('paid')
+  })
+})
+
+describe('remoção de Configurações → Externos', () => {
+  it('a página externos.vue não existe mais', () => {
+    expect(existsSync('app/pages/configuracoes/externos.vue')).toBe(false)
+  })
+
+  it('a fixture configuracoes.ts não existe mais', () => {
+    expect(existsSync('app/data/demo/configuracoes.ts')).toBe(false)
+  })
+})
+
+describe('remoção de Configurações → SLA / Processamento', () => {
+  it('as 3 páginas não existem mais', () => {
+    expect(existsSync('app/pages/configuracoes/sla/index.vue')).toBe(false)
+    expect(existsSync('app/pages/configuracoes/sla/auditoria.vue')).toBe(false)
+    expect(existsSync('app/pages/configuracoes/processo.vue')).toBe(false)
+  })
+
+  it('configuracoes/index.vue não redireciona mais para /configuracoes/sla', () => {
+    const source = readFileSync('app/pages/configuracoes/index.vue', 'utf8')
+    expect(source).not.toContain('/configuracoes/sla')
+    expect(source).toContain('/configuracoes/integracoes')
   })
 })
 
@@ -139,13 +127,8 @@ describe('breadcrumbs P3', () => {
       { label: 'Home', to: '/' },
       { label: 'Ocorrências NG' }
     ])
-    expect(resolveBreadcrumbs('/operacao/disparo-chatbot')).toEqual([
-      { label: 'Home', to: '/' },
-      { label: 'Disparo Chatbot' }
-    ])
     expect(resolveBreadcrumbs('/operacao/chatbot-monitor')).toEqual([
       { label: 'Home', to: '/' },
-      { label: 'Disparo Chatbot', to: '/operacao/disparo-chatbot' },
       { label: 'Monitor' }
     ])
     expect(resolveBreadcrumbs('/operacao/mileto-backfill')).toEqual([
@@ -153,25 +136,38 @@ describe('breadcrumbs P3', () => {
       { label: 'Ocorrências NG', to: '/operacao/ocorrencias-ng' },
       { label: 'Mileto backfill' }
     ])
-    expect(resolveBreadcrumbs('/loja/check-in')).toEqual([
-      { label: 'Home', to: '/' },
-      { label: 'Check In' }
-    ])
-    expect(resolveBreadcrumbs('/configuracoes/sla')).toEqual([
-      { label: 'Home', to: '/' },
-      { label: 'Configurações', to: '/configuracoes' },
-      { label: 'SLA' }
-    ])
-    expect(resolveBreadcrumbs('/configuracoes/sla/auditoria')).toEqual([
-      { label: 'Home', to: '/' },
-      { label: 'Configurações', to: '/configuracoes' },
-      { label: 'SLA', to: '/configuracoes/sla' },
-      { label: 'Auditoria' }
-    ])
-    expect(resolveBreadcrumbs('/configuracoes/processo')).toEqual([
-      { label: 'Home', to: '/' },
-      { label: 'Configurações', to: '/configuracoes' },
-      { label: 'Processamento' }
-    ])
+  })
+})
+
+describe('conteúdo da tela de Tratativas', () => {
+  it('remove listagem de pedidos e disparo em lote, mantém métricas e gráficos', () => {
+    const path = 'app/pages/operacao/tratativas.vue'
+    expect(existsSync(path)).toBe(true)
+    const source = readFileSync(path, 'utf8')
+    expect(source).not.toContain('<DataTable')
+    expect(source).not.toContain('<Pagination')
+    expect(source).not.toContain('dispatchOpen')
+    expect(source).not.toContain('markTratativasDispatched')
+    expect(source).not.toContain('/operacao/disparo-chatbot')
+    expect(source).not.toContain('>Disparar<')
+    expect(source).toContain('/operacao/chatbot-monitor')
+    expect(source).toContain('VolumeTrendChart')
+    expect(source).toContain('StatusDistribution')
+    expect(source).toContain('<MetricsStrip')
+  })
+})
+
+describe('conteúdo da tela de Ocorrências NG', () => {
+  it('remove os gráficos de divergência e alinhamento, mantém tabela e modal', () => {
+    const path = 'app/pages/operacao/ocorrencias-ng.vue'
+    expect(existsSync(path)).toBe(true)
+    const source = readFileSync(path, 'utf8')
+    expect(source).not.toContain('VolumeTrendChart')
+    expect(source).not.toContain('StatusDistribution')
+    expect(source).not.toContain('ChartPanel')
+    expect(source).not.toContain('ocorrenciasNgTrend')
+    expect(source).toContain('<DataTable')
+    expect(source).toContain('<Pagination')
+    expect(source).toContain('<AppModal')
   })
 })
