@@ -286,7 +286,7 @@ describe('Feature Flags e Cargos saem de Cadastros, entram em Configurações', 
 })
 
 describe('página Configurações · Feature Flags (listagem)', () => {
-  const source = readFileSync('app/pages/configuracoes/feature-flags.vue', 'utf8')
+  const source = readFileSync('app/pages/configuracoes/feature-flags/index.vue', 'utf8')
 
   it('materializa CRUD completo com MetricsStrip, DataTable e modais', () => {
     expect(source).toContain('MetricsStrip')
@@ -348,7 +348,7 @@ describe('página Configurações · Feature Flags (detalhe)', () => {
 })
 
 describe('página Configurações · Cargos (listagem)', () => {
-  const source = readFileSync('app/pages/configuracoes/cargos.vue', 'utf8')
+  const source = readFileSync('app/pages/configuracoes/cargos/index.vue', 'utf8')
 
   it('materializa CRUD completo com MetricsStrip, DataTable e modais', () => {
     expect(source).toContain('MetricsStrip')
