@@ -249,6 +249,8 @@ export type CadastroKind =
   | 'feriados'
   | 'produtos'
   | 'templates-chatbot'
+  | 'feature-flags'
+  | 'cargos'
 
 export interface CadastroNavItem {
   kind: CadastroKind

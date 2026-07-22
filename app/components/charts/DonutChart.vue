@@ -10,13 +10,17 @@ const props = withDefaults(defineProps<{
   invol: number
   height?: number
   ariaLabel?: string
+  volLabel?: string
+  involLabel?: string
 }>(), {
   height: 240,
-  ariaLabel: 'Voluntário versus Involuntário'
+  ariaLabel: 'Voluntário versus Involuntário',
+  volLabel: 'Voluntário',
+  involLabel: 'Involuntário'
 })
 
 const chartData = computed<ChartData<'doughnut'>>(() => ({
-  labels: ['Voluntário', 'Involuntário'],
+  labels: [props.volLabel, props.involLabel],
   datasets: [{
     data: [props.vol, props.invol],
     backgroundColor: [chartColors.vol, chartColors.invol],

@@ -289,6 +289,20 @@ textarea:focus-visible,
   transform: translateY(-2px);
 }
 
+/*
+ * Sem mode="out-in": a página que entra fica no fluxo normal (altura final
+ * correta desde o primeiro frame); a página que sai vira absolute durante
+ * o leave-active pra não empurrar a nova pra baixo nem esticar a altura do
+ * container enquanto as duas coexistem (causava o "pulo" de layout ao trocar
+ * de rota). O container de <main> precisa ser position:relative (ver layouts).
+ */
+.via-page-leave-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
 /* Transições de toast (TransitionGroup) */
 .via-toast-enter-active,
 .via-toast-leave-active,

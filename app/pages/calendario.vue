@@ -151,7 +151,7 @@ function onAction(payload: { row: CalendarEvent; action: string }) {
 
     <MetricsStrip
       :metrics="listMetrics"
-      :max-per-row="3"
+      :max-per-row="4"
     />
 
     <section

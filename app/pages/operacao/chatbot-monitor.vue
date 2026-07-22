@@ -51,7 +51,7 @@ function refresh() {
 
     <MetricsStrip
       :metrics="metrics"
-      :max-per-row="3"
+      :row-sizes="[3, 2]"
     />
 
     <section

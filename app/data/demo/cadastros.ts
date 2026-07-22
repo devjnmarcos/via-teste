@@ -17,7 +17,9 @@ const descriptions: Record<CadastroKind, string> = {
   regioes: 'Grupos e regiões de atendimento',
   feriados: 'Calendário operacional e impacto em SLA',
   produtos: 'Catálogo de produtos usados em itens de pedido',
-  'templates-chatbot': 'Modelos de mensagem do chatbot'
+  'templates-chatbot': 'Modelos de mensagem do chatbot',
+  'feature-flags': 'Recursos habilitados por operador (feature flags)',
+  cargos: 'Cargos vinculados a usuários do sistema'
 }
 
 const readyKinds = new Set<CadastroKind>([
@@ -32,7 +34,9 @@ const readyKinds = new Set<CadastroKind>([
   'regioes',
   'feriados',
   'produtos',
-  'templates-chatbot'
+  'templates-chatbot',
+  'feature-flags',
+  'cargos'
 ])
 
 export const cadastroNavItems: CadastroNavItem[] = cadastrosNavigation.map((item) => {

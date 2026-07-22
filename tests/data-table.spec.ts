@@ -30,7 +30,7 @@ describe('contrato DataTable tipada', () => {
 })
 
 describe('menu Cadastros', () => {
-  it('expõe 13 itens na ordem final (Pedidos + 12 cadastros, Operadores renomeado, Operações novo)', () => {
+  it('expõe 15 itens na ordem final (Pedidos + 12 cadastros + Operações + Feature Flags + Cargos)', () => {
     expect(cadastrosNavigation.map((item) => item.label)).toEqual([
       'Pedidos',
       'SLA',
@@ -44,7 +44,9 @@ describe('menu Cadastros', () => {
       'Feriados',
       'Produtos',
       'Templates Chatbot',
-      'Operações'
+      'Operações',
+      'Feature Flags',
+      'Cargos'
     ])
   })
 

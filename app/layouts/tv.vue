@@ -14,7 +14,7 @@
     <div class="grid h-screen grid-cols-1 overflow-hidden bg-via-surface bg-[#fbfdff]">
       <div class="min-h-0 min-w-0 overflow-hidden">
         <AppTopbar />
-        <main class="h-[calc(100%-var(--app-topbar-height))] overflow-auto bg-via-surface bg-[#fbfdff] text-[15px]">
+        <main class="relative h-[calc(100%-var(--app-topbar-height))] overflow-auto bg-via-surface bg-[#fbfdff] text-[15px]">
           <slot />
         </main>
       </div>

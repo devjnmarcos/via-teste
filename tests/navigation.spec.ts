@@ -14,12 +14,11 @@ import { getOrderDetailBundle } from '../app/data/demo/order-detail'
 import { resolveBreadcrumbs } from '../app/utils/breadcrumbs'
 
 describe('navegação oficial', () => {
-  it('expõe Home, Calendário, Operação ao vivo e Lotes soltos no topo (seção Operação)', () => {
+  it('expõe Home, Calendário e Operação ao vivo soltos no topo (seção Operação)', () => {
     expect(navigationItems.map((item) => item.to)).toEqual([
       '/',
       '/calendario',
-      '/operacao/ao-vivo',
-      '/operacao/lotes'
+      '/operacao/ao-vivo'
     ])
     expect(navigationItems.every((item) => item.icon.startsWith('i-lucide-'))).toBe(true)
   })
@@ -50,15 +49,16 @@ describe('navegação oficial', () => {
     ])
   })
 
-  it('grupo Devoluções renomeado Remessas: Caixas e Despachos', () => {
+  it('grupo Devoluções renomeado Remessas: Caixas, Despachos e Lotes', () => {
     expect(devolucoesNavGroup.label).toBe('Remessas')
     expect(devolucoesNavigation.map((item) => ({ label: item.label, to: item.to }))).toEqual([
       { label: 'Caixas', to: '/devolucoes/dev-in' },
-      { label: 'Despachos', to: '/devolucoes/dev-out' }
+      { label: 'Despachos', to: '/devolucoes/dev-out' },
+      { label: 'Lotes', to: '/operacao/lotes' }
     ])
   })
 
-  it('grupo Cadastros com 13 itens (Pedidos + 12 cadastros, Operadores renomeado, Operações novo)', () => {
+  it('grupo Cadastros com 15 itens (Pedidos + 12 cadastros + Operações + Feature Flags + Cargos)', () => {
     expect(cadastrosNavigation.map((item) => item.label)).toEqual([
       'Pedidos',
       'SLA',
@@ -72,10 +72,14 @@ describe('navegação oficial', () => {
       'Feriados',
       'Produtos',
       'Templates Chatbot',
-      'Operações'
+      'Operações',
+      'Feature Flags',
+      'Cargos'
     ])
     expect(cadastrosNavigation.find((item) => item.label === 'Operadores')?.to).toBe('/cadastros/contas')
     expect(cadastrosNavigation.find((item) => item.label === 'Operações')?.to).toBe('/cadastros/operacoes')
+    expect(cadastrosNavigation.find((item) => item.label === 'Feature Flags')?.to).toBe('/cadastros/feature-flags')
+    expect(cadastrosNavigation.find((item) => item.label === 'Cargos')?.to).toBe('/cadastros/cargos')
     expect(cadastrosNavigation.some((item) => item.label === 'Ocorrências Externas')).toBe(false)
   })
 

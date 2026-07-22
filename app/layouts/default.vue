@@ -10,7 +10,7 @@
       <AppSidebar />
       <div class="min-h-0 min-w-0 overflow-hidden bg-via-surface bg-[#fbfdff]">
         <AppTopbar />
-        <main class="h-[calc(100%-var(--app-topbar-height))] overflow-auto bg-via-surface bg-[#fbfdff]">
+        <main class="relative h-[calc(100%-var(--app-topbar-height))] overflow-auto bg-via-surface bg-[#fbfdff]">
           <slot />
         </main>
       </div>

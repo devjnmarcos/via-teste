@@ -7,13 +7,34 @@ const props = withDefaults(defineProps<{
   compact?: boolean
   /** Quando definido, quebra a faixa em linhas de no máximo N cards (ex.: 3 → layout 3/3). */
   maxPerRow?: number
+  /** Quando definido, cada linha tem sua própria contagem de colunas (ex.: [3, 2] → linha 1 com 3 cards, linha 2 com 2 cards ocupando 50% cada). Tem prioridade sobre maxPerRow. */
+  rowSizes?: number[]
 }>(), {
   showIcons: true,
   compact: false,
-  maxPerRow: undefined
+  maxPerRow: undefined,
+  rowSizes: undefined
+})
+
+function gcd(a: number, b: number): number {
+  return b === 0 ? a : gcd(b, a % b)
+}
+
+function lcm(a: number, b: number): number {
+  return (a * b) / gcd(a, b)
+}
+
+/** Menor nº de colunas que acomoda todas as linhas de rowSizes com spans inteiros. */
+const rowLayout = computed(() => {
+  if (!props.rowSizes?.length) return null
+  const totalColumns = props.rowSizes.reduce((acc, size) => lcm(acc, size), 1)
+  return { totalColumns, rowSizes: props.rowSizes }
 })
 
 const columns = computed(() => {
+  if (rowLayout.value) {
+    return { gridTemplateColumns: `repeat(${rowLayout.value.totalColumns}, minmax(0, 1fr))` }
+  }
   const count = props.maxPerRow
     ? Math.min(props.maxPerRow, Math.max(props.metrics.length, 1))
     : Math.max(props.metrics.length, 1)
@@ -22,12 +43,36 @@ const columns = computed(() => {
   }
 })
 
+/** Linha (0-based) e tamanho declarado dela para o index de um metric, com fallback pra última linha em overflow. */
+function rowForIndex(index: number, rowSizes: number[]): { rowStart: number, rowSize: number } {
+  let cursor = 0
+  for (const size of rowSizes) {
+    if (index < cursor + size) return { rowStart: cursor, rowSize: size }
+    cursor += size
+  }
+  return { rowStart: cursor - (rowSizes[rowSizes.length - 1] ?? 1), rowSize: rowSizes[rowSizes.length - 1] ?? 1 }
+}
+
+function itemStyle(index: number): Record<string, string> | undefined {
+  if (!rowLayout.value) return undefined
+  const { totalColumns, rowSizes } = rowLayout.value
+  const { rowSize } = rowForIndex(index, rowSizes)
+  return { gridColumn: `span ${totalColumns / rowSize}` }
+}
+
 function isRowEnd(index: number): boolean {
+  if (rowLayout.value) {
+    const { rowStart, rowSize } = rowForIndex(index, rowLayout.value.rowSizes)
+    return index === rowStart + rowSize - 1 || index === props.metrics.length - 1
+  }
   if (!props.maxPerRow) return index === props.metrics.length - 1
   return (index + 1) % props.maxPerRow === 0 || index === props.metrics.length - 1
 }
 
 function isWrappedRow(index: number): boolean {
+  if (rowLayout.value) {
+    return index >= (rowLayout.value.rowSizes[0] ?? 0)
+  }
   return Boolean(props.maxPerRow && index >= props.maxPerRow)
 }
 
@@ -54,6 +99,7 @@ const toneValueClass: Record<string, string> = {
         :to="metric.to"
         data-metric-item
         class="metric-item metric-item--link m-0 grid min-w-0 cursor-pointer grid-cols-[34px_minmax(0,1fr)] items-center gap-2 rounded-none border-r border-via-line px-5 py-3.5 text-inherit no-underline transition-colors duration-150 hover:bg-[color-mix(in_srgb,var(--via-blue-soft)_22%,transparent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-via-blue max-[1380px]:px-3.5"
+        :style="itemStyle(index)"
         :class="[
           metric.tone ? `metric-item--${metric.tone}` : undefined,
           !showIcons ? 'block px-[18px] py-[13px]' : undefined,
@@ -95,6 +141,7 @@ const toneValueClass: Record<string, string> = {
         v-else
         data-metric-item
         class="metric-item m-0 grid min-w-0 grid-cols-[34px_minmax(0,1fr)] items-center gap-2 rounded-none border-r border-via-line px-5 py-3.5 max-[1380px]:px-3.5"
+        :style="itemStyle(index)"
         :class="[
           metric.tone ? `metric-item--${metric.tone}` : undefined,
           !showIcons ? 'block px-[18px] py-[13px]' : undefined,

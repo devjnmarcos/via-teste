@@ -11,15 +11,13 @@ export interface NavigationGroup {
 }
 
 /**
- * Itens soltos no topo, seção "Operação": Home, Calendário e os 2 sobreviventes
- * do extinto grupo Operação (Operação ao vivo, Lotes) — só 2 filhos não justificam
- * accordion, por isso viraram itens soltos junto com Home/Calendário.
+ * Itens soltos no topo, seção "Operação": Home, Calendário e o sobrevivente
+ * do extinto grupo Operação (Operação ao vivo) — Lotes migrou pro grupo Remessas.
  */
 export const navigationItems: NavigationItem[] = [
   { label: 'Home', to: '/', icon: 'i-lucide-layout-dashboard' },
   { label: 'Calendário', to: '/calendario', icon: 'i-lucide-calendar' },
-  { label: 'Operação ao vivo', to: '/operacao/ao-vivo', icon: 'i-lucide-radio-tower' },
-  { label: 'Lotes', to: '/operacao/lotes', icon: 'i-lucide-layers' }
+  { label: 'Operação ao vivo', to: '/operacao/ao-vivo', icon: 'i-lucide-radio-tower' }
 ]
 
 /**
@@ -74,12 +72,14 @@ export const logsNavGroup: NavigationGroup = {
 }
 
 /**
- * Grupo Devoluções renomeado Remessas — Caixas (ex-DEV IN) e Despachos (ex-DEV OUT).
- * "Acompanhamento" sai do menu (página continua existindo no código).
+ * Grupo Devoluções renomeado Remessas — Caixas (ex-DEV IN), Despachos (ex-DEV OUT)
+ * e Lotes (migrou do extinto grupo Operação). "Acompanhamento" sai do menu
+ * (página continua existindo no código).
  */
 export const devolucoesNavigation: NavigationItem[] = [
   { label: 'Caixas', to: '/devolucoes/dev-in', icon: 'i-lucide-package-plus' },
-  { label: 'Despachos', to: '/devolucoes/dev-out', icon: 'i-lucide-truck' }
+  { label: 'Despachos', to: '/devolucoes/dev-out', icon: 'i-lucide-truck' },
+  { label: 'Lotes', to: '/operacao/lotes', icon: 'i-lucide-layers' }
 ]
 
 export const devolucoesNavGroup: NavigationGroup = {
@@ -106,7 +106,9 @@ export const cadastrosNavigation: NavigationItem[] = [
   { label: 'Feriados', to: '/cadastros/feriados', icon: 'i-lucide-calendar-off' },
   { label: 'Produtos', to: '/cadastros/produtos', icon: 'i-lucide-package' },
   { label: 'Templates Chatbot', to: '/cadastros/templates-chatbot', icon: 'i-lucide-bot' },
-  { label: 'Operações', to: '/cadastros/operacoes', icon: 'i-lucide-shuffle' }
+  { label: 'Operações', to: '/cadastros/operacoes', icon: 'i-lucide-shuffle' },
+  { label: 'Feature Flags', to: '/cadastros/feature-flags', icon: 'i-lucide-toggle-right' },
+  { label: 'Cargos', to: '/cadastros/cargos', icon: 'i-lucide-id-card' }
 ]
 
 export const cadastrosNavGroup: NavigationGroup = {

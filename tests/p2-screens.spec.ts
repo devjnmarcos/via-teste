@@ -45,12 +45,11 @@ import {
 import { resolveBreadcrumbs } from '../app/utils/breadcrumbs'
 
 describe('navegação P2', () => {
-  it('expõe Home, Calendário, Operação ao vivo e Lotes soltos no topo', () => {
+  it('expõe Home, Calendário e Operação ao vivo soltos no topo', () => {
     expect(navigationItems.map((item) => item.to)).toEqual([
       '/',
       '/calendario',
-      '/operacao/ao-vivo',
-      '/operacao/lotes'
+      '/operacao/ao-vivo'
     ])
   })
 

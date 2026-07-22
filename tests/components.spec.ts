@@ -49,6 +49,29 @@ describe('primitives operacionais', () => {
     expect(wrapper.attributes('style')).toContain('repeat(3, minmax(0, 1fr))')
     expect(wrapper.classes()).toContain('gap-0')
   })
+
+  it('rowSizes [3, 2] dá 6 colunas totais e cada card da 2ª linha ocupa 50%', async () => {
+    const wrapper = await mountSuspended(MetricsStrip, {
+      props: {
+        rowSizes: [3, 2],
+        metrics: [
+          { value: 1, label: 'A', note: 'n' },
+          { value: 2, label: 'B', note: 'n' },
+          { value: 3, label: 'C', note: 'n' },
+          { value: 4, label: 'D', note: 'n' },
+          { value: 5, label: 'E', note: 'n' }
+        ]
+      }
+    })
+
+    const items = wrapper.findAll('[data-metric-item]')
+    expect(items).toHaveLength(5)
+    expect(wrapper.attributes('style')).toContain('repeat(6, minmax(0, 1fr))')
+    expect(items[0]?.attributes('style')).toContain('grid-column: span 2')
+    expect(items[2]?.attributes('style')).toContain('grid-column: span 2')
+    expect(items[3]?.attributes('style')).toContain('grid-column: span 3')
+    expect(items[4]?.attributes('style')).toContain('grid-column: span 3')
+  })
 })
 
 describe('AppBreadcrumbs', () => {

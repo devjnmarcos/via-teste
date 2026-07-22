@@ -4,7 +4,7 @@
  */
 import type { CadastroKind, Metric } from '../../types/domain'
 
-export type CadastroOnda3Kind = Exclude<CadastroKind, 'sla' | 'fretes'>
+export type CadastroOnda3Kind = Exclude<CadastroKind, 'sla' | 'fretes' | 'feature-flags' | 'cargos'>
 
 export interface CadastroOnda3Row extends Record<string, unknown> {
   id: string
