@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   dashboardsNavigation,
-  navigationItems,
-  slaAnalyticsNavigation
+  navigationItems
 } from '../app/components/app/navigation'
 import {
   buildSlaStackedSeries,
@@ -50,49 +49,29 @@ import {
 import { resolveBreadcrumbs } from '../app/utils/breadcrumbs'
 
 describe('navegação P2', () => {
-  it('expõe Expedição, Roteirização, Rotas e Calendário na operação', () => {
+  it('expõe Home, Calendário, Operação ao vivo e Lotes soltos no topo', () => {
     expect(navigationItems.map((item) => item.to)).toEqual([
       '/',
+      '/calendario',
       '/operacao/ao-vivo',
-      '/pedidos',
-      '/operacao/lotes',
-      '/operacao/expedicao',
-      '/operacao/roteirizacao',
-      '/operacao/rotas',
-      '/loja/check-in',
-      '/operacao/tratativas',
-      '/operacao/ocorrencias-ng',
-      '/operacao/disparo-chatbot',
-      '/operacao/geo-audit',
-      '/operacao/dashboard-reversa',
-      '/calendario'
+      '/operacao/lotes'
     ])
   })
 
-  it('expõe submenu SLA analytics com rotas do legado (6 menu + 2 transportador)', () => {
-    expect(slaAnalyticsNavigation.map((item) => item.to)).toEqual([
-      '/sla/cliente-por-data',
-      '/sla/estado-por-data',
-      '/sla/pa-por-data',
-      '/sla/transportador-por-data',
-      '/sla/por-cliente',
-      '/sla/por-estado',
-      '/sla/por-pa',
-      '/sla/por-transportador'
-    ])
-    expect(slaAnalyticsNavigation.every((item) => item.icon.startsWith('i-lucide-'))).toBe(true)
-  })
-
-  it('expõe submenu Dashboards sem Dashboard Reversa', () => {
+  it('expõe submenu Dashboards com Ponto de apoios, Operações, Ocorrências, SLA e Monitor do chatbot', () => {
     expect(dashboardsNavigation.map((item) => item.label)).toEqual([
-      'Indicadores',
-      'Loja',
-      'Loja (TV)'
+      'Ponto de apoios',
+      'Operações',
+      'Ocorrências',
+      'SLA',
+      'Monitor do chatbot'
     ])
     expect(dashboardsNavigation.map((item) => item.to)).toEqual([
       '/dashboards/indicadores',
-      '/dashboards/loja',
-      '/dashboards/loja-tv'
+      '/operacao/dashboard-reversa',
+      '/operacao/tratativas',
+      '/dashboards/sla',
+      '/operacao/chatbot-monitor'
     ])
   })
 })
@@ -214,7 +193,7 @@ describe('breadcrumbs P2', () => {
     expect(resolveBreadcrumbs('/dashboards/loja-tv')).toEqual([
       { label: 'Home', to: '/' },
       { label: 'Dashboards', to: '/dashboards' },
-      { label: 'Loja (TV)' }
+      { label: 'loja-tv' }
     ])
     expect(resolveBreadcrumbs('/operacao/expedicao')).toEqual([
       { label: 'Home', to: '/' },

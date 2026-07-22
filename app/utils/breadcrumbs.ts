@@ -1,22 +1,54 @@
 import {
   cadastrosNavigation,
   cadastrosNavGroup,
-  configuracoesNavigation,
-  configuracoesNavGroup,
   dashboardsNavigation,
   dashboardsNavGroup,
   devolucoesNavigation,
-  devolucoesNavGroup,
-  faturasNavigation,
-  faturasNavGroup,
-  resumosNavigation,
-  resumosNavGroup,
-  slaAnalyticsNavigation,
-  slaAnalyticsNavGroup
+  devolucoesNavGroup
 } from '../components/app/navigation'
 import { operations } from '../data/demo/operations'
 import { isCadastroKind } from './cadastros'
 import { isFaturaKind, faturaKindLabel } from '../data/demo/faturas'
+
+/**
+ * Faturas, Resumos, SLA analytics e Configurações saíram da sidebar (grupos dissolvidos
+ * em navigation.ts), mas as páginas continuam existindo no código — o breadcrumb dessas
+ * rotas usa labels locais fixos em vez de ler de grupos que não existem mais.
+ */
+const FATURAS_GROUP_LABEL = 'Faturas'
+const FATURAS_LABELS: Record<string, string> = {
+  'a-receber': 'A receber',
+  'a-pagar': 'A pagar'
+}
+
+const RESUMOS_GROUP_LABEL = 'Resumos'
+const RESUMOS_LABELS: Record<string, string> = {
+  'totais-por-operacao': 'Totais por Operação',
+  'pedidos-por-cliente': 'Pedidos por Cliente',
+  'pedidos-por-estado': 'Pedidos por Estado',
+  'pontos-de-apoio': 'Pontos de apoio',
+  transportadores: 'Transportadores',
+  mapa: 'Mapa'
+}
+
+const SLA_GROUP_LABEL = 'SLA'
+const SLA_LABELS: Record<string, string> = {
+  'cliente-por-data': 'SLA por Cliente (Data)',
+  'estado-por-data': 'SLA por Estado (Data)',
+  'pa-por-data': 'SLA por PA (Data)',
+  'transportador-por-data': 'SLA por Transportador (Data)',
+  'por-cliente': 'SLA por Cliente',
+  'por-estado': 'SLA por Estado',
+  'por-pa': 'SLA por PA',
+  'por-transportador': 'SLA por Transportador'
+}
+
+const CONFIGURACOES_GROUP_LABEL = 'Configurações'
+const CONFIGURACOES_LABELS: Record<string, string> = {
+  sla: 'SLA',
+  processo: 'Processamento',
+  integracoes: 'Integrações'
+}
 
 export interface BreadcrumbItem {
   label: string
@@ -40,30 +72,15 @@ function devolucaoLabel(segment: string): string {
 }
 
 function faturaNavLabel(segment: string): string {
-  return (
-    faturasNavigation.find((item) => item.to === `/faturas/${segment}`)?.label
-    ?? segment
-  )
+  return FATURAS_LABELS[segment] ?? segment
 }
 
 function resumoNavLabel(segment: string): string {
-  const drillLabels: Record<string, string> = {
-    'pontos-de-apoio': 'Pontos de apoio',
-    transportadores: 'Transportadores',
-    mapa: 'Mapa'
-  }
-  return (
-    resumosNavigation.find((item) => item.to === `/resumos/${segment}`)?.label
-    ?? drillLabels[segment]
-    ?? segment
-  )
+  return RESUMOS_LABELS[segment] ?? segment
 }
 
 function slaNavLabel(segment: string): string {
-  return (
-    slaAnalyticsNavigation.find((item) => item.to === `/sla/${segment}`)?.label
-    ?? segment
-  )
+  return SLA_LABELS[segment] ?? segment
 }
 
 function dashboardNavLabel(segment: string): string {
@@ -74,10 +91,7 @@ function dashboardNavLabel(segment: string): string {
 }
 
 function configuracaoNavLabel(segment: string): string {
-  return (
-    configuracoesNavigation.find((item) => item.to === `/configuracoes/${segment}`)?.label
-    ?? segment
-  )
+  return CONFIGURACOES_LABELS[segment] ?? segment
 }
 
 /**
@@ -104,7 +118,7 @@ export function resolveBreadcrumbs(
   if (normalized === '/operacao/dashboard-reversa') {
     return [
       { label: 'Home', to: '/' },
-      { label: 'Dashboard Reversa' }
+      { label: 'Operações' }
     ]
   }
 
@@ -164,7 +178,7 @@ export function resolveBreadcrumbs(
   if (normalized === '/operacao/tratativas') {
     return [
       { label: 'Home', to: '/' },
-      { label: 'Tratativas' }
+      { label: 'Ocorrências' }
     ]
   }
 
@@ -185,7 +199,7 @@ export function resolveBreadcrumbs(
   if (normalized === '/operacao/geo-audit') {
     return [
       { label: 'Home', to: '/' },
-      { label: 'Auditoria geográfica' }
+      { label: 'Rastreio' }
     ]
   }
 
@@ -333,11 +347,11 @@ export function resolveBreadcrumbs(
 
     const crumbs: BreadcrumbItem[] = [
       { label: 'Home', to: '/' },
-      { label: faturasNavGroup.label, to: '/faturas' }
+      { label: FATURAS_GROUP_LABEL, to: '/faturas' }
     ]
 
     if (!section) {
-      crumbs[crumbs.length - 1] = { label: faturasNavGroup.label }
+      crumbs[crumbs.length - 1] = { label: FATURAS_GROUP_LABEL }
       return crumbs
     }
 
@@ -364,11 +378,11 @@ export function resolveBreadcrumbs(
 
     const crumbs: BreadcrumbItem[] = [
       { label: 'Home', to: '/' },
-      { label: resumosNavGroup.label, to: '/resumos' }
+      { label: RESUMOS_GROUP_LABEL, to: '/resumos' }
     ]
 
     if (!section) {
-      crumbs[crumbs.length - 1] = { label: resumosNavGroup.label }
+      crumbs[crumbs.length - 1] = { label: RESUMOS_GROUP_LABEL }
       return crumbs
     }
 
@@ -382,11 +396,11 @@ export function resolveBreadcrumbs(
 
     const crumbs: BreadcrumbItem[] = [
       { label: 'Home', to: '/' },
-      { label: slaAnalyticsNavGroup.label, to: '/sla' }
+      { label: SLA_GROUP_LABEL, to: '/sla' }
     ]
 
     if (!section) {
-      crumbs[crumbs.length - 1] = { label: slaAnalyticsNavGroup.label }
+      crumbs[crumbs.length - 1] = { label: SLA_GROUP_LABEL }
       return crumbs
     }
 
@@ -419,11 +433,11 @@ export function resolveBreadcrumbs(
 
     const crumbs: BreadcrumbItem[] = [
       { label: 'Home', to: '/' },
-      { label: configuracoesNavGroup.label, to: '/configuracoes' }
+      { label: CONFIGURACOES_GROUP_LABEL, to: '/configuracoes' }
     ]
 
     if (!section) {
-      crumbs[crumbs.length - 1] = { label: configuracoesNavGroup.label }
+      crumbs[crumbs.length - 1] = { label: CONFIGURACOES_GROUP_LABEL }
       return crumbs
     }
 

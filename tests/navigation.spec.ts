@@ -1,75 +1,99 @@
 import { describe, expect, it } from 'vitest'
 import {
   cadastrosNavigation,
+  dashboardsNavigation,
+  devolucoesNavGroup,
   devolucoesNavigation,
+  logsNavigation,
+  navigationGroups,
   navigationItems,
-  operacaoNavigation,
-  resumosNavigation
+  rotasRastreioNavigation,
+  secondaryNavigation
 } from '../app/components/app/navigation'
 import { getOrderDetailBundle } from '../app/data/demo/order-detail'
 import { resolveBreadcrumbs } from '../app/utils/breadcrumbs'
 
 describe('navegação oficial', () => {
-  it('expõe Home e itens soltos (Calendário, Auditoria geográfica) fora de grupo', () => {
-    expect(navigationItems.map(item => item.to)).toEqual([
+  it('expõe Home, Calendário, Operação ao vivo e Lotes soltos no topo (seção Operação)', () => {
+    expect(navigationItems.map((item) => item.to)).toEqual([
       '/',
       '/calendario',
-      '/operacao/geo-audit'
-    ])
-  })
-
-  it('agrupa operação ao vivo, pedidos, lotes e Dashboard Reversa no grupo Operação', () => {
-    expect(operacaoNavigation.map(item => item.to)).toEqual([
       '/operacao/ao-vivo',
-      '/pedidos',
-      '/operacao/lotes',
-      '/operacao/expedicao',
-      '/operacao/roteirizacao',
-      '/operacao/rotas',
-      '/loja/check-in',
-      '/operacao/tratativas',
-      '/operacao/ocorrencias-ng',
-      '/operacao/disparo-chatbot',
-      '/operacao/dashboard-reversa'
+      '/operacao/lotes'
+    ])
+    expect(navigationItems.every((item) => item.icon.startsWith('i-lucide-'))).toBe(true)
+  })
+
+  it('grupo Dashboards: Ponto de apoios, Operações, Ocorrências, SLA, Monitor do chatbot', () => {
+    expect(dashboardsNavigation.map((item) => ({ label: item.label, to: item.to }))).toEqual([
+      { label: 'Ponto de apoios', to: '/dashboards/indicadores' },
+      { label: 'Operações', to: '/operacao/dashboard-reversa' },
+      { label: 'Ocorrências', to: '/operacao/tratativas' },
+      { label: 'SLA', to: '/dashboards/sla' },
+      { label: 'Monitor do chatbot', to: '/operacao/chatbot-monitor' }
+    ])
+    expect(dashboardsNavigation.every((item) => item.icon.startsWith('i-lucide-'))).toBe(true)
+  })
+
+  it('grupo novo Rotas & Rastreio: Rotas, Roteirização, Rastreio', () => {
+    expect(rotasRastreioNavigation.map((item) => ({ label: item.label, to: item.to }))).toEqual([
+      { label: 'Rotas', to: '/operacao/rotas' },
+      { label: 'Roteirização', to: '/operacao/roteirizacao' },
+      { label: 'Rastreio', to: '/operacao/geo-audit' }
     ])
   })
 
-  it('usa ícones Lucide em todos os destinos', () => {
-    expect(navigationItems.every(item => item.icon.startsWith('i-lucide-'))).toBe(true)
-    expect(operacaoNavigation.every(item => item.icon.startsWith('i-lucide-'))).toBe(true)
+  it('grupo novo Logs: Ocorrências NG, Integração', () => {
+    expect(logsNavigation.map((item) => ({ label: item.label, to: item.to }))).toEqual([
+      { label: 'Ocorrências NG', to: '/operacao/ocorrencias-ng' },
+      { label: 'Integração', to: '/logs/integracao' }
+    ])
   })
 
-  it('inclui submenu Cadastros com 12 destinos', () => {
-    expect(cadastrosNavigation).toHaveLength(12)
-    expect(cadastrosNavigation[0]?.to).toBe('/cadastros/sla')
-    expect(cadastrosNavigation[1]?.to).toBe('/cadastros/fretes')
+  it('grupo Devoluções renomeado Remessas: Caixas e Despachos', () => {
+    expect(devolucoesNavGroup.label).toBe('Remessas')
+    expect(devolucoesNavigation.map((item) => ({ label: item.label, to: item.to }))).toEqual([
+      { label: 'Caixas', to: '/devolucoes/dev-in' },
+      { label: 'Despachos', to: '/devolucoes/dev-out' }
+    ])
   })
 
-  it('inclui submenu Devoluções com Acompanhamento, DEV IN e DEV OUT', () => {
-    expect(devolucoesNavigation.map((item) => item.label)).toEqual([
-      'Acompanhamento',
-      'DEV IN',
-      'DEV OUT'
+  it('grupo Cadastros com 13 itens (Pedidos + 12 cadastros, Operadores renomeado, Operações novo)', () => {
+    expect(cadastrosNavigation.map((item) => item.label)).toEqual([
+      'Pedidos',
+      'SLA',
+      'Fretes',
+      'Empresas',
+      'Operadores',
+      'Usuários',
+      "Aprovações PA's",
+      'Ocorrências',
+      'Regiões',
+      'Feriados',
+      'Produtos',
+      'Templates Chatbot',
+      'Operações'
     ])
-    expect(devolucoesNavigation.map((item) => item.to)).toEqual([
-      '/devolucoes/acompanhamento',
-      '/devolucoes/dev-in',
-      '/devolucoes/dev-out'
-    ])
-    expect(devolucoesNavigation.every((item) => item.icon.startsWith('i-lucide-'))).toBe(true)
+    expect(cadastrosNavigation.find((item) => item.label === 'Operadores')?.to).toBe('/cadastros/contas')
+    expect(cadastrosNavigation.find((item) => item.label === 'Operações')?.to).toBe('/cadastros/operacoes')
+    expect(cadastrosNavigation.some((item) => item.label === 'Ocorrências Externas')).toBe(false)
   })
 
-  it('inclui submenu Resumos com as três telas analíticas', () => {
-    expect(resumosNavigation.map((item) => item.label)).toEqual([
-      'Totais por Operação',
-      'Pedidos por Cliente',
-      'Pedidos por Estado'
+  it('secondaryNavigation só tem Integrações', () => {
+    expect(secondaryNavigation).toEqual([
+      { label: 'Integrações', to: '/configuracoes/integracoes', icon: 'i-lucide-plug' }
     ])
-    expect(resumosNavigation.map((item) => item.to)).toEqual([
-      '/resumos/totais-por-operacao',
-      '/resumos/pedidos-por-cliente',
-      '/resumos/pedidos-por-estado'
+  })
+
+  it('navigationGroups segue a ordem final da seção Gestão', () => {
+    expect(navigationGroups.map((group) => group.label)).toEqual([
+      'Dashboards',
+      'Rotas & Rastreio',
+      'Logs',
+      'Remessas',
+      'Cadastros'
     ])
+    expect(navigationGroups.every((group) => group.children.length > 0)).toBe(true)
   })
 })
 
@@ -92,7 +116,7 @@ describe('breadcrumbs do topbar', () => {
     ])
   })
 
-  it('resolve cadastro aninhado Novo/Editar com links intermediários', () => {
+  it('resolve cadastro aninhado Novo/Editar com links intermediários (Contas renomeado Operadores)', () => {
     expect(resolveBreadcrumbs('/cadastros/empresas/novo')).toEqual([
       { label: 'Cadastros', to: '/cadastros' },
       { label: 'Empresas', to: '/cadastros/empresas' },
@@ -100,36 +124,31 @@ describe('breadcrumbs do topbar', () => {
     ])
     expect(resolveBreadcrumbs('/cadastros/contas/42', { kind: 'contas', id: '42' })).toEqual([
       { label: 'Cadastros', to: '/cadastros' },
-      { label: 'Contas', to: '/cadastros/contas' },
+      { label: 'Operadores', to: '/cadastros/contas' },
       { label: 'Editar' }
     ])
   })
 
-  it('resolve Devoluções → DEV IN / DEV OUT e detalhe', () => {
+  it('resolve Remessas → Caixas / Despachos e detalhe', () => {
     expect(resolveBreadcrumbs('/devolucoes/dev-in')).toEqual([
       { label: 'Home', to: '/' },
-      { label: 'Devoluções', to: '/devolucoes' },
-      { label: 'DEV IN' }
+      { label: 'Remessas', to: '/devolucoes' },
+      { label: 'Caixas' }
     ])
     expect(resolveBreadcrumbs('/devolucoes/dev-out')).toEqual([
       { label: 'Home', to: '/' },
-      { label: 'Devoluções', to: '/devolucoes' },
-      { label: 'DEV OUT' }
+      { label: 'Remessas', to: '/devolucoes' },
+      { label: 'Despachos' }
     ])
     expect(resolveBreadcrumbs('/devolucoes/dev-in/1042', { id: '1042' })).toEqual([
       { label: 'Home', to: '/' },
-      { label: 'Devoluções', to: '/devolucoes' },
-      { label: 'DEV IN', to: '/devolucoes/dev-in' },
+      { label: 'Remessas', to: '/devolucoes' },
+      { label: 'Caixas', to: '/devolucoes/dev-in' },
       { label: '#1042' }
-    ])
-    expect(resolveBreadcrumbs('/devolucoes/acompanhamento')).toEqual([
-      { label: 'Home', to: '/' },
-      { label: 'Devoluções', to: '/devolucoes' },
-      { label: 'Acompanhamento' }
     ])
   })
 
-  it('resolve Home, operação ao vivo, pedidos, lotes e detalhe', () => {
+  it('resolve Home, operação ao vivo, dashboard de operações, lotes e detalhe', () => {
     expect(resolveBreadcrumbs('/')).toEqual([{ label: 'Home' }])
     expect(resolveBreadcrumbs('/operacao/ao-vivo')).toEqual([
       { label: 'Home', to: '/' },
@@ -137,7 +156,7 @@ describe('breadcrumbs do topbar', () => {
     ])
     expect(resolveBreadcrumbs('/operacao/dashboard-reversa')).toEqual([
       { label: 'Home', to: '/' },
-      { label: 'Dashboard Reversa' }
+      { label: 'Operações' }
     ])
     expect(resolveBreadcrumbs('/operacao/lotes')).toEqual([
       { label: 'Home', to: '/' },
@@ -156,6 +175,17 @@ describe('breadcrumbs do topbar', () => {
       { label: 'Home', to: '/' },
       { label: 'Pedidos', to: '/pedidos' },
       { label: '#48224' }
+    ])
+  })
+
+  it('resolve Rastreio (ex-Auditoria geográfica) e Ocorrências (ex-Tratativas)', () => {
+    expect(resolveBreadcrumbs('/operacao/geo-audit')).toEqual([
+      { label: 'Home', to: '/' },
+      { label: 'Rastreio' }
+    ])
+    expect(resolveBreadcrumbs('/operacao/tratativas')).toEqual([
+      { label: 'Home', to: '/' },
+      { label: 'Ocorrências' }
     ])
   })
 

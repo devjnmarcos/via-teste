@@ -74,7 +74,7 @@ describe('AppBreadcrumbs', () => {
 describe('AppSidebar accordion', () => {
   it('abre e fecha Cadastros pelo rótulo do grupo', async () => {
     const wrapper = await mountSuspended(AppSidebar, {
-      route: '/pedidos'
+      route: '/'
     })
 
     const toggle = wrapper.get('[data-testid="nav-group-cadastros"]')

@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import {
-  configuracoesNavigation,
   navigationItems,
   secondaryNavigation
 } from '../app/components/app/navigation'
@@ -51,34 +50,18 @@ import {
 import { resolveBreadcrumbs } from '../app/utils/breadcrumbs'
 
 describe('navegação P3', () => {
-  it('expõe Check In, Tratativas, Ocorrências NG e Disparo na operação', () => {
+  it('expõe Home, Calendário, Operação ao vivo e Lotes soltos no topo', () => {
     expect(navigationItems.map((item) => item.to)).toEqual([
       '/',
+      '/calendario',
       '/operacao/ao-vivo',
-      '/pedidos',
-      '/operacao/lotes',
-      '/operacao/expedicao',
-      '/operacao/roteirizacao',
-      '/operacao/rotas',
-      '/loja/check-in',
-      '/operacao/tratativas',
-      '/operacao/ocorrencias-ng',
-      '/operacao/disparo-chatbot',
-      '/operacao/geo-audit',
-      '/operacao/dashboard-reversa',
-      '/calendario'
+      '/operacao/lotes'
     ])
   })
 
-  it('materializa Configurações como submenu e remove placeholder', () => {
-    expect(configuracoesNavigation.map((item) => item.to)).toEqual([
-      '/configuracoes/sla',
-      '/configuracoes/processo',
-      '/configuracoes/externos'
-    ])
-    expect(secondaryNavigation.map((item) => ({ label: item.label, to: item.to }))).toEqual([
-      { label: 'Pontos de apoio', to: '/pontos-de-apoio' },
-      { label: 'Transportadores', to: '/transportadores' }
+  it('extingue o grupo Configurações; Integrações vira o único item solto final', () => {
+    expect(secondaryNavigation).toEqual([
+      { label: 'Integrações', to: '/configuracoes/integracoes', icon: 'i-lucide-plug' }
     ])
   })
 })
@@ -150,7 +133,7 @@ describe('breadcrumbs P3', () => {
   it('resolve operação P3, check-in e configurações', () => {
     expect(resolveBreadcrumbs('/operacao/tratativas')).toEqual([
       { label: 'Home', to: '/' },
-      { label: 'Tratativas' }
+      { label: 'Ocorrências' }
     ])
     expect(resolveBreadcrumbs('/operacao/ocorrencias-ng')).toEqual([
       { label: 'Home', to: '/' },

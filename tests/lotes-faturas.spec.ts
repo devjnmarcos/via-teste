@@ -4,10 +4,7 @@ import { createFatura, getFatura, isFaturaKind, listFaturasByKind } from '../app
 import { buildLotesListMetrics, mapLotStatusKey } from '../app/utils/lotes-metrics'
 import { buildFaturasListMetrics, mapFaturaStatusKey } from '../app/utils/faturas-metrics'
 import { resolveBreadcrumbs } from '../app/utils/breadcrumbs'
-import {
-  faturasNavigation,
-  navigationItems
-} from '../app/components/app/navigation'
+import { navigationItems } from '../app/components/app/navigation'
 
 describe('lotes fixtures e métricas', () => {
   it('expõe lotes com logs tipados', () => {
@@ -62,13 +59,6 @@ describe('navegação e breadcrumbs — lotes e faturas', () => {
   it('inclui Lotes na navegação principal', () => {
     expect(navigationItems.map((item) => item.to)).toContain('/operacao/lotes')
     expect(navigationItems.find((item) => item.to === '/operacao/lotes')?.icon).toBe('i-lucide-layers')
-  })
-
-  it('expõe submenu Faturas a receber / a pagar', () => {
-    expect(faturasNavigation.map((item) => item.to)).toEqual([
-      '/faturas/a-receber',
-      '/faturas/a-pagar'
-    ])
   })
 
   it('resolve breadcrumbs de lotes e faturas', () => {

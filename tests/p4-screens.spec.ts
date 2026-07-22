@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { navigationItems, secondaryNavigation } from '../app/components/app/navigation'
+import { rotasRastreioNavigation, secondaryNavigation } from '../app/components/app/navigation'
 import {
   approveCadastroSolicitacao,
   buildCadastroOnda3Metrics,
@@ -23,19 +23,28 @@ import { resolveBreadcrumbs } from '../app/utils/breadcrumbs'
 import { existsSync, readFileSync } from 'node:fs'
 
 describe('navegação P4 / gap fechado', () => {
-  it('inclui Auditoria geográfica na operação', () => {
-    expect(navigationItems.some((item) => item.to === '/operacao/geo-audit')).toBe(true)
+  it('inclui Rastreio (ex-Auditoria geográfica) no grupo Rotas & Rastreio', () => {
+    const item = rotasRastreioNavigation.find((entry) => entry.to === '/operacao/geo-audit')
+    expect(item?.label).toBe('Rastreio')
   })
 
-  it('materializa Pontos de apoio e Transportadores com rotas', () => {
-    expect(secondaryNavigation.map((item) => item.to)).toEqual([
-      '/pontos-de-apoio',
-      '/transportadores'
+  it('Pontos de apoio e Transportadores saíram do menu; só resta Integrações', () => {
+    expect(secondaryNavigation).toEqual([
+      { label: 'Integrações', to: '/configuracoes/integracoes', icon: 'i-lucide-plug' }
     ])
   })
 
-  it('marca todos os 12 cadastros como ready', () => {
-    expect(cadastroNavItems.every((item) => item.ready)).toBe(true)
+  it('mantém os 11 cadastros legados como ready; Operações é stub novo ainda não implementado', () => {
+    const legacyReadyLabels = [
+      'SLA', 'Fretes', 'Empresas', 'Operadores', 'Usuários',
+      "Aprovações PA's", 'Ocorrências', 'Regiões', 'Feriados', 'Produtos', 'Templates Chatbot'
+    ]
+    const legacyItems = cadastroNavItems.filter((item) => legacyReadyLabels.includes(item.label))
+    expect(legacyItems).toHaveLength(11)
+    expect(legacyItems.every((item) => item.ready)).toBe(true)
+
+    const operacoesItem = cadastroNavItems.find((item) => item.label === 'Operações')
+    expect(operacoesItem?.ready).toBe(false)
   })
 })
 
@@ -82,7 +91,7 @@ describe('breadcrumbs P4', () => {
   it('resolve geo-audit, gestão e complementos de pedido', () => {
     expect(resolveBreadcrumbs('/operacao/geo-audit')).toEqual([
       { label: 'Home', to: '/' },
-      { label: 'Auditoria geográfica' }
+      { label: 'Rastreio' }
     ])
     expect(resolveBreadcrumbs('/pontos-de-apoio')).toEqual([
       { label: 'Home', to: '/' },

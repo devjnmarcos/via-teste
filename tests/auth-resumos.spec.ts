@@ -34,10 +34,7 @@ import {
   buildTotaisOperacaoMetrics
 } from '../app/utils/resumos-metrics'
 import { resolveBreadcrumbs } from '../app/utils/breadcrumbs'
-import {
-  resumosNavigation,
-  secondaryNavigation
-} from '../app/components/app/navigation'
+import { secondaryNavigation } from '../app/components/app/navigation'
 
 describe('auth fixtures e validação', () => {
   it('autentica apenas a credencial demo', () => {
@@ -151,14 +148,10 @@ describe('resumos fixtures e métricas', () => {
 })
 
 describe('navegação e breadcrumbs — auth e resumos', () => {
-  it('expõe submenu Resumos e remove placeholder Análises', () => {
-    expect(resumosNavigation.map((item) => item.to)).toEqual([
-      '/resumos/totais-por-operacao',
-      '/resumos/pedidos-por-cliente',
-      '/resumos/pedidos-por-estado'
+  it('expõe Integrações como único item solto (Resumos saiu do menu, mas a página segue existindo)', () => {
+    expect(secondaryNavigation).toEqual([
+      { label: 'Integrações', to: '/configuracoes/integracoes', icon: 'i-lucide-plug' }
     ])
-    expect(secondaryNavigation.map((item) => item.label)).not.toContain('Análises')
-    expect(resumosNavigation.every((item) => item.icon.startsWith('i-lucide-'))).toBe(true)
   })
 
   it('resolve breadcrumbs de Resumos', () => {

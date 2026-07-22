@@ -19,7 +19,7 @@ import {
   trabalhadoUfColumns,
   visaoGeralFixture
 } from '../app/data/demo/dashboard-reversa'
-import { navigationItems } from '../app/components/app/navigation'
+import { dashboardsNavigation } from '../app/components/app/navigation'
 import { isTypedColumn } from '../app/types/data-table'
 import { pctTone } from '../app/utils/chart-theme'
 
@@ -46,8 +46,9 @@ describe('Dashboard Reversa', () => {
     ])
   })
 
-  it('está na navegação de Operação', () => {
-    expect(navigationItems.some((item) => item.to === '/operacao/dashboard-reversa')).toBe(true)
+  it('está no grupo Dashboards, renomeado para "Operações"', () => {
+    const item = dashboardsNavigation.find((entry) => entry.to === '/operacao/dashboard-reversa')
+    expect(item?.label).toBe('Operações')
   })
 
   it('monta 6 métricas da Visão Geral a partir do fixture', () => {

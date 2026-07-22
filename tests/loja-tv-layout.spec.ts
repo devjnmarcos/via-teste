@@ -12,11 +12,9 @@ const { setPageLayoutMock } = vi.hoisted(() => ({
 mockNuxtImport('setPageLayout', () => setPageLayoutMock)
 
 describe('Loja (TV) — layout shell vs kiosk', () => {
-  it('item da sidebar aponta para a rota embedded (sem fullscreen)', () => {
+  it('não tem mais entrada de menu (saiu do grupo Dashboards, mas a página segue existindo como deep-link)', () => {
     const item = dashboardsNavigation.find((entry) => entry.to === '/dashboards/loja-tv')
-    expect(item?.label).toBe('Loja (TV)')
-    expect(item?.to).toBe('/dashboards/loja-tv')
-    expect(item?.to).not.toContain('fullscreen')
+    expect(item).toBeUndefined()
   })
 
   it('não fixa layout tv em definePageMeta (sidebar do app autenticado)', () => {

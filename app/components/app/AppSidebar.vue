@@ -1,113 +1,20 @@
 <script setup lang="ts">
 import {
   cadastrosNavGroup,
-  configuracoesNavGroup,
   dashboardsNavGroup,
   devolucoesNavGroup,
-  faturasNavGroup,
+  logsNavGroup,
   navigationItems,
-  operacaoNavGroup,
-  resumosNavGroup,
-  secondaryNavigation,
-  slaAnalyticsNavGroup
+  rotasRastreioNavGroup,
+  secondaryNavigation
 } from './navigation'
 
 const route = useRoute()
-const cadastrosOpen = ref(false)
-const configuracoesOpen = ref(false)
-const devolucoesOpen = ref(false)
-const faturasOpen = ref(false)
-const resumosOpen = ref(false)
-const slaOpen = ref(false)
-const dashboardsOpen = ref(false)
-const operacaoOpen = ref(false)
 
 function isActive(to: string | undefined) {
   if (!to) return false
   if (to === '/') return route.path === '/' || route.path.startsWith('/operacoes/')
   return route.path === to || route.path.startsWith(`${to}/`)
-}
-
-function groupHasActiveChild(children: { to?: string }[]) {
-  return children.some((item) => Boolean(item.to) && isActive(item.to))
-}
-
-const operacaoActive = computed(() => groupHasActiveChild(operacaoNavGroup.children))
-
-const cadastrosActive = computed(() => groupHasActiveChild(cadastrosNavGroup.children))
-
-const devolucoesActive = computed(() => groupHasActiveChild(devolucoesNavGroup.children))
-
-const faturasActive = computed(() =>
-  groupHasActiveChild(faturasNavGroup.children)
-  || route.path.startsWith('/faturas/')
-)
-
-const resumosActive = computed(() =>
-  groupHasActiveChild(resumosNavGroup.children)
-  || route.path.startsWith('/resumos/')
-)
-
-const slaActive = computed(() =>
-  groupHasActiveChild(slaAnalyticsNavGroup.children)
-  || route.path.startsWith('/sla/')
-)
-
-const dashboardsActive = computed(() =>
-  groupHasActiveChild(dashboardsNavGroup.children)
-  || route.path.startsWith('/dashboards/')
-)
-
-const configuracoesActive = computed(() =>
-  groupHasActiveChild(configuracoesNavGroup.children)
-  || route.path.startsWith('/configuracoes/')
-)
-
-watch(
-  () => route.path,
-  () => {
-    if (cadastrosActive.value) cadastrosOpen.value = true
-    if (configuracoesActive.value) configuracoesOpen.value = true
-    if (devolucoesActive.value) devolucoesOpen.value = true
-    if (faturasActive.value) faturasOpen.value = true
-    if (resumosActive.value) resumosOpen.value = true
-    if (slaActive.value) slaOpen.value = true
-    if (dashboardsActive.value) dashboardsOpen.value = true
-    if (operacaoActive.value) operacaoOpen.value = true
-  },
-  { immediate: true }
-)
-
-function toggleOperacao() {
-  operacaoOpen.value = !operacaoOpen.value
-}
-
-function toggleCadastros() {
-  cadastrosOpen.value = !cadastrosOpen.value
-}
-
-function toggleDevolucoes() {
-  devolucoesOpen.value = !devolucoesOpen.value
-}
-
-function toggleFaturas() {
-  faturasOpen.value = !faturasOpen.value
-}
-
-function toggleResumos() {
-  resumosOpen.value = !resumosOpen.value
-}
-
-function toggleSla() {
-  slaOpen.value = !slaOpen.value
-}
-
-function toggleDashboards() {
-  dashboardsOpen.value = !dashboardsOpen.value
-}
-
-function toggleConfiguracoes() {
-  configuracoesOpen.value = !configuracoesOpen.value
 }
 
 const navLinkClass = 'nav-link flex w-full min-h-10 items-center gap-2.5 my-px rounded-md border-0 bg-transparent px-2.5 text-left text-[13px] text-[oklch(80%_0.03_253)] no-underline hover:bg-[oklch(29%_0.045_253)] [&_svg]:size-[15px] [&_svg]:shrink-0 [&_svg]:text-[oklch(66%_0.035_253)] [&>span:nth-child(2)]:flex-1'
@@ -151,373 +58,63 @@ const navLinkSubClass = 'nav-link--sub min-h-[34px] pl-[18px] text-xs [&_svg]:si
           aria-hidden="true"
         />
         <span>{{ item.label }}</span>
+        <span
+          v-if="item.to === '/operacao/ao-vivo'"
+          class="numeric min-w-[25px] rounded-[10px] bg-[oklch(34%_0.05_253)] px-1.5 py-0.5 text-center text-[10px] font-bold text-[oklch(87%_0.025_253)]"
+        >146</span>
       </NuxtLink>
-
-      <div class="my-px">
-        <button
-          :class="[navLinkClass, 'cursor-pointer']"
-          type="button"
-          :aria-expanded="operacaoOpen"
-          aria-controls="nav-operacao-submenu"
-          data-testid="nav-group-operacao"
-          @click="toggleOperacao"
-        >
-          <UIcon
-            :name="operacaoNavGroup.icon"
-            aria-hidden="true"
-          />
-          <span>{{ operacaoNavGroup.label }}</span>
-          <UIcon
-            name="i-lucide-chevron-right"
-            class="nav-chevron !size-[13px] transition-transform duration-160 ease-in-out"
-            :class="operacaoOpen ? 'nav-chevron--open rotate-90' : undefined"
-            aria-hidden="true"
-          />
-        </button>
-        <div
-          v-if="operacaoOpen"
-          id="nav-operacao-submenu"
-          class="py-0.5 pb-1.5"
-          role="group"
-          aria-label="Operação"
-          data-testid="nav-submenu-operacao"
-        >
-          <NuxtLink
-            v-for="item in operacaoNavGroup.children"
-            :key="item.to"
-            :to="item.to"
-            :class="[navLinkClass, navLinkSubClass, isActive(item.to) ? navLinkActiveClass : undefined]"
-            :aria-current="isActive(item.to) ? 'page' : undefined"
-          >
-            <UIcon
-              :name="item.icon"
-              aria-hidden="true"
-            />
-            <span>{{ item.label }}</span>
-            <span
-              v-if="item.to === '/operacao/ao-vivo'"
-              class="numeric min-w-[25px] rounded-[10px] bg-[oklch(34%_0.05_253)] px-1.5 py-0.5 text-center text-[10px] font-bold text-[oklch(87%_0.025_253)]"
-            >146</span>
-          </NuxtLink>
-        </div>
-      </div>
 
       <p class="mx-2.5 mt-[18px] mb-1.5 text-[10px] font-bold tracking-[0.13em] text-[oklch(66%_0.045_253)] uppercase">Gestão</p>
 
-      <div class="my-px">
-        <button
-          :class="[navLinkClass, 'cursor-pointer']"
-          type="button"
-          :aria-expanded="dashboardsOpen"
-          aria-controls="nav-dashboards-submenu"
-          data-testid="nav-group-dashboards"
-          @click="toggleDashboards"
-        >
-          <UIcon
-            :name="dashboardsNavGroup.icon"
-            aria-hidden="true"
-          />
-          <span>{{ dashboardsNavGroup.label }}</span>
-          <UIcon
-            name="i-lucide-chevron-right"
-            class="nav-chevron !size-[13px] transition-transform duration-160 ease-in-out"
-            :class="dashboardsOpen ? 'nav-chevron--open rotate-90' : undefined"
-            aria-hidden="true"
-          />
-        </button>
-        <div
-          v-if="dashboardsOpen"
-          id="nav-dashboards-submenu"
-          class="py-0.5 pb-1.5"
-          role="group"
-          aria-label="Dashboards"
-          data-testid="nav-submenu-dashboards"
-        >
-          <NuxtLink
-            v-for="item in dashboardsNavGroup.children"
-            :key="item.to"
-            :to="item.to"
-            :class="[navLinkClass, navLinkSubClass, isActive(item.to) ? navLinkActiveClass : undefined]"
-            :aria-current="isActive(item.to) ? 'page' : undefined"
-          >
-            <UIcon
-              :name="item.icon"
-              aria-hidden="true"
-            />
-            <span>{{ item.label }}</span>
-          </NuxtLink>
-        </div>
-      </div>
+      <NavGroup
+        :label="dashboardsNavGroup.label"
+        :icon="dashboardsNavGroup.icon"
+        :children="dashboardsNavGroup.children"
+        test-id="dashboards"
+        :nav-link-class="navLinkClass"
+        :nav-link-active-class="navLinkActiveClass"
+        :nav-link-sub-class="navLinkSubClass"
+      />
 
-      <div class="my-px">
-        <button
-          :class="[navLinkClass, 'cursor-pointer']"
-          type="button"
-          :aria-expanded="slaOpen"
-          aria-controls="nav-sla-submenu"
-          data-testid="nav-group-sla"
-          @click="toggleSla"
-        >
-          <UIcon
-            :name="slaAnalyticsNavGroup.icon"
-            aria-hidden="true"
-          />
-          <span>{{ slaAnalyticsNavGroup.label }}</span>
-          <UIcon
-            name="i-lucide-chevron-right"
-            class="nav-chevron !size-[13px] transition-transform duration-160 ease-in-out"
-            :class="slaOpen ? 'nav-chevron--open rotate-90' : undefined"
-            aria-hidden="true"
-          />
-        </button>
-        <div
-          v-if="slaOpen"
-          id="nav-sla-submenu"
-          class="py-0.5 pb-1.5"
-          role="group"
-          aria-label="SLA"
-          data-testid="nav-submenu-sla"
-        >
-          <NuxtLink
-            v-for="item in slaAnalyticsNavGroup.children"
-            :key="item.to"
-            :to="item.to"
-            :class="[navLinkClass, navLinkSubClass, isActive(item.to) ? navLinkActiveClass : undefined]"
-            :aria-current="isActive(item.to) ? 'page' : undefined"
-          >
-            <UIcon
-              :name="item.icon"
-              aria-hidden="true"
-            />
-            <span>{{ item.label }}</span>
-          </NuxtLink>
-        </div>
-      </div>
+      <NavGroup
+        :label="rotasRastreioNavGroup.label"
+        :icon="rotasRastreioNavGroup.icon"
+        :children="rotasRastreioNavGroup.children"
+        test-id="rotas-rastreio"
+        :nav-link-class="navLinkClass"
+        :nav-link-active-class="navLinkActiveClass"
+        :nav-link-sub-class="navLinkSubClass"
+      />
 
-      <div class="my-px">
-        <button
-          :class="[navLinkClass, 'cursor-pointer']"
-          type="button"
-          :aria-expanded="resumosOpen"
-          aria-controls="nav-resumos-submenu"
-          data-testid="nav-group-resumos"
-          @click="toggleResumos"
-        >
-          <UIcon
-            :name="resumosNavGroup.icon"
-            aria-hidden="true"
-          />
-          <span>{{ resumosNavGroup.label }}</span>
-          <UIcon
-            name="i-lucide-chevron-right"
-            class="nav-chevron !size-[13px] transition-transform duration-160 ease-in-out"
-            :class="resumosOpen ? 'nav-chevron--open rotate-90' : undefined"
-            aria-hidden="true"
-          />
-        </button>
-        <div
-          v-if="resumosOpen"
-          id="nav-resumos-submenu"
-          class="py-0.5 pb-1.5"
-          role="group"
-          aria-label="Resumos"
-          data-testid="nav-submenu-resumos"
-        >
-          <NuxtLink
-            v-for="item in resumosNavGroup.children"
-            :key="item.to"
-            :to="item.to"
-            :class="[navLinkClass, navLinkSubClass, isActive(item.to) ? navLinkActiveClass : undefined]"
-            :aria-current="isActive(item.to) ? 'page' : undefined"
-          >
-            <UIcon
-              :name="item.icon"
-              aria-hidden="true"
-            />
-            <span>{{ item.label }}</span>
-          </NuxtLink>
-        </div>
-      </div>
+      <NavGroup
+        :label="logsNavGroup.label"
+        :icon="logsNavGroup.icon"
+        :children="logsNavGroup.children"
+        test-id="logs"
+        :nav-link-class="navLinkClass"
+        :nav-link-active-class="navLinkActiveClass"
+        :nav-link-sub-class="navLinkSubClass"
+      />
 
-      <div class="my-px">
-        <button
-          :class="[navLinkClass, 'cursor-pointer']"
-          type="button"
-          :aria-expanded="faturasOpen"
-          aria-controls="nav-faturas-submenu"
-          data-testid="nav-group-faturas"
-          @click="toggleFaturas"
-        >
-          <UIcon
-            :name="faturasNavGroup.icon"
-            aria-hidden="true"
-          />
-          <span>{{ faturasNavGroup.label }}</span>
-          <UIcon
-            name="i-lucide-chevron-right"
-            class="nav-chevron !size-[13px] transition-transform duration-160 ease-in-out"
-            :class="faturasOpen ? 'nav-chevron--open rotate-90' : undefined"
-            aria-hidden="true"
-          />
-        </button>
-        <div
-          v-if="faturasOpen"
-          id="nav-faturas-submenu"
-          class="py-0.5 pb-1.5"
-          role="group"
-          aria-label="Faturas"
-          data-testid="nav-submenu-faturas"
-        >
-          <NuxtLink
-            v-for="item in faturasNavGroup.children"
-            :key="item.to"
-            :to="item.to"
-            :class="[navLinkClass, navLinkSubClass, isActive(item.to) ? navLinkActiveClass : undefined]"
-            :aria-current="isActive(item.to) ? 'page' : undefined"
-          >
-            <UIcon
-              :name="item.icon"
-              aria-hidden="true"
-            />
-            <span>{{ item.label }}</span>
-          </NuxtLink>
-        </div>
-      </div>
+      <NavGroup
+        :label="devolucoesNavGroup.label"
+        :icon="devolucoesNavGroup.icon"
+        :children="devolucoesNavGroup.children"
+        test-id="devolucoes"
+        :nav-link-class="navLinkClass"
+        :nav-link-active-class="navLinkActiveClass"
+        :nav-link-sub-class="navLinkSubClass"
+      />
 
-      <div class="my-px">
-        <button
-          :class="[navLinkClass, 'cursor-pointer']"
-          type="button"
-          :aria-expanded="devolucoesOpen"
-          aria-controls="nav-devolucoes-submenu"
-          data-testid="nav-group-devolucoes"
-          @click="toggleDevolucoes"
-        >
-          <UIcon
-            :name="devolucoesNavGroup.icon"
-            aria-hidden="true"
-          />
-          <span>{{ devolucoesNavGroup.label }}</span>
-          <UIcon
-            name="i-lucide-chevron-right"
-            class="nav-chevron !size-[13px] transition-transform duration-160 ease-in-out"
-            :class="devolucoesOpen ? 'nav-chevron--open rotate-90' : undefined"
-            aria-hidden="true"
-          />
-        </button>
-        <div
-          v-if="devolucoesOpen"
-          id="nav-devolucoes-submenu"
-          class="py-0.5 pb-1.5"
-          role="group"
-          aria-label="Devoluções"
-          data-testid="nav-submenu-devolucoes"
-        >
-          <NuxtLink
-            v-for="item in devolucoesNavGroup.children"
-            :key="item.to"
-            :to="item.to"
-            :class="[navLinkClass, navLinkSubClass, isActive(item.to) ? navLinkActiveClass : undefined]"
-            :aria-current="isActive(item.to) ? 'page' : undefined"
-          >
-            <UIcon
-              :name="item.icon"
-              aria-hidden="true"
-            />
-            <span>{{ item.label }}</span>
-          </NuxtLink>
-        </div>
-      </div>
-
-      <div class="my-px">
-        <button
-          :class="[navLinkClass, 'cursor-pointer']"
-          type="button"
-          :aria-expanded="cadastrosOpen"
-          aria-controls="nav-cadastros-submenu"
-          data-testid="nav-group-cadastros"
-          @click="toggleCadastros"
-        >
-          <UIcon
-            :name="cadastrosNavGroup.icon"
-            aria-hidden="true"
-          />
-          <span>{{ cadastrosNavGroup.label }}</span>
-          <UIcon
-            name="i-lucide-chevron-right"
-            class="nav-chevron !size-[13px] transition-transform duration-160 ease-in-out"
-            :class="cadastrosOpen ? 'nav-chevron--open rotate-90' : undefined"
-            aria-hidden="true"
-          />
-        </button>
-        <div
-          v-if="cadastrosOpen"
-          id="nav-cadastros-submenu"
-          class="py-0.5 pb-1.5"
-          role="group"
-          aria-label="Cadastros"
-          data-testid="nav-submenu-cadastros"
-        >
-          <NuxtLink
-            v-for="item in cadastrosNavGroup.children"
-            :key="item.to"
-            :to="item.to"
-            :class="[navLinkClass, navLinkSubClass, isActive(item.to) ? navLinkActiveClass : undefined]"
-            :aria-current="isActive(item.to) ? 'page' : undefined"
-          >
-            <UIcon
-              :name="item.icon"
-              aria-hidden="true"
-            />
-            <span>{{ item.label }}</span>
-          </NuxtLink>
-        </div>
-      </div>
-
-      <div class="my-px">
-        <button
-          :class="[navLinkClass, 'cursor-pointer']"
-          type="button"
-          :aria-expanded="configuracoesOpen"
-          aria-controls="nav-configuracoes-submenu"
-          data-testid="nav-group-configuracoes"
-          @click="toggleConfiguracoes"
-        >
-          <UIcon
-            :name="configuracoesNavGroup.icon"
-            aria-hidden="true"
-          />
-          <span>{{ configuracoesNavGroup.label }}</span>
-          <UIcon
-            name="i-lucide-chevron-right"
-            class="nav-chevron !size-[13px] transition-transform duration-160 ease-in-out"
-            :class="configuracoesOpen ? 'nav-chevron--open rotate-90' : undefined"
-            aria-hidden="true"
-          />
-        </button>
-        <div
-          v-if="configuracoesOpen"
-          id="nav-configuracoes-submenu"
-          class="py-0.5 pb-1.5"
-          role="group"
-          aria-label="Configurações"
-          data-testid="nav-submenu-configuracoes"
-        >
-          <NuxtLink
-            v-for="item in configuracoesNavGroup.children"
-            :key="item.to"
-            :to="item.to"
-            :class="[navLinkClass, navLinkSubClass, isActive(item.to) ? navLinkActiveClass : undefined]"
-            :aria-current="isActive(item.to) ? 'page' : undefined"
-          >
-            <UIcon
-              :name="item.icon"
-              aria-hidden="true"
-            />
-            <span>{{ item.label }}</span>
-          </NuxtLink>
-        </div>
-      </div>
+      <NavGroup
+        :label="cadastrosNavGroup.label"
+        :icon="cadastrosNavGroup.icon"
+        :children="cadastrosNavGroup.children"
+        test-id="cadastros"
+        :nav-link-class="navLinkClass"
+        :nav-link-active-class="navLinkActiveClass"
+        :nav-link-sub-class="navLinkSubClass"
+      />
 
       <NuxtLink
         v-for="item in secondaryNavigation"

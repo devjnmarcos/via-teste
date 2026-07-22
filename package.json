@@ -15,10 +15,6 @@
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest run",
-    "harvest:test": "node --test scripts/harvest-v2/self-test.mjs",
-    "harvest:smoke": "node scripts/harvest-v2/run.mjs",
-    "harvest:routes": "node scripts/harvest-v2/run.mjs",
-    "harvest:validate": "node scripts/harvest-v2/validate.mjs",
     "verify": "npm run test:run && npm run typecheck && npm run lint && npm run build && node scripts/verify-foundation.mjs"
   },
   "dependencies": {

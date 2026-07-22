@@ -1,9 +1,0 @@
-{
-  "startedAt": "2026-07-20T14:58:18.297Z",
-  "routeCount": 3,
-  "routes": [
-    "/login",
-    "/pedidos",
-    "/publico/consulta-pedido"
-  ]
-}

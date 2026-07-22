@@ -30,24 +30,27 @@ describe('contrato DataTable tipada', () => {
 })
 
 describe('menu Cadastros', () => {
-  it('expõe 12 itens na ordem e labels do legado', () => {
+  it('expõe 13 itens na ordem final (Pedidos + 12 cadastros, Operadores renomeado, Operações novo)', () => {
     expect(cadastrosNavigation.map((item) => item.label)).toEqual([
+      'Pedidos',
       'SLA',
       'Fretes',
       'Empresas',
-      'Contas',
+      'Operadores',
       'Usuários',
       "Aprovações PA's",
       'Ocorrências',
-      'Ocorrências Externas',
       'Regiões',
       'Feriados',
       'Produtos',
-      'Templates Chatbot'
+      'Templates Chatbot',
+      'Operações'
     ])
   })
 
-  it('usa rotas sob /cadastros/', () => {
-    expect(cadastrosNavigation.every((item) => item.to.startsWith('/cadastros/'))).toBe(true)
+  it('usa rotas sob /cadastros/, exceto Pedidos (que mantém /pedidos)', () => {
+    const [pedidos, ...resto] = cadastrosNavigation
+    expect(pedidos?.to).toBe('/pedidos')
+    expect(resto.every((item) => item.to.startsWith('/cadastros/'))).toBe(true)
   })
 })
