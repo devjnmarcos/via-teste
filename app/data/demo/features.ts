@@ -98,6 +98,10 @@ export function linkedOperatorsCount(featureId: string): number {
   return linksStore.filter((link) => link.featureId === featureId).length
 }
 
+export function linkedOperatorsActiveCount(featureId: string): number {
+  return linksStore.filter((link) => link.featureId === featureId && link.active).length
+}
+
 export function buildFeaturesMetrics(rows: Feature[]): Metric[] {
   const active = rows.filter((row) => row.active).length
   const inactive = rows.length - active
@@ -131,4 +135,14 @@ export function buildFeatureRankingSeries(rows: Feature[]): StackedSeriesPoint[]
 export function featureAdoptionCounts(rows: Feature[]): { withOperators: number; withoutOperators: number } {
   const withOperators = rows.filter((feature) => getFeatureLinks(feature.id).length > 0).length
   return { withOperators, withoutOperators: rows.length - withOperators }
+}
+
+export function buildFeatureDetailMetrics(feature: Feature, links: FeatureOperatorLink[]): Metric[] {
+  const active = links.filter((link) => link.active).length
+  const inactive = links.length - active
+  return [
+    { label: 'Operadores', value: links.length, note: 'vinculados a esta feature', icon: 'i-lucide-wallet-cards' },
+    { label: 'Ativos', value: active, note: 'vínculo habilitado', icon: 'i-lucide-circle-check', tone: 'success' },
+    { label: 'Inativos', value: inactive, note: 'vínculo desabilitado', icon: 'i-lucide-circle-off', tone: inactive > 0 ? 'warning' : undefined }
+  ]
 }

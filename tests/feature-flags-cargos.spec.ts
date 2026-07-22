@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import {
+  buildFeatureDetailMetrics,
   buildFeatureRankingSeries,
   buildFeaturesMetrics,
   createEmptyFeature,
@@ -9,12 +10,14 @@ import {
   featureOperatorOptions,
   getFeatureLinks,
   getFeatures,
+  linkedOperatorsActiveCount,
   linkedOperatorsCount,
   resolveOperatorLabel,
   setFeatureLinks,
   setFeatures
 } from '../app/data/demo/features'
 import {
+  buildCargoDetailMetrics,
   buildCargosMetrics,
   cargoUserOptions,
   createEmptyCargo,
@@ -26,9 +29,11 @@ import {
   setCargoLinks,
   setCargos
 } from '../app/data/demo/cargos'
-import { cadastroOnda3Configs, isCadastroOnda3Kind } from '../app/data/demo/cadastros-onda3'
-import { cadastrosNavigation } from '../app/components/app/navigation'
-import { cadastroNavItems, getCadastroMeta } from '../app/data/demo/cadastros'
+import type { CadastroOnda3Row } from '../app/data/demo/cadastros-onda3'
+import { cadastroOnda3Configs, getCadastroOnda3Rows, isCadastroOnda3Kind } from '../app/data/demo/cadastros-onda3'
+import { cadastrosNavigation, configuracoesNavigation } from '../app/components/app/navigation'
+import { cadastroNavItems } from '../app/data/demo/cadastros'
+import { isCadastroKind } from '../app/utils/cadastros'
 import { resolveBreadcrumbs } from '../app/utils/breadcrumbs'
 
 describe('DonutChart aceita rótulos customizados (uso em Feature Flags · adoção)', () => {
@@ -123,14 +128,32 @@ describe('fixtures de Feature Flags', () => {
     expect(adoption.withOperators + adoption.withoutOperators).toBe(rows.length)
     expect(adoption.withoutOperators).toBeGreaterThan(0)
   })
+
+  it('conta só os vínculos ativos de uma feature (linkedOperatorsActiveCount)', () => {
+    const withLinks = getFeatures().find((row) => getFeatureLinks(row.id).length > 0)!
+    const links = getFeatureLinks(withLinks.id)
+    expect(linkedOperatorsActiveCount(withLinks.id)).toBe(links.filter((link) => link.active).length)
+  })
+
+  it('calcula métricas de detalhe (operadores/ativos/inativos) a partir dos vínculos informados', () => {
+    const feature = getFeatures()[0]!
+    const links = getFeatureLinks(feature.id)
+    const metrics = buildFeatureDetailMetrics(feature, links)
+    expect(metrics.map((metric) => metric.label)).toEqual(['Operadores', 'Ativos', 'Inativos'])
+    expect(metrics[0]).toMatchObject({ value: links.length })
+    const active = links.filter((link) => link.active).length
+    expect(metrics[1]).toMatchObject({ value: active })
+    expect(metrics[2]).toMatchObject({ value: links.length - active })
+  })
 })
 
 describe('fixtures de Cargos', () => {
-  it('expõe ao menos 3 cargos com ids/nomes únicos', () => {
+  it('expõe ao menos 3 cargos com ids/nomes únicos e data de criação pt-BR', () => {
     const rows = getCargos()
     expect(rows.length).toBeGreaterThanOrEqual(3)
     expect(new Set(rows.map((row) => row.id)).size).toBe(rows.length)
     expect(new Set(rows.map((row) => row.name)).size).toBe(rows.length)
+    expect(rows.every((row) => /^\d{2}\/\d{2}\/\d{4}$/.test(row.createdAt))).toBe(true)
   })
 
   it('calcula métricas simples de cargos (total de cargos e total de vínculos)', () => {
@@ -141,11 +164,12 @@ describe('fixtures de Cargos', () => {
     expect(metrics[0]).toMatchObject({ value: rows.length })
   })
 
-  it('cria e persiste um cargo novo (mock)', () => {
+  it('cria e persiste um cargo novo (mock) com createdAt padrão pt-BR', () => {
     const before = getCargos().length
     const draft = createEmptyCargo()
     expect(draft.active).toBe(true)
     expect(draft.name).toBe('')
+    expect(draft.createdAt).toBeTruthy()
     setCargos([...getCargos(), { id: 'cgo-test', ...draft, name: 'Teste' }])
     expect(getCargos().length).toBe(before + 1)
     setCargos(getCargos().filter((row) => row.id !== 'cgo-test'))
@@ -177,6 +201,20 @@ describe('fixtures de Cargos', () => {
   it('expõe opções de usuário para o formulário de vínculo', () => {
     expect(cargoUserOptions().length).toBeGreaterThan(0)
   })
+
+  it('calcula métricas de detalhe (usuários/ativos/inativos) a partir das linhas de usuário vinculadas', () => {
+    const cargo = getCargos().find((row) => getCargoLinks(row.id).length > 0)!
+    const userRows = getCadastroOnda3Rows('usuarios')
+    const linkedUsers = getCargoLinks(cargo.id)
+      .map((link) => userRows.find((row) => row.id === link.userId))
+      .filter((row): row is CadastroOnda3Row => Boolean(row))
+    const metrics = buildCargoDetailMetrics(cargo, linkedUsers)
+    expect(metrics.map((metric) => metric.label)).toEqual(['Usuários', 'Ativos', 'Inativos'])
+    expect(metrics[0]).toMatchObject({ value: linkedUsers.length })
+    const active = linkedUsers.filter((row) => row.active).length
+    expect(metrics[1]).toMatchObject({ value: active })
+    expect(metrics[2]).toMatchObject({ value: linkedUsers.length - active })
+  })
 })
 
 describe('Cargo é aditivo — não toca no campo Papel de Usuários', () => {
@@ -187,49 +225,68 @@ describe('Cargo é aditivo — não toca no campo Papel de Usuários', () => {
   })
 })
 
-describe('sidebar e CadastroKind — Feature Flags e Cargos', () => {
+describe('Feature Flags e Cargos saem de Cadastros, entram em Configurações', () => {
   it('Feature Flags e Cargos NÃO são kinds onda3 (têm página dedicada, não CadastroOnda3Page)', () => {
     expect(isCadastroOnda3Kind('feature-flags')).toBe(false)
     expect(isCadastroOnda3Kind('cargos')).toBe(false)
   })
 
-  it('cadastrosNavigation ganha as 2 entradas novas ao final, depois de Operações', () => {
+  it('cadastrosNavigation não tem mais Feature Flags/Cargos (mudaram para o grupo Configurações)', () => {
     const labels = cadastrosNavigation.map((item) => item.label)
-    expect(labels.at(-2)).toBe('Feature Flags')
-    expect(labels.at(-1)).toBe('Cargos')
-    expect(cadastrosNavigation.find((item) => item.label === 'Feature Flags')).toMatchObject({
-      to: '/cadastros/feature-flags'
-    })
-    expect(cadastrosNavigation.find((item) => item.label === 'Cargos')).toMatchObject({
-      to: '/cadastros/cargos'
-    })
+    expect(labels).not.toContain('Feature Flags')
+    expect(labels).not.toContain('Cargos')
+    expect(labels.at(-1)).toBe('Operações')
   })
 
-  it('cadastroNavItems resolve kind/descrição/ready para os 2 kinds novos', () => {
-    const feature = cadastroNavItems.find((item) => item.label === 'Feature Flags')
-    const cargo = cadastroNavItems.find((item) => item.label === 'Cargos')
-    expect(feature).toMatchObject({ kind: 'feature-flags', ready: true })
-    expect(cargo).toMatchObject({ kind: 'cargos', ready: true })
-    expect(feature!.description.length).toBeGreaterThan(0)
-    expect(cargo!.description.length).toBeGreaterThan(0)
-    expect(getCadastroMeta('feature-flags').label).toBe('Feature Flags')
-    expect(getCadastroMeta('cargos').label).toBe('Cargos')
+  it('configuracoesNavigation tem Integrações, Feature Flags e Cargos apontando para /configuracoes/*', () => {
+    expect(configuracoesNavigation.map((item) => ({ label: item.label, to: item.to }))).toEqual([
+      { label: 'Integrações', to: '/configuracoes/integracoes' },
+      { label: 'Feature Flags', to: '/configuracoes/feature-flags' },
+      { label: 'Cargos', to: '/configuracoes/cargos' }
+    ])
   })
 
-  it('breadcrumb resolve /cadastros/feature-flags e /cadastros/cargos sem precisar editar breadcrumbs.ts', () => {
-    expect(resolveBreadcrumbs('/cadastros/feature-flags')).toEqual([
-      { label: 'Cadastros', to: '/cadastros' },
+  it('cadastroNavItems/isCadastroKind não conhecem mais feature-flags/cargos como cadastro', () => {
+    expect(cadastroNavItems.some((item) => item.kind === 'feature-flags')).toBe(false)
+    expect(cadastroNavItems.some((item) => item.kind === 'cargos')).toBe(false)
+    expect(isCadastroKind('feature-flags')).toBe(false)
+    expect(isCadastroKind('cargos')).toBe(false)
+  })
+
+  it('breadcrumb resolve /configuracoes/feature-flags e /configuracoes/cargos (listagem)', () => {
+    expect(resolveBreadcrumbs('/configuracoes/feature-flags')).toEqual([
+      { label: 'Home', to: '/' },
+      { label: 'Configurações', to: '/configuracoes' },
       { label: 'Feature Flags' }
     ])
-    expect(resolveBreadcrumbs('/cadastros/cargos')).toEqual([
-      { label: 'Cadastros', to: '/cadastros' },
+    expect(resolveBreadcrumbs('/configuracoes/cargos')).toEqual([
+      { label: 'Home', to: '/' },
+      { label: 'Configurações', to: '/configuracoes' },
       { label: 'Cargos' }
+    ])
+  })
+
+  it('breadcrumb resolve /configuracoes/feature-flags/:id e /configuracoes/cargos/:id com o nome da entidade', () => {
+    const feature = getFeatures()[0]!
+    expect(resolveBreadcrumbs(`/configuracoes/feature-flags/${feature.id}`, { id: feature.id })).toEqual([
+      { label: 'Home', to: '/' },
+      { label: 'Configurações', to: '/configuracoes' },
+      { label: 'Feature Flags', to: '/configuracoes/feature-flags' },
+      { label: feature.name }
+    ])
+
+    const cargo = getCargos()[0]!
+    expect(resolveBreadcrumbs(`/configuracoes/cargos/${cargo.id}`, { id: cargo.id })).toEqual([
+      { label: 'Home', to: '/' },
+      { label: 'Configurações', to: '/configuracoes' },
+      { label: 'Cargos', to: '/configuracoes/cargos' },
+      { label: cargo.name }
     ])
   })
 })
 
-describe('página Cadastros · Feature Flags', () => {
-  const source = readFileSync('app/pages/cadastros/feature-flags.vue', 'utf8')
+describe('página Configurações · Feature Flags (listagem)', () => {
+  const source = readFileSync('app/pages/configuracoes/feature-flags.vue', 'utf8')
 
   it('materializa CRUD completo com MetricsStrip, DataTable e modais', () => {
     expect(source).toContain('MetricsStrip')
@@ -251,22 +308,47 @@ describe('página Cadastros · Feature Flags', () => {
     expect(source).toContain('<StackedBarChart')
   })
 
-  it('tem ação Ver operadores e o modal de vínculo com multi-select', () => {
+  it('Ver operadores navega para a página de detalhe em vez de abrir modal', () => {
     expect(source).toContain("key: 'operators'")
     expect(source).toContain('Ver operadores')
-    expect(source).toContain('resolveOperatorLabel')
-    expect(source).toContain('multiple')
-    expect(source).toContain('Vincular operadores')
+    expect(source).toContain('navigateTo(`/configuracoes/feature-flags/${payload.row.id}`)')
+    expect(source).not.toContain('Vincular operadores')
+    expect(source).not.toContain('operatorsOpen')
   })
 
-  it('coluna Operadores mostra a quantidade de vínculos por feature', () => {
-    expect(source).toContain('linkedCount')
-    expect(source).toContain('linkedOperatorsCount')
+  it('coluna Criada em e resumo de vínculos (N ativos) aparecem na tabela', () => {
+    expect(source).toContain("key: 'createdAt'")
+    expect(source).toContain('Criada em')
+    expect(source).toContain('linkedSummary')
+    expect(source).toContain('linkedOperatorsActiveCount')
   })
 })
 
-describe('página Cadastros · Cargos', () => {
-  const source = readFileSync('app/pages/cadastros/cargos.vue', 'utf8')
+describe('página Configurações · Feature Flags (detalhe)', () => {
+  const source = readFileSync('app/pages/configuracoes/feature-flags/[id].vue', 'utf8')
+
+  it('busca a feature pela rota e 404 quando não existe', () => {
+    expect(source).toContain('route.params.id')
+    expect(source).toContain('createError({ statusCode: 404')
+  })
+
+  it('mostra MetricsStrip de detalhe e a tabela de operadores vinculados com switch e remoção', () => {
+    expect(source).toContain('buildFeatureDetailMetrics')
+    expect(source).toContain('<DataTable')
+    expect(source).toContain("type: 'switch'")
+    expect(source).toContain("key: 'remove'")
+    expect(source).toContain('getCadastroOnda3Rows')
+  })
+
+  it('permite editar a feature e vincular novos operadores por modal picker', () => {
+    expect(source).toContain('Editar feature')
+    expect(source).toContain('Vincular operadores')
+    expect(source).toContain('multiple')
+  })
+})
+
+describe('página Configurações · Cargos (listagem)', () => {
+  const source = readFileSync('app/pages/configuracoes/cargos.vue', 'utf8')
 
   it('materializa CRUD completo com MetricsStrip, DataTable e modais', () => {
     expect(source).toContain('MetricsStrip')
@@ -276,17 +358,17 @@ describe('página Cadastros · Cargos', () => {
     expect(source).toContain('Novo cargo')
   })
 
-  it('tem ação Ver usuários e o modal de vínculo com multi-select', () => {
+  it('Ver usuários navega para a página de detalhe em vez de abrir modal', () => {
     expect(source).toContain("key: 'users'")
     expect(source).toContain('Ver usuários')
-    expect(source).toContain('resolveUserLabel')
-    expect(source).toContain('multiple')
-    expect(source).toContain('Vincular usuários')
+    expect(source).toContain('navigateTo(`/configuracoes/cargos/${payload.row.id}`)')
+    expect(source).not.toContain('Vincular usuários')
+    expect(source).not.toContain('usersOpen')
   })
 
-  it('coluna Usuários mostra a quantidade de vínculos por cargo', () => {
-    expect(source).toContain('linkedCount')
-    expect(source).toContain('linkedUsersCount')
+  it('coluna Criado em aparece na tabela (Cargo ganha createdAt)', () => {
+    expect(source).toContain("key: 'createdAt'")
+    expect(source).toContain('Criado em')
   })
 
   it('não tem abas nem gráfico (fora de escopo para Cargos)', () => {
@@ -294,5 +376,27 @@ describe('página Cadastros · Cargos', () => {
     expect(source).not.toContain('DonutChart')
     expect(source).not.toContain('StackedBarChart')
     expect(source).not.toContain('aria-label="Abas')
+  })
+})
+
+describe('página Configurações · Cargos (detalhe)', () => {
+  const source = readFileSync('app/pages/configuracoes/cargos/[id].vue', 'utf8')
+
+  it('busca o cargo pela rota e 404 quando não existe', () => {
+    expect(source).toContain('route.params.id')
+    expect(source).toContain('createError({ statusCode: 404')
+  })
+
+  it('mostra MetricsStrip de detalhe e a tabela de usuários vinculados (sem switch, com remoção)', () => {
+    expect(source).toContain('buildCargoDetailMetrics')
+    expect(source).toContain('<DataTable')
+    expect(source).toContain("key: 'remove'")
+    expect(source).toContain('getCadastroOnda3Rows')
+  })
+
+  it('permite editar o cargo e vincular novos usuários por modal picker', () => {
+    expect(source).toContain('Editar cargo')
+    expect(source).toContain('Vincular usuários')
+    expect(source).toContain('multiple')
   })
 })

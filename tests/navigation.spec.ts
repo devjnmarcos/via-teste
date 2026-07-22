@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   cadastrosNavigation,
+  configuracoesNavGroup,
+  configuracoesNavigation,
   dashboardsNavigation,
   devolucoesNavGroup,
   devolucoesNavigation,
@@ -58,7 +60,7 @@ describe('navegação oficial', () => {
     ])
   })
 
-  it('grupo Cadastros com 15 itens (Pedidos + 12 cadastros + Operações + Feature Flags + Cargos)', () => {
+  it('grupo Cadastros com 13 itens (Pedidos + 12 cadastros + Operações — Feature Flags/Cargos migraram para Configurações)', () => {
     expect(cadastrosNavigation.map((item) => item.label)).toEqual([
       'Pedidos',
       'SLA',
@@ -72,30 +74,37 @@ describe('navegação oficial', () => {
       'Feriados',
       'Produtos',
       'Templates Chatbot',
-      'Operações',
-      'Feature Flags',
-      'Cargos'
+      'Operações'
     ])
     expect(cadastrosNavigation.find((item) => item.label === 'Operadores')?.to).toBe('/cadastros/contas')
     expect(cadastrosNavigation.find((item) => item.label === 'Operações')?.to).toBe('/cadastros/operacoes')
-    expect(cadastrosNavigation.find((item) => item.label === 'Feature Flags')?.to).toBe('/cadastros/feature-flags')
-    expect(cadastrosNavigation.find((item) => item.label === 'Cargos')?.to).toBe('/cadastros/cargos')
     expect(cadastrosNavigation.some((item) => item.label === 'Ocorrências Externas')).toBe(false)
+    expect(cadastrosNavigation.some((item) => item.label === 'Feature Flags')).toBe(false)
+    expect(cadastrosNavigation.some((item) => item.label === 'Cargos')).toBe(false)
   })
 
-  it('secondaryNavigation só tem Integrações', () => {
-    expect(secondaryNavigation).toEqual([
-      { label: 'Integrações', to: '/configuracoes/integracoes', icon: 'i-lucide-plug' }
+  it('grupo novo Configurações: Integrações, Feature Flags, Cargos apontando para /configuracoes/*', () => {
+    expect(configuracoesNavigation.map((item) => ({ label: item.label, to: item.to }))).toEqual([
+      { label: 'Integrações', to: '/configuracoes/integracoes' },
+      { label: 'Feature Flags', to: '/configuracoes/feature-flags' },
+      { label: 'Cargos', to: '/configuracoes/cargos' }
     ])
+    expect(configuracoesNavigation.every((item) => item.icon.startsWith('i-lucide-'))).toBe(true)
+    expect(configuracoesNavGroup.label).toBe('Configurações')
   })
 
-  it('navigationGroups segue a ordem final da seção Gestão', () => {
+  it('secondaryNavigation fica vazio (Integrações migrou para o grupo Configurações)', () => {
+    expect(secondaryNavigation).toEqual([])
+  })
+
+  it('navigationGroups segue a ordem final da seção Gestão (Configurações por último)', () => {
     expect(navigationGroups.map((group) => group.label)).toEqual([
       'Dashboards',
       'Rotas & Rastreio',
       'Logs',
       'Remessas',
-      'Cadastros'
+      'Cadastros',
+      'Configurações'
     ])
     expect(navigationGroups.every((group) => group.children.length > 0)).toBe(true)
   })

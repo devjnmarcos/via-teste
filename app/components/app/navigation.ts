@@ -91,7 +91,8 @@ export const devolucoesNavGroup: NavigationGroup = {
 /**
  * Grupo Cadastros — Pedidos migrou do extinto grupo Operação (rota /pedidos inalterada,
  * ver "Decisão registrada" no plano); Contas renomeada Operadores; Ocorrências Externas
- * saiu do menu; Operações é rota nova (página ainda não existe).
+ * saiu do menu; Operações é rota nova (página ainda não existe). Feature Flags e Cargos
+ * migraram para o grupo Configurações (rotas /configuracoes/feature-flags e /configuracoes/cargos).
  */
 export const cadastrosNavigation: NavigationItem[] = [
   { label: 'Pedidos', to: '/pedidos', icon: 'i-lucide-package-search' },
@@ -106,9 +107,7 @@ export const cadastrosNavigation: NavigationItem[] = [
   { label: 'Feriados', to: '/cadastros/feriados', icon: 'i-lucide-calendar-off' },
   { label: 'Produtos', to: '/cadastros/produtos', icon: 'i-lucide-package' },
   { label: 'Templates Chatbot', to: '/cadastros/templates-chatbot', icon: 'i-lucide-bot' },
-  { label: 'Operações', to: '/cadastros/operacoes', icon: 'i-lucide-shuffle' },
-  { label: 'Feature Flags', to: '/cadastros/feature-flags', icon: 'i-lucide-toggle-right' },
-  { label: 'Cargos', to: '/cadastros/cargos', icon: 'i-lucide-id-card' }
+  { label: 'Operações', to: '/cadastros/operacoes', icon: 'i-lucide-shuffle' }
 ]
 
 export const cadastrosNavGroup: NavigationGroup = {
@@ -118,13 +117,27 @@ export const cadastrosNavGroup: NavigationGroup = {
 }
 
 /**
- * Item solto final — Integrações substitui o extinto grupo Configurações (só sobrou
- * 1 filho depois de remover SLA/Processamento) e o antigo secondaryNavigation
- * (Pontos de apoio/Transportadores saíram do menu — páginas deletadas por outro plano).
+ * Grupo novo Configurações — Integrações (vinha do extinto secondaryNavigation),
+ * Feature Flags e Cargos (vieram do extinto grupo Cadastros, mudam de rota para /configuracoes/*).
  */
-export const secondaryNavigation: NavigationItem[] = [
-  { label: 'Integrações', to: '/configuracoes/integracoes', icon: 'i-lucide-plug' }
+export const configuracoesNavigation: NavigationItem[] = [
+  { label: 'Integrações', to: '/configuracoes/integracoes', icon: 'i-lucide-plug' },
+  { label: 'Feature Flags', to: '/configuracoes/feature-flags', icon: 'i-lucide-toggle-right' },
+  { label: 'Cargos', to: '/configuracoes/cargos', icon: 'i-lucide-id-card' }
 ]
+
+export const configuracoesNavGroup: NavigationGroup = {
+  label: 'Configurações',
+  icon: 'i-lucide-settings-2',
+  children: configuracoesNavigation
+}
+
+/**
+ * secondaryNavigation fica vazio — Integrações migrou para o grupo Configurações acima.
+ * Mantido como export (ver Decisão registrada 2 no plano) para não obrigar AppSidebar.vue
+ * a remover o v-for que hoje itera este array.
+ */
+export const secondaryNavigation: NavigationItem[] = []
 
 /** Todos os grupos com submenu na sidebar, na ordem final da seção "Gestão". */
 export const navigationGroups: NavigationGroup[] = [
@@ -132,7 +145,8 @@ export const navigationGroups: NavigationGroup[] = [
   rotasRastreioNavGroup,
   logsNavGroup,
   devolucoesNavGroup,
-  cadastrosNavGroup
+  cadastrosNavGroup,
+  configuracoesNavGroup
 ]
 
 /** Garante contrato mínimo dos itens (to/label/icon) para o render da sidebar. */

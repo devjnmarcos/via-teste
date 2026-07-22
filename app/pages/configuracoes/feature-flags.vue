@@ -1,27 +1,25 @@
 <script setup lang="ts">
 /**
- * Cadastros → Feature Flags — CRUD de features + vínculo N:N com Operador (kind 'contas').
- * Abas tabela/gráfico no padrão de dashboards/sla.vue. Vínculos geridos no modal "Operadores".
+ * Configurações → Feature Flags — CRUD de features (mock). O vínculo N:N com Operador
+ * (kind 'contas' em cadastros-onda3.ts) vive na página de detalhe
+ * (/configuracoes/feature-flags/:id) — "Ver operadores" navega em vez de abrir modal.
  */
 import type { DataTableColumn } from '~/types/data-table'
-import type { Feature, FeatureOperatorLink } from '~/data/demo/features'
+import type { Feature } from '~/data/demo/features'
 import {
   buildFeatureRankingSeries,
   buildFeaturesMetrics,
   createEmptyFeature,
   featureAdoptionCounts,
-  featureOperatorOptions,
-  getFeatureLinks,
   getFeatures,
+  linkedOperatorsActiveCount,
   linkedOperatorsCount,
-  resolveOperatorLabel,
-  setFeatureLinks,
   setFeatures
 } from '~/data/demo/features'
 import { DEFAULT_PAGE_SIZE, slicePage } from '~/utils/pagination'
 import { useToast } from '~/composables/useToast'
 
-useSeoMeta({ title: 'Feature Flags · Cadastros · Via Reversa' })
+useSeoMeta({ title: 'Feature Flags · Configurações · Via Reversa' })
 
 type FeatureFlagsTabId = 'tabela' | 'grafico'
 
@@ -33,6 +31,7 @@ interface FeatureDisplayRow extends Record<string, unknown> {
   active: boolean
   createdAt: string
   linkedCount: number
+  linkedSummary: string
 }
 
 const toast = useToast()
@@ -54,16 +53,11 @@ const editingId = ref<string | null>(null)
 const pendingDelete = ref<Feature | null>(null)
 const form = reactive(createEmptyFeature())
 
-const operatorsOpen = ref(false)
-const operatorsFeature = ref<Feature | null>(null)
-const linkRows = ref<FeatureOperatorLink[]>([])
-const linkPickerOpen = ref(false)
-const selectedOperatorIds = ref<string[]>([])
-
 const columns: DataTableColumn<FeatureDisplayRow>[] = [
-  { type: 'text', key: 'name', label: 'Nome', width: '22%', secondaryKey: 'description' },
-  { type: 'text', key: 'code', label: 'Código', width: '20%' },
-  { type: 'text', key: 'linkedCount', label: 'Operadores', width: '110px', align: 'right' },
+  { type: 'text', key: 'name', label: 'Nome', width: '20%', secondaryKey: 'description' },
+  { type: 'text', key: 'code', label: 'Código', width: '16%' },
+  { type: 'text', key: 'createdAt', label: 'Criada em', width: '110px' },
+  { type: 'text', key: 'linkedSummary', label: 'Operadores', width: '130px', align: 'right' },
   { type: 'switch', key: 'active', label: 'Ativa', width: '72px' },
   {
     type: 'actions',
@@ -89,7 +83,15 @@ const filteredRows = computed(() => {
 const listMetrics = computed(() => buildFeaturesMetrics(filteredRows.value))
 const pagedRows = computed(() => slicePage(filteredRows.value, page.value, pageSize.value))
 const displayRows = computed((): FeatureDisplayRow[] =>
-  pagedRows.value.map((row) => ({ ...row, linkedCount: linkedOperatorsCount(row.id) }))
+  pagedRows.value.map((row) => {
+    const linkedCount = linkedOperatorsCount(row.id)
+    const activeCount = linkedOperatorsActiveCount(row.id)
+    return {
+      ...row,
+      linkedCount,
+      linkedSummary: linkedCount > 0 ? `${linkedCount} (${activeCount} ativos)` : '0'
+    }
+  })
 )
 
 const rankingSeries = computed(() => buildFeatureRankingSeries(filteredRows.value))
@@ -133,7 +135,7 @@ function openDelete(row: Feature) {
 }
 
 function onAction(payload: { row: FeatureDisplayRow; action: string }) {
-  if (payload.action === 'operators') openOperators(payload.row)
+  if (payload.action === 'operators') navigateTo(`/configuracoes/feature-flags/${payload.row.id}`)
   if (payload.action === 'edit') openEdit(payload.row)
   if (payload.action === 'delete') openDelete(payload.row)
 }
@@ -189,57 +191,6 @@ function confirmDelete() {
   pendingDelete.value = null
   deleteOpen.value = false
 }
-
-const availableOperatorOptions = computed(() =>
-  featureOperatorOptions().filter((opt) => !linkRows.value.some((link) => link.accountId === opt.value))
-)
-
-function openOperators(row: Feature) {
-  operatorsFeature.value = row
-  linkRows.value = structuredClone(getFeatureLinks(row.id))
-  linkPickerOpen.value = false
-  selectedOperatorIds.value = []
-  operatorsOpen.value = true
-}
-
-function openLinkPicker() {
-  selectedOperatorIds.value = []
-  linkPickerOpen.value = true
-}
-
-function addSelectedOperators() {
-  if (!selectedOperatorIds.value.length) {
-    toast.error('Selecione ao menos 1 operador', 'Escolha na lista antes de vincular.')
-    return
-  }
-  const created = selectedOperatorIds.value.map((accountId) => ({
-    id: `flk-${Date.now()}-${accountId}`,
-    featureId: operatorsFeature.value!.id,
-    accountId,
-    active: true,
-    linkedAt: new Date().toLocaleDateString('pt-BR')
-  }))
-  linkRows.value = [...created, ...linkRows.value]
-  linkPickerOpen.value = false
-  selectedOperatorIds.value = []
-}
-
-function removeOperatorLink(link: FeatureOperatorLink) {
-  linkRows.value = linkRows.value.filter((row) => row.id !== link.id)
-  toast.success('Removido', 'Vínculo de operador removido (mock).')
-}
-
-function toggleOperatorLinkActive(link: FeatureOperatorLink, value: boolean) {
-  const target = linkRows.value.find((row) => row.id === link.id)
-  if (target) target.active = value
-}
-
-function saveOperators() {
-  if (!operatorsFeature.value) return
-  setFeatureLinks(operatorsFeature.value.id, linkRows.value)
-  operatorsOpen.value = false
-  toast.success('Salvo', `Vínculos de ${operatorsFeature.value.name} atualizados (mock).`)
-}
 </script>
 
 <template>
@@ -291,7 +242,7 @@ function saveOperators() {
       <DataTable
         :columns="columns"
         :rows="displayRows"
-        min-width="880px"
+        min-width="920px"
         empty-title="Nenhuma feature"
         empty-description="Cadastre a primeira feature ou ajuste a busca."
         @action="onAction"
@@ -372,85 +323,6 @@ function saveOperators() {
       <AppFormField label="Ativa">
         <USwitch v-model="form.active" />
       </AppFormField>
-    </AppModal>
-
-    <AppModal
-      v-model:open="operatorsOpen"
-      variant="form"
-      :title="operatorsFeature ? `Operadores · ${operatorsFeature.name}` : 'Operadores da feature'"
-      :description="operatorsFeature ? `Operadores vinculados a ${operatorsFeature.code}.` : ''"
-      confirm-label="Salvar"
-      @confirm="saveOperators"
-    >
-      <div class="grid gap-2">
-        <div
-          v-for="link in linkRows"
-          :key="link.id"
-          class="flex items-center justify-between gap-3 border-b border-via-line py-2 text-xs last:border-b-0"
-        >
-          <div class="min-w-0">
-            <strong class="block truncate">{{ resolveOperatorLabel(link.accountId) }}</strong>
-            <small class="block text-via-muted">Vinculado em {{ link.linkedAt }}</small>
-          </div>
-          <div class="flex shrink-0 items-center gap-1.5">
-            <USwitch
-              :model-value="link.active"
-              size="sm"
-              @update:model-value="toggleOperatorLinkActive(link, Boolean($event))"
-            />
-            <AppButton
-              variant="ghost"
-              icon="i-lucide-trash-2"
-              aria-label="Remover vínculo"
-              @click="removeOperatorLink(link)"
-            />
-          </div>
-        </div>
-        <p
-          v-if="!linkRows.length"
-          class="m-0 text-xs text-via-muted"
-        >
-          Nenhum operador vinculado a esta feature.
-        </p>
-
-        <AppButton
-          variant="secondary"
-          icon="i-lucide-plus"
-          class="justify-self-start"
-          @click="openLinkPicker"
-        >
-          Vincular operadores
-        </AppButton>
-
-        <div
-          v-if="linkPickerOpen"
-          class="grid gap-3 border-t border-via-line pt-3"
-        >
-          <AppFormField label="Operadores *">
-            <USelectMenu
-              v-model="selectedOperatorIds"
-              multiple
-              value-key="value"
-              :items="availableOperatorOptions"
-              placeholder="Selecione um ou mais operadores"
-            />
-          </AppFormField>
-          <div class="flex justify-end gap-2">
-            <AppButton
-              variant="secondary"
-              @click="linkPickerOpen = false"
-            >
-              Cancelar
-            </AppButton>
-            <AppButton
-              variant="primary"
-              @click="addSelectedOperators"
-            >
-              Adicionar vínculos
-            </AppButton>
-          </div>
-        </div>
-      </div>
     </AppModal>
 
     <AppModal

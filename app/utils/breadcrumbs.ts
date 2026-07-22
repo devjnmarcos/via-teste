@@ -9,6 +9,8 @@ import {
 import { operations } from '../data/demo/operations'
 import { isCadastroKind } from './cadastros'
 import { isFaturaKind, faturaKindLabel } from '../data/demo/faturas'
+import { getCargos } from '../data/demo/cargos'
+import { getFeatures } from '../data/demo/features'
 
 /**
  * Faturas, Resumos, SLA analytics e Configurações saíram da sidebar (grupos dissolvidos
@@ -47,7 +49,9 @@ const CONFIGURACOES_GROUP_LABEL = 'Configurações'
 const CONFIGURACOES_LABELS: Record<string, string> = {
   sla: 'SLA',
   processo: 'Processamento',
-  integracoes: 'Integrações'
+  integracoes: 'Integrações',
+  'feature-flags': 'Feature Flags',
+  cargos: 'Cargos'
 }
 
 export interface BreadcrumbItem {
@@ -388,6 +392,28 @@ export function resolveBreadcrumbs(
 
     crumbs.push({ label: dashboardNavLabel(section) })
     return crumbs
+  }
+
+  if (normalized.startsWith('/configuracoes/feature-flags/')) {
+    const id = paramValue(params.id) ?? normalized.split('/').pop() ?? ''
+    const feature = getFeatures().find((row) => row.id === id)
+    return [
+      { label: 'Home', to: '/' },
+      { label: CONFIGURACOES_GROUP_LABEL, to: '/configuracoes' },
+      { label: 'Feature Flags', to: '/configuracoes/feature-flags' },
+      { label: feature?.name ?? `#${id}` }
+    ]
+  }
+
+  if (normalized.startsWith('/configuracoes/cargos/')) {
+    const id = paramValue(params.id) ?? normalized.split('/').pop() ?? ''
+    const cargo = getCargos().find((row) => row.id === id)
+    return [
+      { label: 'Home', to: '/' },
+      { label: CONFIGURACOES_GROUP_LABEL, to: '/configuracoes' },
+      { label: 'Cargos', to: '/configuracoes/cargos' },
+      { label: cargo?.name ?? `#${id}` }
+    ]
   }
 
   if (normalized === '/configuracoes' || normalized.startsWith('/configuracoes/')) {

@@ -43,10 +43,8 @@ describe('navegação P3', () => {
     ])
   })
 
-  it('extingue o grupo Configurações; Integrações vira o único item solto final', () => {
-    expect(secondaryNavigation).toEqual([
-      { label: 'Integrações', to: '/configuracoes/integracoes', icon: 'i-lucide-plug' }
-    ])
+  it('extingue o grupo Configurações solto; Integrações migra para o grupo Configurações na sidebar', () => {
+    expect(secondaryNavigation).toEqual([])
   })
 })
 

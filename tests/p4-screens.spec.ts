@@ -22,10 +22,8 @@ describe('navegação P4 / gap fechado', () => {
     expect(item?.label).toBe('Rastreio')
   })
 
-  it('Pontos de apoio e Transportadores saíram do menu; só resta Integrações', () => {
-    expect(secondaryNavigation).toEqual([
-      { label: 'Integrações', to: '/configuracoes/integracoes', icon: 'i-lucide-plug' }
-    ])
+  it('Pontos de apoio e Transportadores saíram do menu; Integrações migrou para o grupo Configurações', () => {
+    expect(secondaryNavigation).toEqual([])
   })
 
   it('mantém os 11 cadastros legados e o novo Operações como ready', () => {

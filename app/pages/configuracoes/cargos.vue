@@ -1,31 +1,29 @@
 <script setup lang="ts">
 /**
- * Cadastros → Cargos — CRUD de cargos + vínculo N:N com Usuário (kind 'usuarios').
- * Sem abas/gráfico (fora de escopo). Vínculos geridos no modal "Usuários".
+ * Configurações → Cargos — CRUD de cargos (mock). O vínculo N:N com Usuário
+ * (kind 'usuarios' em cadastros-onda3.ts) vive na página de detalhe
+ * (/configuracoes/cargos/:id) — "Ver usuários" navega em vez de abrir modal.
  */
 import type { DataTableColumn } from '~/types/data-table'
-import type { Cargo, CargoUserLink } from '~/data/demo/cargos'
+import type { Cargo } from '~/data/demo/cargos'
 import {
   buildCargosMetrics,
-  cargoUserOptions,
   createEmptyCargo,
-  getCargoLinks,
   getCargos,
   linkedUsersCount,
-  resolveUserLabel,
-  setCargoLinks,
   setCargos
 } from '~/data/demo/cargos'
 import { DEFAULT_PAGE_SIZE, slicePage } from '~/utils/pagination'
 import { useToast } from '~/composables/useToast'
 
-useSeoMeta({ title: 'Cargos · Cadastros · Via Reversa' })
+useSeoMeta({ title: 'Cargos · Configurações · Via Reversa' })
 
 interface CargoDisplayRow extends Record<string, unknown> {
   id: string
   name: string
   detail: string
   active: boolean
+  createdAt: string
   linkedCount: number
 }
 
@@ -42,15 +40,10 @@ const editingId = ref<string | null>(null)
 const pendingDelete = ref<Cargo | null>(null)
 const form = reactive(createEmptyCargo())
 
-const usersOpen = ref(false)
-const usersCargo = ref<Cargo | null>(null)
-const linkRows = ref<CargoUserLink[]>([])
-const linkPickerOpen = ref(false)
-const selectedUserIds = ref<string[]>([])
-
 const columns: DataTableColumn<CargoDisplayRow>[] = [
-  { type: 'text', key: 'name', label: 'Cargo', width: '30%', secondaryKey: 'detail' },
-  { type: 'text', key: 'linkedCount', label: 'Usuários', width: '110px', align: 'right' },
+  { type: 'text', key: 'name', label: 'Cargo', width: '26%', secondaryKey: 'detail' },
+  { type: 'text', key: 'createdAt', label: 'Criado em', width: '110px' },
+  { type: 'text', key: 'linkedCount', label: 'Usuários', width: '100px', align: 'right' },
   { type: 'switch', key: 'active', label: 'Ativo', width: '72px' },
   {
     type: 'actions',
@@ -102,6 +95,7 @@ function openEdit(row: Cargo) {
   form.name = row.name
   form.detail = row.detail
   form.active = row.active
+  form.createdAt = row.createdAt
   formOpen.value = true
 }
 
@@ -111,7 +105,7 @@ function openDelete(row: Cargo) {
 }
 
 function onAction(payload: { row: CargoDisplayRow; action: string }) {
-  if (payload.action === 'users') openUsers(payload.row)
+  if (payload.action === 'users') navigateTo(`/configuracoes/cargos/${payload.row.id}`)
   if (payload.action === 'edit') openEdit(payload.row)
   if (payload.action === 'delete') openDelete(payload.row)
 }
@@ -144,7 +138,8 @@ function saveForm() {
       id: `cgo-${Date.now()}`,
       name: form.name.trim(),
       detail: form.detail.trim(),
-      active: form.active
+      active: form.active,
+      createdAt: new Date().toLocaleDateString('pt-BR')
     }
     rows.value = [created, ...rows.value]
   }
@@ -163,51 +158,6 @@ function confirmDelete() {
   toast.success('Excluído', `${pendingDelete.value.name} removido (mock).`)
   pendingDelete.value = null
   deleteOpen.value = false
-}
-
-const availableUserOptions = computed(() =>
-  cargoUserOptions().filter((opt) => !linkRows.value.some((link) => link.userId === opt.value))
-)
-
-function openUsers(row: Cargo) {
-  usersCargo.value = row
-  linkRows.value = structuredClone(getCargoLinks(row.id))
-  linkPickerOpen.value = false
-  selectedUserIds.value = []
-  usersOpen.value = true
-}
-
-function openLinkPicker() {
-  selectedUserIds.value = []
-  linkPickerOpen.value = true
-}
-
-function addSelectedUsers() {
-  if (!selectedUserIds.value.length) {
-    toast.error('Selecione ao menos 1 usuário', 'Escolha na lista antes de vincular.')
-    return
-  }
-  const created = selectedUserIds.value.map((userId) => ({
-    id: `cul-${Date.now()}-${userId}`,
-    cargoId: usersCargo.value!.id,
-    userId,
-    linkedAt: new Date().toLocaleDateString('pt-BR')
-  }))
-  linkRows.value = [...created, ...linkRows.value]
-  linkPickerOpen.value = false
-  selectedUserIds.value = []
-}
-
-function removeUserLink(link: CargoUserLink) {
-  linkRows.value = linkRows.value.filter((row) => row.id !== link.id)
-  toast.success('Removido', 'Vínculo de usuário removido (mock).')
-}
-
-function saveUsers() {
-  if (!usersCargo.value) return
-  setCargoLinks(usersCargo.value.id, linkRows.value)
-  usersOpen.value = false
-  toast.success('Salvo', `Vínculos de ${usersCargo.value.name} atualizados (mock).`)
 }
 </script>
 
@@ -243,7 +193,7 @@ function saveUsers() {
     <DataTable
       :columns="columns"
       :rows="displayRows"
-      min-width="720px"
+      min-width="760px"
       empty-title="Nenhum cargo"
       empty-description="Cadastre o primeiro cargo ou ajuste a busca."
       @action="onAction"
@@ -279,78 +229,6 @@ function saveUsers() {
       <AppFormField label="Ativo">
         <USwitch v-model="form.active" />
       </AppFormField>
-    </AppModal>
-
-    <AppModal
-      v-model:open="usersOpen"
-      variant="form"
-      :title="usersCargo ? `Usuários · ${usersCargo.name}` : 'Usuários do cargo'"
-      :description="usersCargo ? `Usuários vinculados a ${usersCargo.name}.` : ''"
-      confirm-label="Salvar"
-      @confirm="saveUsers"
-    >
-      <div class="grid gap-2">
-        <div
-          v-for="link in linkRows"
-          :key="link.id"
-          class="flex items-center justify-between gap-3 border-b border-via-line py-2 text-xs last:border-b-0"
-        >
-          <div class="min-w-0">
-            <strong class="block truncate">{{ resolveUserLabel(link.userId) }}</strong>
-            <small class="block text-via-muted">Vinculado em {{ link.linkedAt }}</small>
-          </div>
-          <AppButton
-            variant="ghost"
-            icon="i-lucide-trash-2"
-            aria-label="Remover vínculo"
-            @click="removeUserLink(link)"
-          />
-        </div>
-        <p
-          v-if="!linkRows.length"
-          class="m-0 text-xs text-via-muted"
-        >
-          Nenhum usuário vinculado a este cargo.
-        </p>
-
-        <AppButton
-          variant="secondary"
-          icon="i-lucide-plus"
-          class="justify-self-start"
-          @click="openLinkPicker"
-        >
-          Vincular usuários
-        </AppButton>
-
-        <div
-          v-if="linkPickerOpen"
-          class="grid gap-3 border-t border-via-line pt-3"
-        >
-          <AppFormField label="Usuários *">
-            <USelectMenu
-              v-model="selectedUserIds"
-              multiple
-              value-key="value"
-              :items="availableUserOptions"
-              placeholder="Selecione um ou mais usuários"
-            />
-          </AppFormField>
-          <div class="flex justify-end gap-2">
-            <AppButton
-              variant="secondary"
-              @click="linkPickerOpen = false"
-            >
-              Cancelar
-            </AppButton>
-            <AppButton
-              variant="primary"
-              @click="addSelectedUsers"
-            >
-              Adicionar vínculos
-            </AppButton>
-          </div>
-        </div>
-      </div>
     </AppModal>
 
     <AppModal

@@ -148,10 +148,8 @@ describe('resumos fixtures e métricas', () => {
 })
 
 describe('navegação e breadcrumbs — auth e resumos', () => {
-  it('expõe Integrações como único item solto (Resumos saiu do menu, mas a página segue existindo)', () => {
-    expect(secondaryNavigation).toEqual([
-      { label: 'Integrações', to: '/configuracoes/integracoes', icon: 'i-lucide-plug' }
-    ])
+  it('secondaryNavigation fica vazio (Resumos saiu do menu; Integrações migrou para o grupo Configurações)', () => {
+    expect(secondaryNavigation).toEqual([])
   })
 
   it('resolve breadcrumbs de Resumos', () => {

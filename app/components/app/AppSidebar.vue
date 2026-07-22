@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   cadastrosNavGroup,
+  configuracoesNavGroup,
   dashboardsNavGroup,
   devolucoesNavGroup,
   logsNavGroup,
@@ -111,6 +112,16 @@ const navLinkSubClass = 'nav-link--sub min-h-[34px] pl-[18px] text-xs [&_svg]:si
         :icon="cadastrosNavGroup.icon"
         :children="cadastrosNavGroup.children"
         test-id="cadastros"
+        :nav-link-class="navLinkClass"
+        :nav-link-active-class="navLinkActiveClass"
+        :nav-link-sub-class="navLinkSubClass"
+      />
+
+      <NavGroup
+        :label="configuracoesNavGroup.label"
+        :icon="configuracoesNavGroup.icon"
+        :children="configuracoesNavGroup.children"
+        test-id="configuracoes"
         :nav-link-class="navLinkClass"
         :nav-link-active-class="navLinkActiveClass"
         :nav-link-sub-class="navLinkSubClass"

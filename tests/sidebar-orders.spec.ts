@@ -35,6 +35,17 @@ describe('integridade da navegação da sidebar', () => {
       expect(wrapper.get(`a[href="${item.to}"]`).exists()).toBe(true)
     }
   })
+
+  it('renderiza e abre o grupo Configurações com Integrações, Feature Flags e Cargos', async () => {
+    const wrapper = await mountSuspended(AppSidebar, { route: '/pedidos' })
+
+    const toggle = wrapper.get('[data-testid="nav-group-configuracoes"]')
+    await toggle.trigger('click')
+
+    expect(wrapper.get('a[href="/configuracoes/integracoes"]').exists()).toBe(true)
+    expect(wrapper.get('a[href="/configuracoes/feature-flags"]').exists()).toBe(true)
+    expect(wrapper.get('a[href="/configuracoes/cargos"]').exists()).toBe(true)
+  })
 })
 
 describe('OrdersTable → detalhe do pedido', () => {

@@ -4,6 +4,7 @@
  * Aditivo ao campo Papel (meta) do formulário de Usuários — não substitui nem remove Papel.
  */
 import type { Metric } from '../../types/domain'
+import type { CadastroOnda3Row } from './cadastros-onda3'
 import { getCadastroOnda3Rows } from './cadastros-onda3'
 
 export interface Cargo {
@@ -11,6 +12,7 @@ export interface Cargo {
   name: string
   detail: string
   active: boolean
+  createdAt: string
 }
 
 export interface CargoUserLink {
@@ -21,10 +23,10 @@ export interface CargoUserLink {
 }
 
 const cargosSeed: Cargo[] = [
-  { id: 'cgo-1', name: 'Coordenador de Operações', detail: 'Responde pela operação diária do ponto de apoio.', active: true },
-  { id: 'cgo-2', name: 'Analista de SLA', detail: 'Acompanha indicadores de atendimento e prazo.', active: true },
-  { id: 'cgo-3', name: 'Auxiliar de Backoffice', detail: 'Suporte administrativo e cadastro.', active: true },
-  { id: 'cgo-4', name: 'Supervisor de Rota', detail: 'Planeja e acompanha roteirização.', active: false }
+  { id: 'cgo-1', name: 'Coordenador de Operações', detail: 'Responde pela operação diária do ponto de apoio.', active: true, createdAt: '08/01/2025' },
+  { id: 'cgo-2', name: 'Analista de SLA', detail: 'Acompanha indicadores de atendimento e prazo.', active: true, createdAt: '19/02/2025' },
+  { id: 'cgo-3', name: 'Auxiliar de Backoffice', detail: 'Suporte administrativo e cadastro.', active: true, createdAt: '02/03/2025' },
+  { id: 'cgo-4', name: 'Supervisor de Rota', detail: 'Planeja e acompanha roteirização.', active: false, createdAt: '25/04/2025' }
 ]
 
 const linksSeed: CargoUserLink[] = [
@@ -46,7 +48,7 @@ export function setCargos(rows: Cargo[]) {
 }
 
 export function createEmptyCargo(): Omit<Cargo, 'id'> {
-  return { name: '', detail: '', active: true }
+  return { name: '', detail: '', active: true, createdAt: new Date().toLocaleDateString('pt-BR') }
 }
 
 export function getCargoLinks(cargoId: string): CargoUserLink[] {
@@ -87,5 +89,15 @@ export function buildCargosMetrics(rows: Cargo[]): Metric[] {
   return [
     { label: 'Cargos', value: rows.length, note: 'cadastrados', icon: 'i-lucide-id-card' },
     { label: 'Vínculos', value: totalLinks, note: 'usuário × cargo', icon: 'i-lucide-users' }
+  ]
+}
+
+export function buildCargoDetailMetrics(cargo: Cargo, linkedUsers: CadastroOnda3Row[]): Metric[] {
+  const active = linkedUsers.filter((row) => row.active).length
+  const inactive = linkedUsers.length - active
+  return [
+    { label: 'Usuários', value: linkedUsers.length, note: 'vinculados a este cargo', icon: 'i-lucide-users' },
+    { label: 'Ativos', value: active, note: 'usuário ativo', icon: 'i-lucide-circle-check', tone: 'success' },
+    { label: 'Inativos', value: inactive, note: 'usuário inativo', icon: 'i-lucide-circle-off', tone: inactive > 0 ? 'warning' : undefined }
   ]
 }
