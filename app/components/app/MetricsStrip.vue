@@ -81,6 +81,20 @@ const toneValueClass: Record<string, string> = {
   success: 'text-via-green',
   danger: 'text-via-red'
 }
+
+/** Cor do ícone por tone — mesma paleta semântica usada no valor, estendida pros tones sem cor no valor (neutral/info/assigned). */
+const toneIconClass: Record<string, string> = {
+  neutral: 'text-via-subtle',
+  info: 'text-via-blue',
+  assigned: 'text-via-violet',
+  success: 'text-via-green',
+  warning: 'text-[oklch(55%_0.14_73)]',
+  danger: 'text-via-red'
+}
+
+function iconClass(metric: Metric): string {
+  return metric.tone ? toneIconClass[metric.tone] ?? 'text-via-subtle' : 'text-via-subtle'
+}
 </script>
 
 <template>
@@ -110,7 +124,8 @@ const toneValueClass: Record<string, string> = {
         <UIcon
           v-if="showIcons && metric.icon"
           :name="metric.icon"
-          class="metric-item__icon size-[22px] text-via-subtle"
+          class="metric-item__icon size-[22px]"
+          :class="iconClass(metric)"
           aria-hidden="true"
         />
         <div class="min-w-0">
@@ -152,7 +167,8 @@ const toneValueClass: Record<string, string> = {
         <UIcon
           v-if="showIcons && metric.icon"
           :name="metric.icon"
-          class="metric-item__icon size-[22px] text-via-subtle"
+          class="metric-item__icon size-[22px]"
+          :class="iconClass(metric)"
           aria-hidden="true"
         />
         <div class="min-w-0">

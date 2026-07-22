@@ -21,7 +21,8 @@ export function buildTratativasMetrics(
       label: 'Contatos hoje',
       value: contactsToday,
       note: 'canal chatbot',
-      icon: 'i-lucide-messages-square'
+      icon: 'i-lucide-messages-square',
+      tone: 'info'
     },
     {
       label: 'Trabalhados',
@@ -55,7 +56,8 @@ export function buildTratativasMetrics(
       label: 'Na listagem',
       value: rows.length,
       note: 'após filtros',
-      icon: 'i-lucide-list'
+      icon: 'i-lucide-list',
+      tone: 'info'
     }
   ]
 }
@@ -81,7 +83,8 @@ export function buildOcorrenciasNgMetrics(
       label: 'Cancelados',
       value: cancelled,
       note: 'sincronizados',
-      icon: 'i-lucide-ban'
+      icon: 'i-lucide-ban',
+      tone: cancelled > 0 ? 'danger' : undefined
     },
     {
       label: 'Com ocorrência',
@@ -108,7 +111,8 @@ export function buildOcorrenciasNgMetrics(
       label: 'Na listagem',
       value: rows.length,
       note: 'após filtros',
-      icon: 'i-lucide-list'
+      icon: 'i-lucide-list',
+      tone: 'info'
     }
   ]
 }
@@ -147,13 +151,15 @@ export function buildChatbotMonitorMetrics(queues: ChatbotQueueRow[]): Metric[] 
       label: 'Latência média',
       value: `${avgLatency} ms`,
       note: 'filas ativas',
-      icon: 'i-lucide-gauge'
+      icon: 'i-lucide-gauge',
+      tone: 'info'
     },
     {
       label: 'Filas',
       value: queues.length,
       note: 'monitoradas',
-      icon: 'i-lucide-layers'
+      icon: 'i-lucide-layers',
+      tone: 'info'
     }
   ]
 }
@@ -183,19 +189,22 @@ export function buildMiletoBackfillMetrics(jobs: MiletoBackfillJob[]): Metric[] 
       label: 'Processados',
       value: processed,
       note: 'registros',
-      icon: 'i-lucide-database'
+      icon: 'i-lucide-database',
+      tone: 'info'
     },
     {
       label: 'Total planejado',
       value: total,
       note: 'no backfill',
-      icon: 'i-lucide-hard-drive'
+      icon: 'i-lucide-hard-drive',
+      tone: 'info'
     },
     {
       label: 'Jobs',
       value: jobs.length,
       note: 'na fila',
-      icon: 'i-lucide-list'
+      icon: 'i-lucide-list',
+      tone: 'info'
     }
   ]
 }

@@ -338,17 +338,17 @@ export function buildCadastroOnda3Metrics(rows: CadastroOnda3Row[], kind: Cadast
     const aprovado = rows.filter((row) => row.queueStatus === 'aprovado').length
     const recusado = rows.filter((row) => row.queueStatus === 'recusado').length
     return [
-      { label: 'Total', value: total, note: 'solicitações', icon: 'i-lucide-inbox' },
+      { label: 'Total', value: total, note: 'solicitações', icon: 'i-lucide-inbox', tone: 'info' },
       { label: 'Pendentes', value: pendente, note: 'na fila', icon: 'i-lucide-clock', tone: 'warning' },
       { label: 'Aprovadas', value: aprovado, note: 'liberadas', icon: 'i-lucide-check', tone: 'success' },
       { label: 'Recusadas', value: recusado, note: 'negadas', icon: 'i-lucide-x', tone: 'danger' },
-      { label: 'Ativas', value: active, note: 'visíveis', icon: 'i-lucide-eye' },
-      { label: 'Inativas', value: inactive, note: 'ocultas', icon: 'i-lucide-eye-off' }
+      { label: 'Ativas', value: active, note: 'visíveis', icon: 'i-lucide-eye', tone: 'success' },
+      { label: 'Inativas', value: inactive, note: 'ocultas', icon: 'i-lucide-eye-off', tone: inactive ? 'warning' : undefined }
     ]
   }
 
   return [
-    { label: 'Total', value: total, note: 'registros', icon: 'i-lucide-database' },
+    { label: 'Total', value: total, note: 'registros', icon: 'i-lucide-database', tone: 'info' },
     { label: 'Ativos', value: active, note: 'habilitados', icon: 'i-lucide-check-circle', tone: 'success' },
     { label: 'Inativos', value: inactive, note: 'desabilitados', icon: 'i-lucide-circle-off', tone: inactive ? 'warning' : undefined }
   ]

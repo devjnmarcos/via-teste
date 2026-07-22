@@ -28,7 +28,8 @@ export function buildIndicadoresMetrics(rows: DashboardPaRow[]): Metric[] {
       label: 'Em estoque',
       value: stock,
       note: 'aguardando saída',
-      icon: 'i-lucide-warehouse'
+      icon: 'i-lucide-warehouse',
+      tone: 'info'
     },
     {
       label: 'Em rota',
@@ -48,7 +49,8 @@ export function buildIndicadoresMetrics(rows: DashboardPaRow[]): Metric[] {
       label: 'Produtividade',
       value: productivity,
       note: 'concluídos / total',
-      icon: 'i-lucide-gauge'
+      icon: 'i-lucide-gauge',
+      tone: 'success'
     },
     {
       label: 'Mais antigo',
@@ -107,13 +109,15 @@ export function buildLojaMetrics(rows: DashboardStoreOrderRow[]): Metric[] {
       label: 'Espera média',
       value: `${avgWait} min`,
       note: 'na fila atual',
-      icon: 'i-lucide-timer'
+      icon: 'i-lucide-timer',
+      tone: 'info'
     },
     {
       label: 'Tickets',
       value: rows.length,
       note: 'visíveis no painel',
-      icon: 'i-lucide-ticket'
+      icon: 'i-lucide-ticket',
+      tone: 'info'
     }
   ]
 }

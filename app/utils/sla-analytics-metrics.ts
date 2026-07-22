@@ -36,7 +36,8 @@ export function buildSlaEntityMetrics(rows: SlaEntityRow[]): Metric[] {
       label: 'Volume',
       value: total,
       note: 'pedidos no filtro',
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'info'
     },
     {
       label: 'Concluídos',
@@ -56,7 +57,8 @@ export function buildSlaEntityMetrics(rows: SlaEntityRow[]): Metric[] {
       label: 'Entidades',
       value: rows.length,
       note: 'no ranking',
-      icon: 'i-lucide-rows-3'
+      icon: 'i-lucide-rows-3',
+      tone: 'info'
     }
   ]
 }
@@ -86,7 +88,8 @@ export function buildSlaDateMetrics(rows: SlaDateRow[]): Metric[] {
       label: 'Volume',
       value: total,
       note: `${days} dias no filtro`,
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'info'
     }
   ]
 }

@@ -41,7 +41,8 @@ export function buildDevInListMetrics(rows: DevInBoxRow[]): Metric[] {
       label: 'Total de caixas',
       value: rows.length,
       note: 'no filtro atual',
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'info'
     },
     {
       label: 'Caixas abertas',
@@ -61,7 +62,8 @@ export function buildDevInListMetrics(rows: DevInBoxRow[]): Metric[] {
       label: 'Itens conferidos',
       value: items,
       note: readyForLot > 0 ? `${readyForLot} sem vínculo Despachos` : 'soma no filtro',
-      icon: 'i-lucide-scan-barcode'
+      icon: 'i-lucide-scan-barcode',
+      tone: 'info'
     }
   ]
 }
@@ -77,7 +79,8 @@ export function buildDevOutListMetrics(rows: DevOutLotRow[]): Metric[] {
       label: 'Total de lotes',
       value: rows.length,
       note: 'no filtro atual',
-      icon: 'i-lucide-layers'
+      icon: 'i-lucide-layers',
+      tone: 'info'
     },
     {
       label: 'Lotes abertos',
@@ -90,7 +93,8 @@ export function buildDevOutListMetrics(rows: DevOutLotRow[]): Metric[] {
       label: 'Lotes fechados',
       value: closed,
       note: 'aguardando devolução',
-      icon: 'i-lucide-folder-lock'
+      icon: 'i-lucide-folder-lock',
+      tone: closed > 0 ? 'warning' : undefined
     },
     {
       label: 'Lotes devolvidos',
@@ -103,7 +107,8 @@ export function buildDevOutListMetrics(rows: DevOutLotRow[]): Metric[] {
       label: 'Caixas associadas',
       value: boxes,
       note: 'soma no filtro',
-      icon: 'i-lucide-boxes'
+      icon: 'i-lucide-boxes',
+      tone: 'info'
     }
   ]
 }
@@ -120,25 +125,29 @@ export function buildDevInDetailMetrics(box: DevInBoxRow): Metric[] {
       label: 'Itens na caixa',
       value: box.totItemsIn,
       note: box.status === 'Aberto' ? 'conferência em andamento' : 'caixa fechada',
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'info'
     },
     {
       label: 'Itens Reversa',
       value: reversa,
       note: orders.size ? `${orders.size} pedidos distintos` : 'tipo Reversa',
-      icon: 'i-lucide-refresh-cw'
+      icon: 'i-lucide-refresh-cw',
+      tone: 'info'
     },
     {
       label: 'Itens Entrega',
       value: entrega,
       note: 'tipo Entrega',
-      icon: 'i-lucide-truck'
+      icon: 'i-lucide-truck',
+      tone: 'info'
     },
     {
       label: 'Status Despachos',
       value: box.lotOutStatus === '—' ? 'Sem vínculo' : box.lotOutStatus,
       note: box.lotOutStatus === '—' ? 'pronta para lote se fechada' : 'vínculo com lote',
-      icon: 'i-lucide-link'
+      icon: 'i-lucide-link',
+      tone: box.lotOutStatus === '—' ? 'warning' : 'assigned'
     }
   ]
 }
@@ -153,13 +162,15 @@ export function buildDevOutDetailMetrics(
       label: 'Caixas no lote',
       value: lot.totBoxesIn,
       note: lot.status === 'Aberto' ? 'composição em andamento' : `status ${lot.status}`,
-      icon: 'i-lucide-boxes'
+      icon: 'i-lucide-boxes',
+      tone: 'info'
     },
     {
       label: 'Itens totais',
       value: totalItems,
       note: 'soma das caixas',
-      icon: 'i-lucide-scan-barcode'
+      icon: 'i-lucide-scan-barcode',
+      tone: 'info'
     }
   ]
 
@@ -177,7 +188,8 @@ export function buildDevOutDetailMetrics(
     label: 'Previsão de envio',
     value: lot.shippingForecastLabel === '—' ? '—' : lot.shippingForecastLabel,
     note: lot.distributionCenter,
-    icon: 'i-lucide-calendar-range'
+    icon: 'i-lucide-calendar-range',
+    tone: 'info'
   })
 
   return metrics
@@ -246,6 +258,7 @@ export function buildAcompanhamentoMetrics(
       value: boxes.length,
       note: 'no período filtrado',
       icon: 'i-lucide-package',
+      tone: 'info',
       to: '/devolucoes/dev-in'
     },
     {
@@ -269,6 +282,7 @@ export function buildAcompanhamentoMetrics(
       value: withDevOut,
       note: 'vinculadas a lote',
       icon: 'i-lucide-link',
+      tone: 'assigned',
       to: '/devolucoes/dev-out'
     },
     {
@@ -286,7 +300,8 @@ export function buildAcompanhamentoMetrics(
       label: 'Itens coletados',
       value: collected,
       note: itemType === 'Todos' ? 'todos os tipos' : `tipo ${itemType}`,
-      icon: 'i-lucide-scan-barcode'
+      icon: 'i-lucide-scan-barcode',
+      tone: 'info'
     }
   ]
 

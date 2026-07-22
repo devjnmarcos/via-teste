@@ -112,10 +112,10 @@ export function buildFeaturesMetrics(rows: Feature[]): Metric[] {
   ).size
 
   return [
-    { label: 'Features', value: rows.length, note: 'cadastradas', icon: 'i-lucide-flag' },
+    { label: 'Features', value: rows.length, note: 'cadastradas', icon: 'i-lucide-flag', tone: 'info' },
     { label: 'Ativas', value: active, note: 'habilitadas', icon: 'i-lucide-circle-check', tone: 'success' },
-    { label: 'Inativas', value: inactive, note: 'desabilitadas', icon: 'i-lucide-circle-off', tone: inactive > 0 ? 'warning' : undefined },
-    { label: 'Operadores', value: operatorsWithFeature, note: 'com ao menos 1 feature', icon: 'i-lucide-wallet-cards' }
+    { label: 'Inativas', value: inactive, note: 'desabilitadas', icon: 'i-lucide-circle-off', tone: inactive > 0 ? 'danger' : undefined },
+    { label: 'Operadores', value: operatorsWithFeature, note: 'com ao menos 1 feature', icon: 'i-lucide-wallet-cards', tone: 'assigned' }
   ]
 }
 
@@ -141,8 +141,8 @@ export function buildFeatureDetailMetrics(feature: Feature, links: FeatureOperat
   const active = links.filter((link) => link.active).length
   const inactive = links.length - active
   return [
-    { label: 'Operadores', value: links.length, note: 'vinculados a esta feature', icon: 'i-lucide-wallet-cards' },
+    { label: 'Operadores', value: links.length, note: 'vinculados a esta feature', icon: 'i-lucide-wallet-cards', tone: 'assigned' },
     { label: 'Ativos', value: active, note: 'vínculo habilitado', icon: 'i-lucide-circle-check', tone: 'success' },
-    { label: 'Inativos', value: inactive, note: 'vínculo desabilitado', icon: 'i-lucide-circle-off', tone: inactive > 0 ? 'warning' : undefined }
+    { label: 'Inativos', value: inactive, note: 'vínculo desabilitado', icon: 'i-lucide-circle-off', tone: inactive > 0 ? 'danger' : undefined }
   ]
 }

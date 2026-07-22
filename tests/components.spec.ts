@@ -30,6 +30,23 @@ describe('primitives operacionais', () => {
     expect(wrapper.attributes('style')).toContain('repeat(2, minmax(0, 1fr))')
   })
 
+  it('colore o ícone do card conforme o tone; sem tone fica neutro', async () => {
+    const wrapper = await mountSuspended(MetricsStrip, {
+      props: {
+        metrics: [
+          { value: 1, label: 'Ativos', note: 'n', icon: 'i-lucide-check-circle', tone: 'success' },
+          { value: 2, label: 'Falhas', note: 'n', icon: 'i-lucide-octagon-alert', tone: 'danger' },
+          { value: 3, label: 'Total', note: 'n', icon: 'i-lucide-package' }
+        ]
+      }
+    })
+
+    const icons = wrapper.findAll('.metric-item__icon')
+    expect(icons[0]?.classes()).toContain('text-via-green')
+    expect(icons[1]?.classes()).toContain('text-via-red')
+    expect(icons[2]?.classes()).toContain('text-via-subtle')
+  })
+
   it('respeita maxPerRow sem gap entre cards', async () => {
     const wrapper = await mountSuspended(MetricsStrip, {
       props: {

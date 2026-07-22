@@ -23,7 +23,8 @@ export function buildLotesListMetrics(rows: LotRow[]): Metric[] {
       label: 'Total de lotes',
       value: rows.length,
       note: 'no filtro atual',
-      icon: 'i-lucide-layers'
+      icon: 'i-lucide-layers',
+      tone: 'info'
     },
     {
       label: 'Importando',
@@ -43,7 +44,8 @@ export function buildLotesListMetrics(rows: LotRow[]): Metric[] {
       label: 'Pedidos gerados',
       value: orders,
       note: draft > 0 ? `${draft} rascunho(s)` : 'soma no filtro',
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'info'
     }
   ]
 }
@@ -68,7 +70,8 @@ export function buildLotDetailMetrics(lot: LotRow): Metric[] {
       label: 'Pedidos criados',
       value: lot.ordersCreated,
       note: 'gerados neste lote',
-      icon: 'i-lucide-package-check'
+      icon: 'i-lucide-package-check',
+      tone: 'info'
     },
     {
       label: 'Erros no log',

@@ -30,7 +30,8 @@ export function buildFaturasListMetrics(rows: FaturaRow[]): Metric[] {
       label: 'Valor em aberto',
       value: formatBrl(openValue),
       note: 'soma das abertas',
-      icon: 'i-lucide-banknote'
+      icon: 'i-lucide-banknote',
+      tone: 'info'
     },
     {
       label: 'Vencidas',
@@ -48,13 +49,15 @@ export function buildFaturaDetailMetrics(invoice: FaturaRow): Metric[] {
       label: 'Valor',
       value: invoice.valueLabel,
       note: invoice.competenceLabel,
-      icon: 'i-lucide-banknote'
+      icon: 'i-lucide-banknote',
+      tone: 'info'
     },
     {
       label: 'Pedidos',
       value: invoice.orders.length,
       note: 'vinculados à fatura',
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'assigned'
     },
     {
       label: 'Documentos fiscais',

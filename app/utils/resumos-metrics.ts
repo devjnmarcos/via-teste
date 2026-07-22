@@ -32,7 +32,8 @@ export function buildTotaisOperacaoMetrics(rows: ResumoOperacaoRow[]): Metric[] 
       label: 'Novos',
       value: novos,
       note: 'ainda não processados',
-      icon: 'i-lucide-sparkles'
+      icon: 'i-lucide-sparkles',
+      tone: novos > 0 ? 'warning' : undefined
     },
     {
       label: 'Sem ponto de apoio',
@@ -52,7 +53,8 @@ export function buildTotaisOperacaoMetrics(rows: ResumoOperacaoRow[]): Metric[] 
       label: 'Em estoque',
       value: emEstoque,
       note: 'aguardando expedição',
-      icon: 'i-lucide-warehouse'
+      icon: 'i-lucide-warehouse',
+      tone: 'info'
     },
     {
       label: 'Em rota',
@@ -86,7 +88,8 @@ export function buildTotaisOperacaoMetrics(rows: ResumoOperacaoRow[]): Metric[] 
       label: 'Produtividade',
       value: produtividade,
       note: 'concluídos / total',
-      icon: 'i-lucide-gauge'
+      icon: 'i-lucide-gauge',
+      tone: 'success'
     }
   ]
 }
@@ -103,13 +106,15 @@ export function buildPedidosClienteMetrics(rows: ResumoClienteRow[]): Metric[] {
       label: 'Contas',
       value: contas,
       note: 'no ranking filtrado',
-      icon: 'i-lucide-building-2'
+      icon: 'i-lucide-building-2',
+      tone: 'info'
     },
     {
       label: 'Pedidos',
       value: total,
       note: 'volume consolidado',
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'info'
     },
     {
       label: 'Em rota',
@@ -136,7 +141,8 @@ export function buildPedidosClienteMetrics(rows: ResumoClienteRow[]): Metric[] {
       label: 'Linhas',
       value: rows.length,
       note: 'conta × operação',
-      icon: 'i-lucide-rows-3'
+      icon: 'i-lucide-rows-3',
+      tone: 'info'
     }
   ]
 }
@@ -153,13 +159,15 @@ export function buildPedidosEstadoMetrics(rows: ResumoEstadoRow[]): Metric[] {
       label: 'UFs',
       value: rows.length,
       note: 'com volume no filtro',
-      icon: 'i-lucide-map'
+      icon: 'i-lucide-map',
+      tone: 'info'
     },
     {
       label: 'Pedidos',
       value: total,
       note: 'soma por estado',
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'info'
     },
     {
       label: 'Em rota',
@@ -186,7 +194,8 @@ export function buildPedidosEstadoMetrics(rows: ResumoEstadoRow[]): Metric[] {
       label: 'Pontos de apoio',
       value: pas,
       note: 'cobertos nas UFs',
-      icon: 'i-lucide-map-pin-house'
+      icon: 'i-lucide-map-pin-house',
+      tone: 'info'
     }
   ]
 }
@@ -202,13 +211,15 @@ export function buildPedidosPaMetrics(rows: ResumoPaRow[]): Metric[] {
       label: 'Pontos de apoio',
       value: rows.length,
       note: 'no filtro',
-      icon: 'i-lucide-map-pin-house'
+      icon: 'i-lucide-map-pin-house',
+      tone: 'info'
     },
     {
       label: 'Pedidos',
       value: total,
       note: 'volume consolidado',
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'info'
     },
     {
       label: 'Em rota',
@@ -235,7 +246,8 @@ export function buildPedidosPaMetrics(rows: ResumoPaRow[]): Metric[] {
       label: 'UFs',
       value: new Set(rows.map((row) => row.uf)).size,
       note: 'cobertas',
-      icon: 'i-lucide-map'
+      icon: 'i-lucide-map',
+      tone: 'info'
     }
   ]
 }
@@ -251,13 +263,15 @@ export function buildPedidosTransportadorMetrics(rows: ResumoTransportadorRow[])
       label: 'Transportadores',
       value: rows.length,
       note: 'no ranking',
-      icon: 'i-lucide-truck'
+      icon: 'i-lucide-truck',
+      tone: 'info'
     },
     {
       label: 'Pedidos',
       value: total,
       note: 'volume consolidado',
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'info'
     },
     {
       label: 'Em rota',
@@ -284,6 +298,7 @@ export function buildPedidosTransportadorMetrics(rows: ResumoTransportadorRow[])
       label: 'Linhas',
       value: rows.length,
       note: 'transportador × volume',
+      tone: 'info',
       icon: 'i-lucide-rows-3'
     }
   ]

@@ -18,19 +18,22 @@ export function buildRoutesListMetrics(rows: RouteRow[]): Metric[] {
       label: 'Rotas',
       value: rows.length,
       note: 'no filtro',
-      icon: 'i-lucide-map-pinned'
+      icon: 'i-lucide-map-pinned',
+      tone: 'info'
     },
     {
       label: 'Pedidos',
       value: orders,
       note: 'associados',
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'info'
     },
     {
       label: 'Peso (kg)',
       value: weight,
       note: 'soma das rotas',
-      icon: 'i-lucide-weight'
+      icon: 'i-lucide-weight',
+      tone: 'info'
     },
     {
       label: 'Abertas',
@@ -76,13 +79,15 @@ export function buildRoteirizacaoMetrics(
       label: 'Peso (kg)',
       value: weight,
       note: 'seleção atual',
-      icon: 'i-lucide-weight'
+      icon: 'i-lucide-weight',
+      tone: 'info'
     },
     {
       label: 'Elegíveis',
       value: orders.length,
       note: 'na listagem',
-      icon: 'i-lucide-list-filter'
+      icon: 'i-lucide-list-filter',
+      tone: 'info'
     },
     {
       label: 'Rotas abertas',
@@ -104,19 +109,22 @@ export function buildRouteDetailMetrics(
       label: 'Pedidos',
       value: ordersCount,
       note: 'na rota',
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'info'
     },
     {
       label: 'Peso (kg)',
       value: weightKg,
       note: 'carga estimada',
-      icon: 'i-lucide-weight'
+      icon: 'i-lucide-weight',
+      tone: 'info'
     },
     {
       label: 'Status',
       value: status,
       note: 'situação atual',
-      icon: 'i-lucide-info'
+      icon: 'i-lucide-info',
+      tone: 'neutral'
     }
   ]
 }
@@ -133,19 +141,22 @@ export function buildCalendarioMetrics(
       label: 'Agendados',
       value: events.length,
       note: 'no mês filtrado',
-      icon: 'i-lucide-calendar-check'
+      icon: 'i-lucide-calendar-check',
+      tone: 'assigned'
     },
     {
       label: 'Contas',
       value: accounts,
       note: 'com agendamento',
-      icon: 'i-lucide-building-2'
+      icon: 'i-lucide-building-2',
+      tone: 'info'
     },
     {
       label: 'Dias ativos',
       value: days,
       note: 'com pedidos',
-      icon: 'i-lucide-calendar-days'
+      icon: 'i-lucide-calendar-days',
+      tone: 'info'
     },
     {
       label: 'No dia',

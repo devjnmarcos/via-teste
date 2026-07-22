@@ -104,17 +104,17 @@ export function operationVolumeRatio(operationSlug: string): number {
 }
 
 export const homeMetrics: Metric[] = [
-  { label: 'Pedidos no fluxo', value: totalOrders, note: 'todas as operações', icon: 'i-lucide-package-search' },
-  { label: 'Em rota agora', value: 146, note: '96 coletas em andamento', icon: 'i-lucide-route' },
+  { label: 'Pedidos no fluxo', value: totalOrders, note: 'todas as operações', icon: 'i-lucide-package-search', tone: 'info' },
+  { label: 'Em rota agora', value: 146, note: '96 coletas em andamento', icon: 'i-lucide-route', tone: 'info' },
   { label: 'Ocorrências hoje', value: 7, note: '3 fora do SLA', icon: 'i-lucide-triangle-alert', tone: 'danger' },
-  { label: 'Produtividade média', value: '97%', note: '+2 p.p. no período', icon: 'i-lucide-gauge' }
+  { label: 'Produtividade média', value: '97%', note: '+2 p.p. no período', icon: 'i-lucide-gauge', tone: 'success' }
 ]
 
 export const operationMetrics: Metric[] = [
-  { label: 'Pedidos no fluxo', value: 198, note: 'nesta operação', icon: 'i-lucide-package-search' },
+  { label: 'Pedidos no fluxo', value: 198, note: 'nesta operação', icon: 'i-lucide-package-search', tone: 'info' },
   { label: 'Aguardando distribuição', value: 10, note: '5% do fluxo', icon: 'i-lucide-map-pin-off', tone: 'warning' },
-  { label: 'Em rota', value: 53, note: '27% do fluxo', icon: 'i-lucide-route' },
-  { label: 'Concluídos hoje', value: 112, note: '+9% desde ontem', icon: 'i-lucide-circle-check' },
+  { label: 'Em rota', value: 53, note: '27% do fluxo', icon: 'i-lucide-route', tone: 'info' },
+  { label: 'Concluídos hoje', value: 112, note: '+9% desde ontem', icon: 'i-lucide-circle-check', tone: 'success' },
   { label: 'Ocorrências hoje', value: 3, note: '1 fora do SLA', icon: 'i-lucide-triangle-alert', tone: 'danger' }
 ]
 

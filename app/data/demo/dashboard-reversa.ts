@@ -387,7 +387,7 @@ export const resumoFixture: ResumoFixture = {
 
 export function buildVisaoGeralMetrics(kpis: VisaoGeralFixture['kpis']): Metric[] {
   return [
-    { label: 'Total', value: kpis.total, note: 'pedidos no período', icon: 'i-lucide-package' },
+    { label: 'Total', value: kpis.total, note: 'pedidos no período', icon: 'i-lucide-package', tone: 'info' },
     { label: 'Coletados', value: kpis.coletados, note: 'concluídos', icon: 'i-lucide-circle-check', tone: 'success' },
     { label: 'Ocorrências', value: kpis.ocorrencias, note: 'com incidente', icon: 'i-lucide-triangle-alert', tone: 'danger' },
     { label: 'Pendentes', value: kpis.pendentes, note: 'em aberto', icon: 'i-lucide-clock-3', tone: 'warning' },
@@ -398,7 +398,7 @@ export function buildVisaoGeralMetrics(kpis: VisaoGeralFixture['kpis']): Metric[
 
 export function buildMailingMetrics(kpis: MailingFixture['kpis']): Metric[] {
   return [
-    { label: 'Total recebido', value: kpis.total, note: 'mailing', icon: 'i-lucide-inbox' },
+    { label: 'Total recebido', value: kpis.total, note: 'mailing', icon: 'i-lucide-inbox', tone: 'info' },
     { label: 'Voluntário', value: kpis.vol, note: 'VOL', icon: 'i-lucide-hand-helping', tone: 'info' },
     { label: 'Involuntário', value: kpis.invol, note: 'INVOL', icon: 'i-lucide-package-x', tone: 'assigned' },
     { label: 'Com agendamento', value: kpis.agendado, note: 'janela marcada', icon: 'i-lucide-calendar-check', tone: 'success' }
@@ -411,7 +411,7 @@ export function buildTrabalhadoMetrics(kpis: TrabalhadoFixture['kpis']): Metric[
     : 0
 
   return [
-    { label: 'Trabalhado', value: kpis.trabalhado, note: 'pedidos tocados', icon: 'i-lucide-workflow' },
+    { label: 'Trabalhado', value: kpis.trabalhado, note: 'pedidos tocados', icon: 'i-lucide-workflow', tone: 'info' },
     { label: 'Coletados', value: kpis.concluidos, note: 'concluídos', icon: 'i-lucide-circle-check', tone: 'success' },
     { label: 'Ocorrências', value: kpis.ocorrencias, note: 'com incidente', icon: 'i-lucide-triangle-alert', tone: 'danger' },
     { label: 'VOL coletados', value: kpis.vol_concluidos, note: 'voluntário', icon: 'i-lucide-hand-helping', tone: 'info' },

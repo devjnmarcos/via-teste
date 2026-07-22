@@ -34,19 +34,22 @@ const listMetrics = computed<Metric[]>(() => {
       label: 'Pontos',
       value: resumosMapPoints.length,
       note: 'clusters no mapa',
-      icon: 'i-lucide-map-pinned'
+      icon: 'i-lucide-map-pinned',
+      tone: 'info'
     },
     {
       label: 'Pedidos',
       value: total,
       note: 'volume plotado',
-      icon: 'i-lucide-package'
+      icon: 'i-lucide-package',
+      tone: 'info'
     },
     {
       label: 'UFs',
       value: ufs,
       note: 'cobertas',
-      icon: 'i-lucide-map'
+      icon: 'i-lucide-map',
+      tone: 'info'
     }
   ]
 })

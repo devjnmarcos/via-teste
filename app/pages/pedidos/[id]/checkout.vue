@@ -24,7 +24,7 @@ const windowOptions = [
 ]
 
 const metrics = computed((): Metric[] => [
-  { label: 'Itens', value: order.value.items, note: 'no pedido', icon: 'i-lucide-package' },
+  { label: 'Itens', value: order.value.items, note: 'no pedido', icon: 'i-lucide-package', tone: 'info' },
   { label: 'Ocorrências', value: order.value.occurrences, note: 'abertas', icon: 'i-lucide-triangle-alert', tone: order.value.occurrences ? 'warning' : undefined },
   { label: 'SLA', value: order.value.sla, note: 'atual', icon: 'i-lucide-timer', tone: order.value.slaTone }
 ])

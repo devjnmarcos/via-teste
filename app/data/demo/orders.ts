@@ -99,14 +99,14 @@ export const liveOrders: Order[] = [
 ]
 
 export const liveMetrics: Metric[] = [
-  { label: 'Ativos agora', value: 146, note: 'pedidos em andamento', icon: 'i-lucide-activity' },
-  { label: 'Em rota', value: 96, note: 'coletas em andamento', icon: 'i-lucide-route' },
+  { label: 'Ativos agora', value: 146, note: 'pedidos em andamento', icon: 'i-lucide-activity', tone: 'info' },
+  { label: 'Em rota', value: 96, note: 'coletas em andamento', icon: 'i-lucide-route', tone: 'info' },
   { label: 'Ponto de apoio não identificado', value: 18, note: 'aguardando roteirização', icon: 'i-lucide-map-pin-off', tone: 'warning' },
   { label: 'Ocorrências abertas', value: 7, note: '3 fora do SLA', icon: 'i-lucide-triangle-alert', tone: 'danger' }
 ]
 
 export const ordersMetrics: Metric[] = [
-  { label: 'Não processado', value: 28, note: 'filtrar este status', icon: 'i-lucide-inbox' },
+  { label: 'Não processado', value: 28, note: 'filtrar este status', icon: 'i-lucide-inbox', tone: 'warning' },
   { label: 'Ponto de apoio não identificado', value: 18, note: 'aguardando roteirização', icon: 'i-lucide-map-pin-off', tone: 'warning' },
   { label: 'Back Order', value: 42, note: 'aguardando reposição', icon: 'i-lucide-package-x', tone: 'warning' },
   { label: 'Ocorrências hoje', value: 7, note: '3 fora do SLA', icon: 'i-lucide-triangle-alert', tone: 'danger' }

@@ -87,8 +87,8 @@ export function linkedUsersCount(cargoId: string): number {
 export function buildCargosMetrics(rows: Cargo[]): Metric[] {
   const totalLinks = linksStore.filter((link) => rows.some((row) => row.id === link.cargoId)).length
   return [
-    { label: 'Cargos', value: rows.length, note: 'cadastrados', icon: 'i-lucide-id-card' },
-    { label: 'Vínculos', value: totalLinks, note: 'usuário × cargo', icon: 'i-lucide-users' }
+    { label: 'Cargos', value: rows.length, note: 'cadastrados', icon: 'i-lucide-id-card', tone: 'info' },
+    { label: 'Vínculos', value: totalLinks, note: 'usuário × cargo', icon: 'i-lucide-users', tone: 'assigned' }
   ]
 }
 
@@ -96,7 +96,7 @@ export function buildCargoDetailMetrics(cargo: Cargo, linkedUsers: CadastroOnda3
   const active = linkedUsers.filter((row) => row.active).length
   const inactive = linkedUsers.length - active
   return [
-    { label: 'Usuários', value: linkedUsers.length, note: 'vinculados a este cargo', icon: 'i-lucide-users' },
+    { label: 'Usuários', value: linkedUsers.length, note: 'vinculados a este cargo', icon: 'i-lucide-users', tone: 'assigned' },
     { label: 'Ativos', value: active, note: 'usuário ativo', icon: 'i-lucide-circle-check', tone: 'success' },
     { label: 'Inativos', value: inactive, note: 'usuário inativo', icon: 'i-lucide-circle-off', tone: inactive > 0 ? 'warning' : undefined }
   ]

@@ -118,7 +118,7 @@ export function createEmptyIntegration(): Omit<Integration, 'id'> {
 export function buildIntegrationsMetrics(rows: Integration[]): Metric[] {
   const active = rows.filter((row) => row.active).length
   return [
-    { label: 'Integrações', value: rows.length, note: 'cadastradas', icon: 'i-lucide-plug' },
+    { label: 'Integrações', value: rows.length, note: 'cadastradas', icon: 'i-lucide-plug', tone: 'info' },
     { label: 'Ativas', value: active, note: 'em uso', icon: 'i-lucide-circle-check', tone: 'success' },
     { label: 'Inativas', value: rows.length - active, note: 'pausadas', icon: 'i-lucide-pause-circle', tone: rows.length - active > 0 ? 'warning' : undefined }
   ]
@@ -167,7 +167,7 @@ export function buildIntegrationOrdersMetrics(rows: IntegrationOrder[]): Metric[
   const concluido = rows.filter((row) => row.status === 'concluido').length
   return [
     { label: 'Pendentes', value: pendente, note: 'na fila', icon: 'i-lucide-clock', tone: pendente > 0 ? 'warning' : undefined },
-    { label: 'Enviados', value: enviado, note: 'aguardando resposta', icon: 'i-lucide-send' },
+    { label: 'Enviados', value: enviado, note: 'aguardando resposta', icon: 'i-lucide-send', tone: 'info' },
     { label: 'Erros', value: erro, note: 'falharam', icon: 'i-lucide-circle-alert', tone: erro > 0 ? 'danger' : undefined },
     { label: 'Concluídos', value: concluido, note: 'finalizados', icon: 'i-lucide-circle-check', tone: 'success' }
   ]
